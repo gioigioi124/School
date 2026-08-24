@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Profile {
+  id          String   @id @db.Uuid // Matches auth.users.id
+  email       String   @unique
+  displayName String?
+  avatarUrl   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  roleAssignments RoleAssignment[]
+
+  @@map("profiles")
+}
+
+model Role {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique // 'admin', 'teacher', 'student', 'parent'
+  description String?
+  createdAt   DateTime @default(now())
+
+  roleAssignments RoleAssignment[]
+
+  @@map("roles")
+}
+
+model RoleAssignment {
+  id        String   @id @default(uuid()) @db.Uuid
+  profileId String   @db.Uuid
+  roleId    String   @db.Uuid
+  createdAt DateTime @default(now())
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  role    Role    @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, roleId])
+  @@map("role_assignments")
+}
