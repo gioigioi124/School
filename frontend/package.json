@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
+    "@fontsource-variable/lexend": "^5.3.0",
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.112.3",
     "@tanstack/react-query": "^5.102.2",
@@ -20,6 +21,7 @@
     "next": "16.3.2",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "react-hot-toast": "^2.6.0",
     "shadcn": "^4.19.0",
     "tailwind-merge": "^3.6.0",
     "tw-animate-css": "^1.4.0",
