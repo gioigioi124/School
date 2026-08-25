@@ -1,6 +1,9 @@
-# UI Theme & Styling Rules
+# UI Theme & Styling Rules: Kinderly
 
-- **Font Family**: Always use `Lexend Variable` (via `@fontsource-variable/lexend`) as the primary font for the application. Do not import or use `next/font/google` (e.g., `Geist`, `Inter`) unless specifically requested.
-- **Color Palette**: The theme utilizes HSL CSS variables defined in `globals.css` (e.g., `--primary`, `--background`, `--card`). Use standard Tailwind classes (`bg-primary`, `text-muted-foreground`, etc.) instead of hardcoded hex colors.
-- **Design Language**: Follow the "Modern UI" aesthetic with soft shadows (`shadow-custom-sm`, `shadow-custom-md`), gradient backgrounds (e.g., `bg-gradient-to-r`), and rounded borders.
-- **Variables**: Always refer to the custom CSS variables set in `@theme inline` inside `globals.css` for consistent styling.
+- **Font Family**: Use `Quicksand` (bold) for all headings, titles, and names to feel personal. Use `Lexend` for body text, labels, descriptions, and data entry. (Configured in `layout.tsx` and applied via `font-heading` and `font-sans`).
+- **Color Palette**: 
+  - Primary (Mint Green): `bg-primary`, used for success states and main actions.
+  - Secondary (Sunny Yellow): `bg-secondary`, highlights, warnings.
+  - Backgrounds: Use the light grey-green tint (`bg-background`) to reduce eye strain. Pure white (`bg-card`) for containers.
+- **Design Language**: Soft Minimalist with a Tactile edge. Pill-shaped buttons (`rounded-full`), ambient shadows (`shadow-custom`), and no sharp corners.
+- **Elevation**: Use `shadow-custom` (0px 4px 20px rgba(0,0,0,0.05)) for Level 1 surfaces. Hover states scale slightly (1.02x) for a squishy, tactile feel.
