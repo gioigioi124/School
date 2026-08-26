@@ -7,20 +7,35 @@ datasource db {
 }
 
 model Profile {
-  id          String   @id @db.Uuid // Matches auth.users.id
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid // Matches auth.users.id or student record
   email       String   @unique
+  phone       String?
+  parentPhone String?
+  parentName  String?
   displayName String?
   avatarUrl   String?
+  school      String?
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  updatedAt   DateTime @default(now()) @updatedAt
 
-  roleAssignments RoleAssignment[]
+  roleAssignments       RoleAssignment[]
+  enrollments           ClassEnrollment[]
+  attendances           Attendance[]
+  authoredAnnouncements Announcement[]
+  notifications         Notification[]
+  authoredLessons       Lesson[]
+  submissions           Submission[]
+  progresses            StudentProgress[]
+  userXp                UserXp?
+  unlockedBadges        UserBadge[]
+  xpHistories           XpHistory[]
+  gameScores            GameScore[]
 
   @@map("profiles")
 }
 
 model Role {
-  id          String   @id @default(uuid()) @db.Uuid
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name        String   @unique // 'admin', 'teacher', 'student', 'parent'
   description String?
   createdAt   DateTime @default(now())
@@ -31,7 +46,7 @@ model Role {
 }
 
 model RoleAssignment {
-  id        String   @id @default(uuid()) @db.Uuid
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   profileId String   @db.Uuid
   roleId    String   @db.Uuid
   createdAt DateTime @default(now())
@@ -41,4 +56,248 @@ model RoleAssignment {
 
   @@unique([profileId, roleId])
   @@map("role_assignments")
+}
+
+model Class {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  description String?
+  school      String?
+  grade       String?  // VD: Mẫu giáo lớn, Mẫu giáo nhỡ
+  avatarUrl   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  enrollments   ClassEnrollment[]
+  attendances   Attendance[]
+  announcements Announcement[]
+  lessons       Lesson[]
+
+  @@map("classes")
+}
+
+model ClassEnrollment {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  classId   String   @db.Uuid
+  profileId String   @db.Uuid
+  role      String   // 'teacher' or 'student'
+  createdAt DateTime @default(now())
+
+  class   Class   @relation(fields: [classId], references: [id], onDelete: Cascade)
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([classId, profileId])
+  @@map("class_enrollments")
+}
+
+model Attendance {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  classId   String   @db.Uuid
+  studentId String   @db.Uuid
+  date      DateTime @db.Date
+  status    String   @default("present") // 'present', 'absent', 'late', 'leave'
+  note      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  class   Class   @relation(fields: [classId], references: [id], onDelete: Cascade)
+  student Profile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([classId, studentId, date])
+  @@map("attendance")
+}
+
+model Announcement {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  teacherId   String   @db.Uuid
+  classId     String   @db.Uuid
+  title       String
+  content     String
+  isImportant Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  teacher       Profile        @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  class         Class          @relation(fields: [classId], references: [id], onDelete: Cascade)
+  notifications Notification[]
+
+  @@map("announcements")
+}
+
+model Notification {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String    @db.Uuid
+  announcementId String?   @db.Uuid
+  title          String
+  content        String
+  isRead         Boolean   @default(false)
+  readAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  user         Profile       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  announcement Announcement? @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model Lesson {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  classId      String   @db.Uuid
+  teacherId    String   @db.Uuid
+  title        String
+  description  String?
+  content      String?
+  videoUrl     String?
+  thumbnailUrl String?
+  duration     Int      @default(0)
+  orderIndex   Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  class       Class             @relation(fields: [classId], references: [id], onDelete: Cascade)
+  teacher     Profile           @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  assignments Assignment[]
+  progresses  StudentProgress[]
+
+  @@map("lessons")
+}
+
+model Assignment {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  lessonId    String    @db.Uuid
+  title       String
+  description String?
+  type        String    @default("quiz") // 'quiz', 'text', 'drag_drop'
+  content     Json?
+  xpReward    Int       @default(20)
+  dueDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+
+  lesson      Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  submissions Submission[]
+
+  @@map("assignments")
+}
+
+model Submission {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  assignmentId String    @db.Uuid
+  studentId    String    @db.Uuid
+  content      Json?
+  grade        Decimal?  @db.Decimal(5, 2)
+  feedback     String?
+  xpEarned     Int       @default(0)
+  status       String    @default("submitted") // 'submitted', 'graded'
+  submittedAt  DateTime  @default(now())
+  gradedAt     DateTime?
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  student    Profile    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, assignmentId])
+  @@map("submissions")
+}
+
+model StudentProgress {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  studentId   String    @db.Uuid
+  lessonId    String    @db.Uuid
+  isCompleted Boolean   @default(false)
+  completedAt DateTime?
+  xpEarned    Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+
+  student Profile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  lesson  Lesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, lessonId])
+  @@map("student_progress")
+}
+
+model Badge {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String   @unique
+  name        String
+  description String?
+  icon        String   @default("🌟")
+  category    String?  @default("achievement")
+  xpBonus     Int      @default(50)
+  createdAt   DateTime @default(now())
+
+  userBadges UserBadge[]
+
+  @@map("badges")
+}
+
+model UserXp {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  studentId    String   @unique @db.Uuid
+  totalXp      Int      @default(0)
+  currentLevel Int      @default(1)
+  totalStars   Int      @default(0)
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  student Profile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("user_xp")
+}
+
+model UserBadge {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  studentId  String   @db.Uuid
+  badgeId    String   @db.Uuid
+  unlockedAt DateTime @default(now())
+
+  student Profile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  badge   Badge   @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, badgeId])
+  @@map("user_badges")
+}
+
+model XpHistory {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  studentId  String   @db.Uuid
+  action     String
+  xpAmount   Int
+  sourceType String?
+  sourceId   String?  @db.Uuid
+  createdAt  DateTime @default(now())
+
+  student Profile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("xp_history")
+}
+
+model Game {
+  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code         String      @unique
+  title        String
+  description  String?
+  category     String?     @default("general")
+  thumbnailUrl String?
+  xpReward     Int         @default(15)
+  config       Json?
+  createdAt    DateTime    @default(now())
+
+  scores GameScore[]
+
+  @@map("games")
+}
+
+model GameScore {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  gameId    String   @db.Uuid
+  studentId String   @db.Uuid
+  score     Int      @default(0)
+  maxScore  Int      @default(100)
+  xpEarned  Int      @default(0)
+  playedAt  DateTime @default(now())
+
+  game    Game    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  student Profile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("game_scores")
 }

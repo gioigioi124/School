@@ -47,7 +47,8 @@ export default async function proxy(request: NextRequest) {
   if (user && isAuthRoute) {
     // Redirect authenticated users away from auth routes
     const url = request.nextUrl.clone();
-    url.pathname = '/dashboard'; // Can be customized based on role later
+    const isStudentOrParent = user.email?.endsWith('@kinderly.com');
+    url.pathname = isStudentOrParent ? '/portal' : '/dashboard';
     return NextResponse.redirect(url);
   }
 

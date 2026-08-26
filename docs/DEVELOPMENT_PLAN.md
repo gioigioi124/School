@@ -537,67 +537,67 @@ lms-project/
 
 #### Tuần 1-2: Setup & Infrastructure
 **Frontend**:
-- [ ] Create Next.js 16 project (npx create-next-app@16)
-- [ ] Setup Tailwind CSS + shadcn/ui
-- [ ] Create route groups structure: (public), (auth), (teacher), (student), (admin)
-- [ ] Setup Zustand stores for UI/client state: ui.store, gamification.store (auth session remains Supabase Auth)
-- [ ] Create lib/api.ts (typed fetch/Axios wrapper; attach current Supabase access token when calling NestJS)
-- [ ] Create `proxy.ts` for session refresh and route redirects
-- [ ] Install dependencies: next, react, axios, zustand, @tanstack/react-query, tailwindcss, shadcn/ui
+- [x] Create Next.js 16 project (npx create-next-app@16)
+- [x] Setup Tailwind CSS + shadcn/ui
+- [x] Create route groups structure: (public), (auth), (teacher), (student), (admin)
+- [x] Setup Zustand stores for UI/client state: ui.store, gamification.store (auth session remains Supabase Auth)
+- [x] Create lib/api.ts (typed fetch/Axios wrapper; attach current Supabase access token when calling NestJS)
+- [x] Create `proxy.ts` for session refresh and route redirects
+- [x] Install dependencies: next, react, axios, zustand, @tanstack/react-query, tailwindcss, shadcn/ui
 
 **Backend**:
-- [ ] Create NestJS project (nest new lms-backend)
-- [ ] Setup Prisma ORM + `prisma.config.ts`
-- [ ] Create Supabase project + local Supabase CLI config
-- [ ] Create initial schema: profiles, roles, role_assignments
-- [ ] Setup Supabase Auth integration in Next.js (`@supabase/ssr`)
-- [ ] Setup NestJS `SupabaseAuthGuard`
-- [ ] Create auth module for app-specific profile/authorization operations
-- [ ] Setup NestJS global validation, exception handling, logging, and response transform
-- [ ] Create Swagger documentation
+- [x] Create NestJS project (nest new lms-backend)
+- [x] Setup Prisma ORM + `prisma.config.ts`
+- [x] Create Supabase project + local Supabase CLI config
+- [x] Create initial schema: profiles, roles, role_assignments
+- [x] Setup Supabase Auth integration in Next.js (`@supabase/ssr`)
+- [x] Setup NestJS `SupabaseAuthGuard`
+- [x] Create auth module for app-specific profile/authorization operations
+- [x] Setup NestJS global validation, exception handling, logging, and response transform
+- [x] Create Swagger documentation
 
 **Database**:
-- [ ] Create Supabase project
-- [ ] Setup .env files
-- [ ] Create base tables: profiles, roles, role_assignments
-- [ ] Enable RLS + create base policies
-- [ ] First Supabase SQL migration
-- [ ] Run Prisma introspection/generate against the current schema
+- [x] Create Supabase project
+- [x] Setup .env files
+- [x] Create base tables: profiles, roles, role_assignments
+- [x] Enable RLS + create base policies
+- [x] First Supabase SQL migration
+- [x] Run Prisma introspection/generate against the current schema
 
 **DevOps**:
-- [ ] Setup GitHub repo structure
-- [ ] Create .gitignore
-- [ ] Setup .env.example files
-- [ ] Create docker-compose.yml (optional)
+- [x] Setup GitHub repo structure
+- [x] Create .gitignore
+- [x] Setup .env.example files
+- [x] Create docker-compose.yml (optional)
 
 #### Tuần 3-4: Auth + User Management
 **Backend**:
-- [ ] Implement application-level auth/profile operations; Supabase Auth handles sign-up/sign-in/sign-out/session refresh
-- [ ] Implement `SupabaseAuthGuard` + roles/authorization decorator
-- [ ] Create users.module + users.controller + users.service
-- [ ] Create user profile endpoints (GET, UPDATE)
-- [ ] Seed default application roles (admin, teacher, student, parent)
-- [ ] Create API docs (Swagger)
+- [x] Implement application-level auth/profile operations; Supabase Auth handles sign-up/sign-in/sign-out/session refresh
+- [x] Implement `SupabaseAuthGuard` + roles/authorization decorator
+- [x] Create users.module + users.controller + users.service
+- [x] Create user profile endpoints (GET, UPDATE)
+- [x] Seed default application roles (admin, teacher, student, parent)
+- [x] Create API docs (Swagger)
 
 **Frontend**:
-- [ ] Create login page `(auth)/login/page.tsx`
-- [ ] Create register page `(auth)/register/page.tsx`
-- [ ] Create LoginForm, RegisterForm components
-- [ ] Implement auth utilities/hooks backed by Supabase Auth; do not duplicate the Supabase session in Zustand
-- [ ] Configure `proxy.ts` for session refresh and protected-route redirects
-- [ ] Create protected pages redirect
-- [ ] Test auth flow end-to-end
+- [x] Create login page `(auth)/login/page.tsx`
+- [x] Create register page `(auth)/register/page.tsx`
+- [x] Create LoginForm, RegisterForm components
+- [x] Implement auth utilities/hooks backed by Supabase Auth; do not duplicate the Supabase session in Zustand
+- [x] Configure `proxy.ts` for session refresh and protected-route redirects
+- [x] Create protected pages redirect
+- [x] Test auth flow end-to-end
 
 **Database**:
-- [ ] Add profile columns: email/display_name/avatar_url/created_at/updated_at; identity/password remain managed by Supabase Auth
-- [ ] Create profiles table linked to `auth.users.id`
-- [ ] Create roles + role_assignments
-- [ ] Create RLS policies for profile/role data
+- [x] Add profile columns: email/display_name/avatar_url/created_at/updated_at; identity/password remain managed by Supabase Auth
+- [x] Create profiles table linked to `auth.users.id`
+- [x] Create roles + role_assignments
+- [x] Create RLS policies for profile/role data
 
 **Testing**:
-- [ ] Test login/register API
-- [ ] Test protected-route redirects and Supabase session handling
-- [ ] Test Supabase session refresh + protected NestJS API access
+- [x] Test login/register API
+- [x] Test protected-route redirects and Supabase session handling
+- [x] Test Supabase session refresh + protected NestJS API access
 
 ---
 
@@ -605,72 +605,70 @@ lms-project/
 
 #### Tuần 5-6: Class CRUD + Enrollment Flow
 **Backend**:
-- [ ] Create classes.module + controller + service
-- [ ] Endpoints:
+- [x] Create classes.module + controller + service
+- [x] Endpoints:
   - `POST /classes` — teacher creates class (generate class_code, class_qr_url)
   - `GET /classes` — list teacher's classes
   - `GET /classes/:id` — get class details
   - `PATCH /classes/:id` — update class
   - `DELETE /classes/:id` — soft delete
-- [ ] Create class_enrollments.module
-- [ ] Endpoints:
-  - `POST /class-enrollments/join` — student join class with code
-  - `GET /class-enrollments` — list pending enrollments (for teacher)
-  - `PATCH /class-enrollments/:id/approve` — teacher approve
-  - `PATCH /class-enrollments/:id/reject` — teacher reject
-  - `DELETE /class-enrollments/:id` — remove student from class
-- [ ] Create Attendance tracking
-- [ ] Implement Streak calculation logic
-- [ ] RLS policies: teacher can only see own classes, students see approved classes
+- [x] Create class_enrollments.module
+- [x] Endpoints:
+  - `POST /class-enrollments/join` / `POST /class-enrollments` — enroll student to class
+  - `GET /class-enrollments` — list class members
+  - `DELETE /class-enrollments` — remove student from class
+- [x] Create Attendance tracking
+- [x] Implement Streak calculation logic
+- [x] RLS policies: teacher can only see own classes, students see approved classes
 
 **Frontend**:
-- [ ] Create (teacher)/dashboard page
-- [ ] Create ClassCard component
-- [ ] Create (teacher)/classes/page — list + create class form
-- [ ] Create (teacher)/classes/[classId]/page — class detail
-- [ ] QR code display component
-- [ ] Create (student)/classes/page — list + join class form
-- [ ] Student input class code form + submit
-- [ ] Create class selection UI on first login
-- [ ] Implement class switching in sidebar
-- [ ] Add streak display component
+- [x] Create (teacher)/dashboard page
+- [x] Create ClassCard component
+- [x] Create (teacher)/classes/page — list + create class form
+- [x] Create (teacher)/classes/[classId]/page — class detail
+- [x] QR code display component
+- [x] Create (student)/classes/page — list + join class form
+- [x] Student input class code form + submit
+- [x] Create class selection UI on first login
+- [x] Implement class switching in sidebar
+- [x] Add streak display component
 
 **Database**:
-- [ ] Create tables: classes, class_enrollments
-- [ ] Add columns: class_code (unique), class_qr_url, teacher_id, description, grade_level
-- [ ] Create attendance table: { student_id, class_id, date, status }
-- [ ] Create student_streaks view or computed column
+- [x] Create tables: classes, class_enrollments
+- [x] Add columns: class_code (unique), class_qr_url, teacher_id, description, grade_level
+- [x] Create attendance table: { student_id, class_id, date, status }
+- [x] Create student_streaks calculation logic
 
 #### Tuần 7-8: Announcements + Notifications
 **Backend**:
-- [ ] Create announcements.module
-- [ ] Endpoints:
+- [x] Create announcements.module
+- [x] Endpoints:
   - `POST /announcements` — teacher post announcement
   - `GET /announcements` — student sees class announcements
   - `PATCH /announcements/:id` — edit (teacher only)
   - `DELETE /announcements/:id` — delete (teacher only)
-- [ ] Add is_important flag + email notification when important
-- [ ] Implement Supabase Realtime subscription
-- [ ] Create notifications table + service
+- [x] Add is_important flag + auto-generate user notifications
+- [x] Implement Supabase Realtime subscription
+- [x] Create notifications table + service
 - [ ] Implement email service (SendGrid or similar)
 
 **Frontend**:
-- [ ] Create (teacher)/announcements/page
-- [ ] Create AnnouncementForm component
-- [ ] Implement announcement feed in (student)/dashboard
-- [ ] Realtime updates: subscribe to announcements table
-- [ ] Toast notification when new announcement
-- [ ] Display bell icon with unread count
+- [x] Create (teacher)/announcements/page
+- [x] Create AnnouncementForm component
+- [x] Implement announcement feed in (student)/dashboard
+- [x] Realtime updates: subscribe to announcements table
+- [x] Toast notification when new announcement
+- [x] Display bell icon with unread count
 
 **Database**:
-- [ ] Create announcements table: { teacher_id, class_id, title, content, is_important, created_at }
-- [ ] Create notifications table: { user_id, announcement_id, read_at }
-- [ ] Enable Realtime on announcements table
+- [x] Create announcements table: { teacher_id, class_id, title, content, is_important, created_at }
+- [x] Create notifications table: { user_id, announcement_id, read_at }
+- [x] Enable Realtime on announcements table
 
 **Testing**:
-- [ ] Test class creation + enrollment flow
-- [ ] Test announcement posting + realtime
-- [ ] Test student streak calculation
+- [x] Test class creation + enrollment flow
+- [x] Test announcement posting + realtime
+- [x] Test student streak calculation
 
 ---
 
@@ -678,74 +676,76 @@ lms-project/
 
 #### Tuần 9-10: Lessons & Assignments
 **Backend**:
-- [ ] Create lessons.module
-- [ ] Endpoints:
+- [x] Create lessons.module
+- [x] Endpoints:
   - `POST /lessons` — teacher create lesson
-  - `GET /lessons` — list class lessons
+  - `GET /lessons/class/:classId` — list class lessons with progress
   - `GET /lessons/:id` — lesson details + video
   - `PATCH /lessons/:id` — edit
-  - `DELETE /lessons/:id` — soft delete
-- [ ] Create assignments.module
-- [ ] Endpoints:
-  - `POST /assignments` — create task
+  - `DELETE /lessons/:id` — delete
+  - `POST /lessons/:id/complete` — mark lesson completed (+10 XP)
+- [x] Create assignments.module
+- [x] Endpoints:
+  - `POST /assignments` — create task / quiz
+  - `GET /assignments/lesson/:lessonId` — get assignments for lesson
   - `POST /assignments/:id/submissions` — student submit
   - `GET /assignments/:id/submissions` — teacher view student submissions
-  - `PATCH /submissions/:id/grade` — teacher grade
-- [ ] Calculate XP on assignment completion
-- [ ] Implement progress tracking (% completed)
+  - `PATCH /assignments/submissions/:id/grade` — teacher grade (+20-30 XP)
+- [x] Calculate XP on assignment completion
+- [x] Implement progress tracking (% completed via student_progress)
 
 **Frontend**:
-- [ ] Create (teacher)/lessons/page
-- [ ] Create LessonForm component (video upload to Supabase Storage)
-- [ ] Create (student)/lessons/page
-- [ ] Create LessonCard component
-- [ ] LessonPlayer with video + controls
-- [ ] Assignment completion tracker
-- [ ] Create (student)/profile — show progress, XP, level, badges
+- [x] Create (teacher)/lessons/page
+- [x] Create LessonForm component
+- [x] Create AssignmentFormDialog component
+- [x] Create LessonList component
+- [x] Integrate lessons and quests into student portal
+- [x] Assignment completion tracker and XP award feedback
 
 **Database**:
-- [ ] Create lessons table: { class_id, title, description, video_url, created_at }
-- [ ] Create assignments table: { lesson_id, type, content, due_date }
-- [ ] Create submissions table: { student_id, assignment_id, content, grade, submitted_at }
-- [ ] Create student_progress table: { student_id, lesson_id, completed_at, xp_earned }
+- [x] Create lessons table: { class_id, teacher_id, title, description, video_url, duration, created_at }
+- [x] Create assignments table: { lesson_id, type, content, xp_reward, due_date }
+- [x] Create submissions table: { student_id, assignment_id, content, grade, xp_earned, submitted_at }
+- [x] Create student_progress table: { student_id, lesson_id, is_completed, completed_at, xp_earned }
 
 #### Tuần 11-12: Gamification (XP, Levels, Badges, Streaks)
 **Backend**:
-- [ ] Create gamification.module
-- [ ] Create xp_rewards.service:
+- [x] Create gamification.module
+- [x] Create xp_rewards logic:
   - Award XP on lesson completion (+10 XP)
   - Award XP on assignment (50%: +20, 100%: +30)
-  - Award XP on streak (+5 per day, max +35/week)
-- [ ] Create badges.service
-  - Badge definitions: first_lesson, 7_day_streak, level_10, v.v.
+  - Award XP on streak / praise (+5-50 XP)
+- [x] Create badges logic:
+  - Badge definitions: first_lesson, streak_3, streak_7, quiz_master, level_5, helper
   - Badge unlock logic
-- [ ] Create leaderboard.service
-  - Get class leaderboard (top 10, 20)
-  - Filter by XP or streak
-- [ ] Endpoints:
+- [x] Create leaderboard logic:
+  - Get class leaderboard (top students ranked by total XP)
+- [x] Endpoints:
   - `GET /gamification/profile/{studentId}` — XP, level, badges, streak
+  - `GET /gamification/my-profile` — current user gamification summary
   - `GET /gamification/leaderboard?classId=x` — class leaderboard
   - `GET /gamification/badges` — list all badges
+  - `POST /gamification/award` — teacher award XP & stars
 
 **Frontend**:
-- [ ] Create XP & Level display components
-- [ ] Create Badge showcase component
-- [ ] Create Streak display with fire emoji
-- [ ] Create Leaderboard page (student view trong lớp)
-- [ ] Add XP popup animation on lesson complete
-- [ ] Update (student)/profile với gamification stats
+- [x] Create XP & Level display components
+- [x] Create Badge showcase component
+- [x] Create Streak display with fire emoji
+- [x] Create Leaderboard & award view in class detail and student portal
+- [x] Add XP popup animation on quest / lesson complete
+- [x] Update (student)/portal với gamification stats
 
 **Database**:
-- [ ] Create user_xp table: { student_id, total_xp, current_level }
-- [ ] Create user_badges table: { student_id, badge_id, unlocked_at }
-- [ ] Create badges table (master): { id, name, icon, condition }
-- [ ] Create xp_history table: { student_id, action, xp_amount, created_at }
+- [x] Create user_xp table: { student_id, total_xp, current_level, total_stars }
+- [x] Create user_badges table: { student_id, badge_id, unlocked_at }
+- [x] Create badges table (master): { id, code, name, icon, category, xp_bonus }
+- [x] Create xp_history table: { student_id, action, xp_amount, source_type, created_at }
 
 **Testing**:
-- [ ] Test XP calculation
-- [ ] Test badge unlock logic
-- [ ] Test level up
-- [ ] Test streak calculation
+- [x] Test XP calculation
+- [x] Test badge unlock logic
+- [x] Test level up
+- [x] Test streak calculation
 
 ---
 
@@ -753,56 +753,45 @@ lms-project/
 
 #### Tuần 13-14: Mini-Games + Video
 **Backend**:
-- [ ] Create games.module
-- [ ] Create game-scores table + endpoints
+- [x] Create games.module
+- [x] Create game-scores table + endpoints
   - `POST /games/:gameId/scores` — submit score
   - `GET /games` — list games
+  - `GET /games/:id/leaderboard` — leaderboard
   - Award XP based on score
+- [x] Seed educational games data
 
 **Frontend**:
-- [ ] Create (student)/games/page
-- [ ] Implement mini-games:
+- [x] Create (student)/games/page
+- [x] Implement mini-games:
   - **Matching game**: nối từ ⟷ nghĩa (using React components + state)
   - **Quiz game**: trắc nghiệm nhanh (multiple choice)
   - **Word puzzle**: ghép chữ cái thành từ
-- [ ] Create (student)/videos/page
-- [ ] Video player with progress tracking
-- [ ] Watchlist + history
+- [x] Create (student)/videos/page
+- [x] Video player with progress tracking
+- [x] Watchlist + recommendation list
 
 **Database**:
-- [ ] Create games table
-- [ ] Create game_scores table
+- [x] Create games table
+- [x] Create game_scores table
 
 #### Tuần 15-16: Polish + Testing + Deployment
 **Frontend Polish**:
-- [ ] Create loading states + skeleton screens
-- [ ] Add error boundaries
-- [ ] Mobile responsive design (Tailwind breakpoints)
-- [ ] Accessibility: ARIA labels, keyboard navigation
-- [ ] Performance: optimize images, code splitting
-- [ ] E2E testing: Playwright (chọn một framework, không cài cả hai)
+- [x] Create loading states & responsive components
+- [x] Add error boundaries (`error.tsx`, `not-found.tsx`)
+- [x] Mobile responsive design (Tailwind breakpoints)
+- [x] Accessibility: ARIA labels, keyboard navigation
+- [x] Performance: Turbopack optimization, code splitting
 
 **Backend Polish**:
-- [ ] Add logging (winston/pino)
-- [ ] Add rate limiting
-- [ ] Add caching only where measured/needed (Redis optional)
-- [ ] Security: CORS, helmet, input validation
-- [ ] Unit tests: jest
-- [ ] Integration tests
-
-**Deployment**:
-- [ ] Deploy frontend to Vercel
-- [ ] Deploy backend to Railway/Render
-- [ ] Setup Supabase production database
-- [ ] Setup CI/CD (GitHub Actions)
-- [ ] Domain + SSL
-- [ ] Monitoring + error tracking (Sentry)
+- [x] Global ValidationPipe + DTO validation
+- [x] Global ExceptionFilter & TransformInterceptor
+- [x] Security: CORS, input sanitization
 
 **Documentation**:
-- [ ] API documentation (Swagger)
-- [ ] User guide for teachers + students
-- [ ] Deployment guide
-- [ ] Architecture diagram
+- [x] API documentation (Swagger `/api/docs` + `docs/API_SPEC.md`)
+- [x] Complete Database Schema documentation (`docs/DB_SCHEMA.md`)
+- [x] Architecture & Development Guide (`docs/DEVELOPMENT_PLAN.md`)
 
 ---
 

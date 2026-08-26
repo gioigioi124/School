@@ -22,6 +22,10 @@ export declare class UsersService {
         avatarUrl: string | null;
         id: string;
         email: string;
+        phone: string | null;
+        parentPhone: string | null;
+        parentName: string | null;
+        school: string | null;
         createdAt: Date;
         updatedAt: Date;
     }>;
@@ -30,6 +34,10 @@ export declare class UsersService {
         avatarUrl: string | null;
         id: string;
         email: string;
+        phone: string | null;
+        parentPhone: string | null;
+        parentName: string | null;
+        school: string | null;
         createdAt: Date;
         updatedAt: Date;
     }>;
