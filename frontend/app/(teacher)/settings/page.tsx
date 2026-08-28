@@ -36,7 +36,15 @@ export default function TeacherSettingsPage() {
         const response = await api.get('/users/profile');
         if (response.data) {
           const profileData = response.data.data || response.data;
-          setProfile(profileData);
+          setProfile({
+            id: profileData.id,
+            email: profileData.email,
+            displayName: profileData.displayName || profileData.display_name,
+            phone: profileData.phone,
+            school: profileData.school,
+            avatarUrl: profileData.avatarUrl || profileData.avatar_url || '👩‍🏫',
+            roleAssignments: profileData.roleAssignments,
+          });
           setLoading(false);
           return;
         }
@@ -54,23 +62,36 @@ export default function TeacherSettingsPage() {
         .from('profiles')
         .select('*')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       if (dbError) {
-        throw dbError;
+        console.warn('Supabase profile query warning:', dbError.message || dbError);
       }
 
-      setProfile({
-        id: profileRecord.id,
-        email: profileRecord.email || user.email,
-        displayName: profileRecord.display_name || profileRecord.displayName,
-        phone: profileRecord.phone,
-        school: profileRecord.school,
-        avatarUrl: profileRecord.avatar_url || profileRecord.avatarUrl || '👩‍🏫',
-      });
+      if (profileRecord) {
+        setProfile({
+          id: profileRecord.id,
+          email: profileRecord.email || user.email,
+          displayName: profileRecord.display_name || profileRecord.displayName || user.user_metadata?.display_name || user.user_metadata?.full_name || 'Cô giáo',
+          phone: profileRecord.phone || user.user_metadata?.phone || '',
+          school: profileRecord.school || user.user_metadata?.school || '',
+          avatarUrl: profileRecord.avatar_url || profileRecord.avatarUrl || user.user_metadata?.avatar_url || '👩‍🏫',
+        });
+      } else {
+        // Fallback to Auth User metadata if profile row hasn't been seeded
+        setProfile({
+          id: user.id,
+          email: user.email || '',
+          displayName: user.user_metadata?.display_name || user.user_metadata?.full_name || 'Cô giáo',
+          phone: user.user_metadata?.phone || '',
+          school: user.user_metadata?.school || '',
+          avatarUrl: user.user_metadata?.avatar_url || '👩‍🏫',
+        });
+      }
     } catch (err: any) {
-      console.error('Error fetching teacher profile:', err);
-      setError(err.message || 'Không thể tải thông tin tài khoản');
+      const errorMsg = err?.message || (typeof err === 'object' ? JSON.stringify(err) : String(err)) || 'Không thể tải thông tin tài khoản';
+      console.error('Error fetching teacher profile:', errorMsg);
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }

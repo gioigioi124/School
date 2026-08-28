@@ -176,9 +176,9 @@ export function CreateStudentAccountDialog({
   const defaultTrigger = (
     <button
       type="button"
-      className="w-full py-3 bg-primary text-on-primary rounded-xl font-sans font-bold text-sm btn-3d transition-all duration-200 flex items-center justify-center gap-2 hover:bg-primary-dark cursor-pointer shadow-sm"
+      className="bg-primary text-on-primary py-2 px-3.5 rounded-lg font-sans font-bold text-xs shadow-xs hover:bg-primary/90 transition-all duration-200 flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
     >
-      <UserPlus className="w-4 h-4" />
+      <UserPlus className="w-3.5 h-3.5" />
       <span>+ Cấp tài khoản học sinh</span>
     </button>
   );
@@ -186,13 +186,13 @@ export function CreateStudentAccountDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={customTrigger || defaultTrigger} />
-      <DialogContent className="sm:max-w-[480px] bg-surface-container-lowest border-outline-variant/30 max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[480px] bg-surface-container-lowest border-outline-variant/30 max-h-[90vh] overflow-y-auto rounded-xl">
         <DialogHeader>
-          <div className="flex items-center gap-2 text-primary mb-1">
-            <Sparkles className="w-5 h-5" />
-            <span className="text-xs font-bold uppercase tracking-wider">Hệ thống cấp tài khoản</span>
+          <div className="flex items-center gap-1.5 text-primary mb-1">
+            <Sparkles className="w-4 h-4" />
+            <span className="text-[11px] font-bold uppercase tracking-wider">Hệ thống cấp tài khoản</span>
           </div>
-          <DialogTitle className="font-heading text-2xl text-on-surface">
+          <DialogTitle className="font-heading text-xl text-on-surface">
             {createdResult ? 'Tài khoản đã tạo thành công! 🎉' : 'Tạo tài khoản học sinh'}
           </DialogTitle>
           <DialogDescription className="font-sans text-on-surface-variant text-xs">
@@ -204,9 +204,9 @@ export function CreateStudentAccountDialog({
 
         {/* Success View */}
         {createdResult ? (
-          <div className="space-y-4 py-3 animate-fade-in">
+          <div className="space-y-3.5 py-2 animate-fade-in">
             {createdResult.isExistingParent && (
-              <div className="p-3 bg-secondary-container/40 border border-secondary-container rounded-2xl flex items-start gap-2.5">
+              <div className="p-3 bg-secondary-container/40 border border-secondary-container rounded-lg flex items-start gap-2.5">
                 <Info className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
                 <p className="text-xs text-on-surface font-sans leading-relaxed">
                   <strong>Số điện thoại này đã có tài khoản:</strong> Bé <strong>{createdResult.studentName}</strong> đã được liên kết vào tài khoản chung của bố mẹ. Bố mẹ dùng chung SĐT này sẽ thấy cả các bé!
@@ -214,40 +214,40 @@ export function CreateStudentAccountDialog({
               </div>
             )}
 
-            <div className="bg-surface-container-low rounded-2xl p-5 border border-outline-variant/30 space-y-3">
-              <div className="flex items-center justify-between border-b border-outline-variant/20 pb-2.5">
+            <div className="bg-surface-container-low rounded-lg p-4 border border-outline-variant/30 space-y-2.5">
+              <div className="flex items-center justify-between border-b border-outline-variant/20 pb-2">
                 <span className="text-xs font-sans text-on-surface-variant">Bé học sinh:</span>
-                <span className="font-sans font-bold text-sm text-on-surface">{createdResult.studentName}</span>
+                <span className="font-sans font-bold text-xs text-on-surface">{createdResult.studentName}</span>
               </div>
-              <div className="flex items-center justify-between border-b border-outline-variant/20 pb-2.5">
+              <div className="flex items-center justify-between border-b border-outline-variant/20 pb-2">
                 <span className="text-xs font-sans text-on-surface-variant">Lớp học:</span>
-                <span className="font-sans font-bold text-xs px-2.5 py-0.5 bg-primary-container text-on-primary-container rounded-full">{createdResult.className}</span>
+                <span className="font-sans font-bold text-[11px] px-2 py-0.5 bg-primary-container text-on-primary-container rounded-md">{createdResult.className}</span>
               </div>
-              <div className="flex items-center justify-between border-b border-outline-variant/20 pb-2.5">
+              <div className="flex items-center justify-between border-b border-outline-variant/20 pb-2">
                 <span className="text-xs font-sans text-on-surface-variant">Số điện thoại đăng nhập:</span>
-                <span className="font-sans font-bold text-sm text-primary tracking-wide">{createdResult.parentPhone}</span>
+                <span className="font-sans font-bold text-xs text-primary tracking-wide">{createdResult.parentPhone}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-xs font-sans text-on-surface-variant">Mật khẩu mặc định:</span>
-                <span className="font-mono font-bold text-sm bg-surface-container-high px-2 py-0.5 rounded-lg text-on-surface">{createdResult.password}</span>
+                <span className="font-mono font-bold text-xs bg-surface-container-high px-2 py-0.5 rounded text-on-surface">{createdResult.password}</span>
               </div>
             </div>
 
             <Button
               type="button"
               onClick={handleCopyCredentials}
-              className="w-full rounded-full bg-primary text-on-primary hover:bg-primary-dark font-bold py-6 btn-3d flex items-center justify-center gap-2"
+              className="w-full rounded-lg bg-primary text-on-primary hover:bg-primary-dark font-bold py-2.5 text-xs shadow-xs flex items-center justify-center gap-1.5"
             >
-              {copied ? <Check className="w-5 h-5 text-secondary-container" /> : <Copy className="w-5 h-5" />}
+              {copied ? <Check className="w-4 h-4 text-secondary-container" /> : <Copy className="w-4 h-4" />}
               <span>{copied ? 'Đã sao chép tin nhắn!' : 'Sao chép tin nhắn gửi Zalo cho bố mẹ'}</span>
             </Button>
 
-            <div className="flex gap-2 pt-2">
+            <div className="flex gap-2 pt-2 border-t border-outline-variant/20">
               <Button
                 type="button"
                 variant="outline"
                 onClick={handleResetForm}
-                className="flex-1 rounded-full border-outline-variant text-on-surface-variant hover:bg-surface-container"
+                className="flex-1 rounded-lg border-outline-variant text-on-surface-variant hover:bg-surface-container text-xs font-bold"
               >
                 + Cấp tiếp bé khác
               </Button>
@@ -255,7 +255,7 @@ export function CreateStudentAccountDialog({
                 type="button"
                 variant="secondary"
                 onClick={() => setOpen(false)}
-                className="flex-1 rounded-full font-bold"
+                className="flex-1 rounded-lg font-bold text-xs"
               >
                 Hoàn tất
               </Button>
@@ -263,19 +263,19 @@ export function CreateStudentAccountDialog({
           </div>
         ) : (
           /* Create Form */
-          <form onSubmit={handleCreateStudent} className="space-y-4 py-2">
+          <form onSubmit={handleCreateStudent} className="space-y-3.5 py-2">
             {/* Avatar Selector */}
             <div className="space-y-1.5">
               <Label className="text-on-surface font-bold text-xs">Biểu tượng / Con vật yêu thích của bé</Label>
-              <div className="grid grid-cols-6 gap-2 p-2 bg-surface-container-low rounded-2xl">
+              <div className="grid grid-cols-6 gap-1.5 p-2 bg-surface-container-low rounded-lg border border-outline-variant/30">
                 {STUDENT_AVATARS.map((emoji) => (
                   <button
                     key={emoji}
                     type="button"
                     onClick={() => setSelectedAvatar(emoji)}
-                    className={`text-2xl p-1.5 rounded-xl transition-all hover:scale-110 flex items-center justify-center ${
+                    className={`text-xl p-1.5 rounded-md transition-all hover:scale-105 flex items-center justify-center cursor-pointer ${
                       selectedAvatar === emoji
-                        ? 'bg-surface-container-lowest shadow-custom ring-2 ring-primary scale-105'
+                        ? 'bg-surface-container-lowest shadow-2xs ring-2 ring-primary scale-105'
                         : 'hover:bg-surface-container'
                     }`}
                   >
@@ -291,14 +291,14 @@ export function CreateStudentAccountDialog({
                 Họ và tên bé <span className="text-destructive">*</span>
               </Label>
               <div className="relative">
-                <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
+                <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" />
                 <Input
                   id="studentName"
                   placeholder="VD: Nguyễn Bảo Nam"
                   required
                   value={studentName}
                   onChange={(e) => setStudentName(e.target.value)}
-                  className="pl-10 border-outline-variant focus-visible:ring-primary bg-surface-bright rounded-xl text-sm"
+                  className="pl-9 border-outline-variant focus-visible:ring-primary bg-surface-bright rounded-md text-xs"
                 />
               </div>
             </div>
@@ -309,7 +309,7 @@ export function CreateStudentAccountDialog({
                 Số điện thoại bố / mẹ <span className="text-destructive">*</span>
               </Label>
               <div className="relative">
-                <Phone className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
+                <Phone className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" />
                 <Input
                   id="parentPhone"
                   type="tel"
@@ -317,7 +317,7 @@ export function CreateStudentAccountDialog({
                   required
                   value={parentPhone}
                   onChange={(e) => setParentPhone(e.target.value)}
-                  className="pl-10 border-outline-variant focus-visible:ring-primary bg-surface-bright rounded-xl text-sm font-sans"
+                  className="pl-9 border-outline-variant focus-visible:ring-primary bg-surface-bright rounded-md text-xs font-sans"
                 />
               </div>
             </div>
@@ -333,7 +333,7 @@ export function CreateStudentAccountDialog({
                   placeholder="VD: Anh Tuấn"
                   value={parentName}
                   onChange={(e) => setParentName(e.target.value)}
-                  className="border-outline-variant focus-visible:ring-primary bg-surface-bright rounded-xl text-sm"
+                  className="border-outline-variant focus-visible:ring-primary bg-surface-bright rounded-md text-xs"
                 />
               </div>
 
@@ -343,12 +343,12 @@ export function CreateStudentAccountDialog({
                   Mật khẩu mặc định
                 </Label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
+                  <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" />
                   <Input
                     id="defaultPassword"
                     value={defaultPassword}
                     onChange={(e) => setDefaultPassword(e.target.value)}
-                    className="pl-10 border-outline-variant focus-visible:ring-primary bg-surface-bright rounded-xl text-sm font-mono"
+                    className="pl-9 border-outline-variant focus-visible:ring-primary bg-surface-bright rounded-md text-xs font-mono"
                   />
                 </div>
               </div>
@@ -363,7 +363,7 @@ export function CreateStudentAccountDialog({
                 id="classSelect"
                 value={selectedClassId}
                 onChange={(e) => setSelectedClassId(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-outline-variant bg-surface-bright text-on-surface text-sm focus:border-primary outline-none"
+                className="w-full px-3 py-2 rounded-md border border-outline-variant/60 bg-surface-bright text-on-surface text-xs focus:border-primary outline-none"
               >
                 <option value="">-- Chưa phân lớp (Thêm vào danh sách chờ) --</option>
                 {classes.map((c) => (
@@ -374,21 +374,21 @@ export function CreateStudentAccountDialog({
               </select>
             </div>
 
-            <DialogFooter className="pt-3">
+            <DialogFooter className="pt-3 border-t border-outline-variant/20">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setOpen(false)}
-                className="rounded-full border-outline-variant text-on-surface-variant hover:bg-surface-container"
+                className="rounded-lg border-outline-variant text-on-surface-variant hover:bg-surface-container text-xs font-bold"
               >
                 Hủy
               </Button>
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="rounded-full bg-primary text-on-primary hover:bg-primary-dark font-bold btn-3d"
+                className="rounded-lg bg-primary text-on-primary hover:bg-primary-dark font-bold text-xs shadow-xs"
               >
-                {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                {isLoading ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : null}
                 Cấp tài khoản ngay
               </Button>
             </DialogFooter>

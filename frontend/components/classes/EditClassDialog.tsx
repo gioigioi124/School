@@ -83,30 +83,30 @@ export function EditClassDialog({ classItem, customTrigger }: EditClassDialogPro
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={customTrigger || defaultTrigger} />
-      <DialogContent className="sm:max-w-[460px] bg-surface-container-lowest border-outline-variant/30">
+      <DialogContent className="sm:max-w-[460px] bg-surface-container-lowest border-outline-variant/30 rounded-xl">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl text-on-surface flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-secondary" />
             Chỉnh sửa lớp học
           </DialogTitle>
-          <DialogDescription className="font-sans text-on-surface-variant">
+          <DialogDescription className="font-sans text-xs text-on-surface-variant">
             Cập nhật tên, độ tuổi hoặc biểu tượng cho lớp <strong>{classItem.name}</strong>.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleUpdateClass} className="space-y-4 py-3">
+        <form onSubmit={handleUpdateClass} className="space-y-3.5 py-2">
           {/* Emoji / Avatar Selector */}
-          <div className="space-y-2">
-            <Label className="text-on-surface font-bold text-sm">Biểu tượng lớp học</Label>
-            <div className="grid grid-cols-6 gap-2 p-2 bg-surface-container-low rounded-2xl">
+          <div className="space-y-1.5">
+            <Label className="text-on-surface font-bold text-xs">Biểu tượng lớp học</Label>
+            <div className="grid grid-cols-6 gap-1.5 p-2 bg-surface-container-low rounded-lg border border-outline-variant/30">
               {CLASS_EMOJIS.map((emoji) => (
                 <button
                   key={emoji}
                   type="button"
                   onClick={() => setSelectedEmoji(emoji)}
-                  className={`text-2xl p-2 rounded-xl transition-all hover:scale-110 flex items-center justify-center ${
+                  className={`text-xl p-1.5 rounded-md transition-all hover:scale-105 flex items-center justify-center cursor-pointer ${
                     selectedEmoji === emoji
-                      ? 'bg-surface-container-lowest shadow-custom ring-2 ring-primary scale-105'
+                      ? 'bg-surface-container-lowest shadow-2xs ring-2 ring-primary scale-105'
                       : 'hover:bg-surface-container'
                   }`}
                 >
@@ -116,8 +116,8 @@ export function EditClassDialog({ classItem, customTrigger }: EditClassDialogPro
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="edit-name" className="text-on-surface font-bold">
+          <div className="space-y-1.5">
+            <Label htmlFor="edit-name" className="text-on-surface font-bold text-xs">
               Tên lớp học <span className="text-destructive">*</span>
             </Label>
             <Input
@@ -126,47 +126,47 @@ export function EditClassDialog({ classItem, customTrigger }: EditClassDialogPro
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="border-outline-variant focus-visible:ring-primary bg-surface-bright"
+              className="border-outline-variant focus-visible:ring-primary bg-surface-bright rounded-md text-xs"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="edit-grade" className="text-on-surface font-bold">Độ tuổi / Khối</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="edit-grade" className="text-on-surface font-bold text-xs">Độ tuổi / Khối</Label>
             <Input
               id="edit-grade"
               placeholder="VD: 3 - 4 tuổi (hoặc Mẫu giáo lớn)"
               value={grade}
               onChange={(e) => setGrade(e.target.value)}
-              className="border-outline-variant focus-visible:ring-primary bg-surface-bright"
+              className="border-outline-variant focus-visible:ring-primary bg-surface-bright rounded-md text-xs"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="edit-description" className="text-on-surface font-bold">Mô tả lớp học</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="edit-description" className="text-on-surface font-bold text-xs">Mô tả lớp học</Label>
             <Input
               id="edit-description"
               placeholder="VD: Lớp tạo hình, âm nhạc & kỹ năng sống"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="border-outline-variant focus-visible:ring-primary bg-surface-bright"
+              className="border-outline-variant focus-visible:ring-primary bg-surface-bright rounded-md text-xs"
             />
           </div>
 
-          <DialogFooter className="pt-4">
+          <DialogFooter className="pt-3 border-t border-outline-variant/20">
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
-              className="rounded-full border-outline-variant text-on-surface-variant hover:bg-surface-container"
+              className="rounded-lg border-outline-variant text-on-surface-variant hover:bg-surface-container text-xs font-bold"
             >
               Hủy
             </Button>
             <Button
               type="submit"
               disabled={isLoading}
-              className="rounded-full bg-primary text-on-primary hover:bg-primary-dark font-bold"
+              className="rounded-lg bg-primary text-on-primary hover:bg-primary-dark font-bold text-xs shadow-xs"
             >
-              {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+              {isLoading ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : null}
               Lưu thay đổi
             </Button>
           </DialogFooter>

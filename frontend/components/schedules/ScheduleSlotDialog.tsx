@@ -234,11 +234,11 @@ export function ScheduleSlotDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       {triggerButton && <DialogTrigger render={triggerButton} />}
 
-      <DialogContent className="sm:max-w-xl bg-surface-container-lowest rounded-2xl p-5 sm:p-6 shadow-2xl border border-outline-variant/30 max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-xl bg-surface-container-lowest rounded-xl p-5 sm:p-6 shadow-2xl border border-outline-variant/30 max-h-[90vh] overflow-y-auto">
         <DialogHeader className="space-y-1.5 pb-2 border-b border-outline-variant/20">
           <div className="flex items-center gap-2.5">
             <div
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-white shadow-xs"
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-xs"
               style={{ backgroundColor: color }}
             >
               <BookOpen className="w-4 h-4" />
@@ -256,7 +256,7 @@ export function ScheduleSlotDialog({
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-3">
           {/* SECTION 1: THỜI GIAN (SÁNG / CHIỀU) */}
-          <div className="p-3 rounded-xl bg-surface-container-low/60 border border-outline-variant/30 space-y-2.5">
+          <div className="p-3 rounded-lg bg-surface-container-low/60 border border-outline-variant/30 space-y-2.5">
             <div className="flex items-center justify-between">
               <span className="font-heading font-bold text-xs text-on-surface flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-primary" />
@@ -272,7 +272,7 @@ export function ScheduleSlotDialog({
                 <select
                   value={dayOfWeek}
                   onChange={(e) => setDayOfWeek(Number(e.target.value))}
-                  className="w-full px-2.5 py-1.5 rounded-lg border border-outline-variant/40 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface font-semibold"
+                  className="w-full px-2.5 py-1.5 rounded-md border border-outline-variant/40 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface font-semibold"
                   required
                 >
                   {DAY_OPTIONS.map((d) => (
@@ -291,7 +291,7 @@ export function ScheduleSlotDialog({
                   type="time"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
-                  className="w-full px-2.5 py-1.5 rounded-lg border border-outline-variant/40 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface font-medium"
+                  className="w-full px-2.5 py-1.5 rounded-md border border-outline-variant/40 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface font-medium"
                   required
                 />
               </div>
@@ -304,7 +304,7 @@ export function ScheduleSlotDialog({
                   type="time"
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
-                  className="w-full px-2.5 py-1.5 rounded-lg border border-outline-variant/40 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface font-medium"
+                  className="w-full px-2.5 py-1.5 rounded-md border border-outline-variant/40 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface font-medium"
                   required
                 />
               </div>
@@ -313,7 +313,7 @@ export function ScheduleSlotDialog({
             {/* Quick Time Presets: Sáng / Chiều */}
             <div className="space-y-1.5 pt-1 border-t border-outline-variant/20 text-[11px]">
               <div className="flex flex-wrap items-center gap-1">
-                <span className="text-[10px] font-bold text-amber-800 bg-amber-100/70 px-1.5 py-0.5 rounded">
+                <span className="text-[10px] font-bold text-amber-900 bg-amber-500/10 px-1.5 py-0.5 rounded-md border border-amber-300/40">
                   ☀️ Sáng:
                 </span>
                 {TIME_PRESETS_MORNING.map((t) => (
@@ -321,7 +321,7 @@ export function ScheduleSlotDialog({
                     key={t.label}
                     type="button"
                     onClick={() => handleSelectTimePreset(t)}
-                    className={`text-[10px] px-1.5 py-0.5 rounded border transition-all cursor-pointer ${
+                    className={`text-[10px] px-1.5 py-0.5 rounded-md border transition-all cursor-pointer ${
                       startTime === t.start && endTime === t.end
                         ? 'bg-amber-500 text-white border-amber-600 font-bold'
                         : 'bg-surface hover:bg-surface-container border-outline-variant/40 text-on-surface-variant'
@@ -333,7 +333,7 @@ export function ScheduleSlotDialog({
               </div>
 
               <div className="flex flex-wrap items-center gap-1">
-                <span className="text-[10px] font-bold text-indigo-800 bg-indigo-100/70 px-1.5 py-0.5 rounded">
+                <span className="text-[10px] font-bold text-indigo-900 bg-indigo-500/10 px-1.5 py-0.5 rounded-md border border-indigo-300/40">
                   🌤️ Chiều:
                 </span>
                 {TIME_PRESETS_AFTERNOON.map((t) => (
@@ -341,7 +341,7 @@ export function ScheduleSlotDialog({
                     key={t.label}
                     type="button"
                     onClick={() => handleSelectTimePreset(t)}
-                    className={`text-[10px] px-1.5 py-0.5 rounded border transition-all cursor-pointer ${
+                    className={`text-[10px] px-1.5 py-0.5 rounded-md border transition-all cursor-pointer ${
                       startTime === t.start && endTime === t.end
                         ? 'bg-indigo-600 text-white border-indigo-700 font-bold'
                         : 'bg-surface hover:bg-surface-container border-outline-variant/40 text-on-surface-variant'
@@ -355,20 +355,20 @@ export function ScheduleSlotDialog({
           </div>
 
           {/* SECTION 2: TIẾT HỌC / MÔN HỌC */}
-          <div className="p-3 rounded-xl bg-surface-container-low/60 border border-outline-variant/30 space-y-2.5">
+          <div className="p-3 rounded-lg bg-surface-container-low/60 border border-outline-variant/30 space-y-2.5">
             <span className="font-heading font-bold text-xs text-on-surface flex items-center gap-1.5">
               <BookOpen className="w-3.5 h-3.5 text-primary" />
               <span>2. Tiết học / Môn học *</span>
             </span>
 
             {/* Quick presets */}
-            <div className="flex flex-wrap gap-1 max-h-24 overflow-y-auto p-1 rounded-lg bg-surface border border-outline-variant/30">
+            <div className="flex flex-wrap gap-1 max-h-24 overflow-y-auto p-1 rounded-md bg-surface border border-outline-variant/30">
               {SUBJECT_PRESETS.map((preset) => (
                 <button
                   key={preset.name}
                   type="button"
                   onClick={() => handleSelectPreset(preset)}
-                  className={`text-[11px] px-2 py-1 rounded font-sans flex items-center gap-1 transition-all cursor-pointer ${
+                  className={`text-[11px] px-2 py-1 rounded-md font-sans flex items-center gap-1 transition-all cursor-pointer ${
                     subject === preset.name
                       ? 'bg-primary text-on-primary shadow-xs font-bold'
                       : 'bg-surface-container/60 hover:bg-surface-container text-on-surface-variant'
@@ -387,7 +387,7 @@ export function ScheduleSlotDialog({
                   placeholder="VD: Toán học (Số học & Hình học)"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-outline-variant/40 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface font-semibold"
+                  className="w-full px-3 py-1.5 rounded-md border border-outline-variant/40 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface font-semibold"
                   required
                 />
               </div>
@@ -414,7 +414,7 @@ export function ScheduleSlotDialog({
           </div>
 
           {/* SECTION 3: GHI CHÚ */}
-          <div className="p-3 rounded-xl bg-surface-container-low/60 border border-outline-variant/30 space-y-2">
+          <div className="p-3 rounded-lg bg-surface-container-low/60 border border-outline-variant/30 space-y-2">
             <span className="font-heading font-bold text-xs text-on-surface flex items-center gap-1.5">
               <FileText className="w-3.5 h-3.5 text-secondary" />
               <span>3. Ghi chú (Phòng học / Lời dặn)</span>
@@ -427,7 +427,7 @@ export function ScheduleSlotDialog({
                   placeholder="Phòng học (VD: Phòng 101, Lab Tin)"
                   value={room}
                   onChange={(e) => setRoom(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-lg border border-outline-variant/40 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface"
+                  className="w-full px-3 py-1.5 rounded-md border border-outline-variant/40 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface"
                 />
               </div>
 
@@ -437,7 +437,7 @@ export function ScheduleSlotDialog({
                   placeholder="Ghi chú (VD: Mang theo vở bài tập, thước kẻ)"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-lg border border-outline-variant/40 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface"
+                  className="w-full px-3 py-1.5 rounded-md border border-outline-variant/40 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface"
                 />
               </div>
             </div>
@@ -447,14 +447,14 @@ export function ScheduleSlotDialog({
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="px-4 py-2 rounded-xl text-xs font-heading font-bold text-on-surface-variant bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 rounded-lg text-xs font-heading font-bold text-on-surface-variant bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer"
             >
               Hủy
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-5 py-2 rounded-xl text-xs font-heading font-bold text-on-primary bg-primary hover:bg-primary/90 transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+              className="px-4 py-1.5 rounded-lg text-xs font-heading font-bold text-on-primary bg-primary hover:bg-primary/90 transition-all shadow-xs disabled:opacity-50 cursor-pointer"
             >
               {loading
                 ? 'Đang lưu...'

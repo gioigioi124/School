@@ -68,23 +68,23 @@ export function WeeklyScheduleGrid({
   return (
     <div className="space-y-3">
       {/* Header controls inside Grid */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5 bg-surface-container-low/70 px-3.5 py-2 rounded-xl border border-outline-variant/30">
+      <div className="flex flex-wrap items-center justify-between gap-2.5 bg-surface-container-low/80 px-3.5 py-2 rounded-lg border border-outline-variant/30 shadow-2xs">
         <div className="flex items-center gap-3 text-xs text-on-surface-variant font-medium">
           <div className="flex items-center gap-1.5">
             <Calendar className="w-3.5 h-3.5 text-primary" />
             <span>Tổng: </span>
-            <span className="px-2 py-0.2 rounded-full bg-primary/10 text-primary font-bold">
+            <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary font-bold">
               {totalSlots} tiết
             </span>
           </div>
 
           <span className="text-outline-variant">•</span>
 
-          <div className="flex items-center gap-3 text-[11px]">
-            <span className="inline-flex items-center gap-1 text-amber-800 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200/60">
+          <div className="flex items-center gap-2.5 text-[11px]">
+            <span className="inline-flex items-center gap-1 text-amber-900 font-bold bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-300/40">
               <Sun className="w-3 h-3 text-amber-600" /> Sáng (Tiết 1-4)
             </span>
-            <span className="inline-flex items-center gap-1 text-indigo-800 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200/60">
+            <span className="inline-flex items-center gap-1 text-indigo-900 font-bold bg-indigo-500/10 px-2 py-0.5 rounded-md border border-indigo-300/40">
               <Sunset className="w-3 h-3 text-indigo-600" /> Chiều (Tiết 1-3)
             </span>
           </div>
@@ -96,7 +96,7 @@ export function WeeklyScheduleGrid({
               type="checkbox"
               checked={showWeekend}
               onChange={(e) => setShowWeekend(e.target.checked)}
-              className="w-3.5 h-3.5 rounded text-primary focus:ring-primary cursor-pointer"
+              className="w-3.5 h-3.5 rounded text-primary focus:ring-primary cursor-pointer accent-primary"
             />
             <span>Thứ Bảy & CN</span>
           </label>
@@ -118,13 +118,13 @@ export function WeeklyScheduleGrid({
           return (
             <div
               key={day.dayOfWeek}
-              className="flex flex-col bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-2xs overflow-hidden transition-all duration-150"
+              className="flex flex-col bg-surface-container-lowest rounded-lg border border-outline-variant/30 shadow-2xs overflow-hidden transition-all duration-150"
             >
               {/* Column Header */}
-              <div className="px-2.5 py-1.5 bg-surface-container-low/90 border-b border-outline-variant/30 flex items-center justify-between">
+              <div className="px-2.5 py-2 bg-surface-container-low/90 border-b border-outline-variant/30 flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
                   <span
-                    className={`px-1.5 py-0.2 rounded text-[11px] font-heading font-bold ${day.tagColor}`}
+                    className={`px-1.5 py-0.5 rounded text-[11px] font-heading font-bold ${day.tagColor}`}
                   >
                     {day.shortLabel}
                   </span>
@@ -134,7 +134,7 @@ export function WeeklyScheduleGrid({
                 </div>
 
                 <div className="flex items-center gap-1">
-                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-surface text-on-surface-variant font-bold border border-outline-variant/30">
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-surface text-on-surface-variant font-bold border border-outline-variant/30">
                     {dayTotalCount}
                   </span>
                   <button
@@ -151,7 +151,7 @@ export function WeeklyScheduleGrid({
               <div className="p-2 flex-1 flex flex-col gap-2 bg-surface/20 min-h-[340px]">
                 {/* ☀️ BUỔI SÁNG */}
                 <div className="flex flex-col gap-1.5">
-                  <div className="flex items-center justify-between px-1.5 py-0.5 rounded bg-amber-50/80 border border-amber-200/50 text-[10px] font-bold text-amber-800">
+                  <div className="flex items-center justify-between px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-300/40 text-[10px] font-bold text-amber-900">
                     <span className="inline-flex items-center gap-1">
                       <Sun className="w-2.5 h-2.5 text-amber-600" />
                       <span>SÁNG</span>
@@ -168,7 +168,7 @@ export function WeeklyScheduleGrid({
                   {morning.length === 0 ? (
                     <div
                       onClick={() => onAddSlotForDay(day.dayOfWeek, { start: '08:00', end: '08:45' })}
-                      className="h-[68px] rounded-lg border border-dashed border-outline-variant/40 bg-surface/30 hover:border-amber-400 hover:bg-amber-50/30 transition-all flex flex-col items-center justify-center text-center cursor-pointer group"
+                      className="h-[68px] rounded-md border border-dashed border-outline-variant/40 bg-surface/30 hover:border-amber-400 hover:bg-amber-50/30 transition-all flex flex-col items-center justify-center text-center cursor-pointer group"
                     >
                       <span className="text-[10px] text-on-surface-variant/60 group-hover:text-amber-700 font-medium">
                         + Thêm tiết sáng
@@ -188,7 +188,7 @@ export function WeeklyScheduleGrid({
 
                 {/* 🌤️ BUỔI CHIỀU */}
                 <div className="flex flex-col gap-1.5 mt-0.5">
-                  <div className="flex items-center justify-between px-1.5 py-0.5 rounded bg-indigo-50/80 border border-indigo-200/50 text-[10px] font-bold text-indigo-800">
+                  <div className="flex items-center justify-between px-2 py-0.5 rounded-md bg-indigo-500/10 border border-indigo-300/40 text-[10px] font-bold text-indigo-900">
                     <span className="inline-flex items-center gap-1">
                       <Sunset className="w-2.5 h-2.5 text-indigo-600" />
                       <span>CHIỀU</span>
@@ -205,7 +205,7 @@ export function WeeklyScheduleGrid({
                   {afternoon.length === 0 ? (
                     <div
                       onClick={() => onAddSlotForDay(day.dayOfWeek, { start: '14:00', end: '14:45' })}
-                      className="h-[68px] rounded-lg border border-dashed border-outline-variant/40 bg-surface/30 hover:border-indigo-400 hover:bg-indigo-50/30 transition-all flex flex-col items-center justify-center text-center cursor-pointer group"
+                      className="h-[68px] rounded-md border border-dashed border-outline-variant/40 bg-surface/30 hover:border-indigo-400 hover:bg-indigo-50/30 transition-all flex flex-col items-center justify-center text-center cursor-pointer group"
                     >
                       <span className="text-[10px] text-on-surface-variant/60 group-hover:text-indigo-700 font-medium">
                         + Thêm tiết chiều
@@ -252,7 +252,7 @@ function SlotCard({
   return (
     <div
       onClick={() => onEdit(slot)}
-      className="group relative h-[68px] rounded-lg px-2.5 py-1.5 text-left transition-all duration-150 border border-outline-variant/30 bg-surface hover:border-primary/50 hover:shadow-xs flex flex-col justify-between overflow-hidden cursor-pointer"
+      className="group relative h-[68px] rounded-md pl-2.5 pr-2 py-1.5 text-left transition-all duration-150 border border-outline-variant/30 bg-surface hover:border-primary/50 hover:shadow-xs flex flex-col justify-between overflow-hidden cursor-pointer"
       style={{
         borderLeftWidth: '3.5px',
         borderLeftColor: cardColor,

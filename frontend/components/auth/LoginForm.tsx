@@ -73,7 +73,7 @@ export default function LoginForm() {
             Email hoặc Số điện thoại
           </label>
           <div className="relative">
-            <UserCheck className="absolute left-4 top-1/2 transform -translate-y-1/2 text-on-surface-variant w-5 h-5" />
+            <UserCheck className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-on-surface-variant w-5 h-5" />
             <input 
               id="identifier" 
               name="identifier" 
@@ -82,7 +82,7 @@ export default function LoginForm() {
               required
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-full border-2 border-surface-container-high bg-surface-bright focus:border-primary focus:ring-0 transition-colors font-sans text-base outline-none" 
+              className="w-full pl-11 pr-4 py-2.5 rounded-lg border border-outline-variant/60 bg-surface-bright focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-sans text-sm text-on-surface outline-none" 
             />
           </div>
         </div>
@@ -90,7 +90,7 @@ export default function LoginForm() {
         <div>
           <label htmlFor="password" className="block font-sans text-sm font-bold text-on-surface mb-1.5">Mật khẩu</label>
           <div className="relative">
-            <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-on-surface-variant w-5 h-5" />
+            <Lock className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-on-surface-variant w-5 h-5" />
             <input 
               id="password" 
               name="password" 
@@ -99,7 +99,7 @@ export default function LoginForm() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-full border-2 border-surface-container-high bg-surface-bright focus:border-primary focus:ring-0 transition-colors font-sans text-base outline-none" 
+              className="w-full pl-11 pr-4 py-2.5 rounded-lg border border-outline-variant/60 bg-surface-bright focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-sans text-sm text-on-surface outline-none" 
             />
           </div>
         </div>
@@ -110,22 +110,22 @@ export default function LoginForm() {
               id="remember-me" 
               name="remember-me" 
               type="checkbox" 
-              className="h-4 w-4 text-primary focus:ring-primary border-surface-container-high rounded cursor-pointer" 
+              className="h-4 w-4 text-primary focus:ring-primary border-surface-container-high rounded cursor-pointer accent-primary" 
             />
-            <label htmlFor="remember-me" className="ml-2 block font-sans text-base text-on-surface-variant cursor-pointer">
+            <label htmlFor="remember-me" className="ml-2 block font-sans text-sm text-on-surface-variant cursor-pointer">
               Ghi nhớ tôi
             </label>
           </div>
           <div className="text-sm">
-            <Link href="/forgot-password" className="font-sans font-bold text-sm text-primary hover:text-primary-container transition-colors">
+            <Link href="/forgot-password" className="font-sans font-bold text-sm text-primary hover:text-primary-dark transition-colors">
               Quên mật khẩu?
             </Link>
           </div>
         </div>
         
-        <div className="pt-1">
-          <Button type="submit" variant="default" className="w-full py-6 text-base rounded-full btn-3d font-bold" disabled={isLoading}>
-            {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
+        <div className="pt-2">
+          <Button type="submit" variant="default" className="w-full py-2.5 text-sm rounded-lg font-bold shadow-xs hover:bg-primary/90 transition-all" disabled={isLoading}>
+            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             Đăng nhập
           </Button>
         </div>

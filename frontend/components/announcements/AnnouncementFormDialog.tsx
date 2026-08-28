@@ -88,19 +88,19 @@ export function AnnouncementFormDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <button className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-secondary text-on-secondary font-heading font-bold text-sm shadow-md hover:bg-secondary/90 transition-all transform hover:scale-[1.02] active:scale-98 cursor-pointer">
+          <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary text-on-secondary font-heading font-bold text-xs shadow-xs hover:bg-secondary/90 transition-all cursor-pointer">
             <Plus className="w-4 h-4" />
             <span>Tạo thông báo mới</span>
           </button>
         }
       />
 
-      <DialogContent className="max-w-md bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-2xl border-none">
-        <DialogHeader className="space-y-2 pb-2">
-          <div className="w-12 h-12 rounded-2xl bg-secondary-container flex items-center justify-center text-on-secondary-container mb-2">
-            <MessageSquare className="w-6 h-6" />
+      <DialogContent className="max-w-md bg-surface-container-lowest rounded-xl p-5 sm:p-6 shadow-2xl border border-outline-variant/30">
+        <DialogHeader className="space-y-1.5 pb-2 border-b border-outline-variant/20">
+          <div className="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center text-on-secondary-container mb-1 shadow-2xs">
+            <MessageSquare className="w-5 h-5" />
           </div>
-          <DialogTitle className="font-heading text-2xl font-bold text-on-surface">
+          <DialogTitle className="font-heading text-xl font-bold text-on-surface">
             Gửi thông báo lớp học
           </DialogTitle>
           <p className="font-sans text-xs text-on-surface-variant">
@@ -108,15 +108,15 @@ export function AnnouncementFormDialog({
           </p>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-2">
+        <form onSubmit={handleSubmit} className="space-y-3.5 mt-3">
           <div>
-            <label className="block font-heading font-bold text-xs text-on-surface mb-1.5">
+            <label className="block font-heading font-bold text-xs text-on-surface mb-1">
               Lớp nhận thông báo
             </label>
             <select
               value={classId}
               onChange={(e) => setClassId(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border-2 border-outline-variant/40 bg-surface focus:border-secondary focus:ring-0 outline-none font-sans text-sm text-on-surface"
+              className="w-full px-3 py-2 rounded-md border border-outline-variant/50 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface font-semibold"
               required
             >
               {classes.map((cls) => (
@@ -128,7 +128,7 @@ export function AnnouncementFormDialog({
           </div>
 
           <div>
-            <label className="block font-heading font-bold text-xs text-on-surface mb-1.5">
+            <label className="block font-heading font-bold text-xs text-on-surface mb-1">
               Tiêu đề thông báo
             </label>
             <input
@@ -136,13 +136,13 @@ export function AnnouncementFormDialog({
               placeholder="VD: Lịch học bù thứ 7 tuần này"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border-2 border-outline-variant/40 bg-surface focus:border-secondary focus:ring-0 outline-none font-sans text-sm text-on-surface"
+              className="w-full px-3 py-2 rounded-md border border-outline-variant/50 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface"
               required
             />
           </div>
 
           <div>
-            <label className="block font-heading font-bold text-xs text-on-surface mb-1.5">
+            <label className="block font-heading font-bold text-xs text-on-surface mb-1">
               Nội dung chi tiết
             </label>
             <textarea
@@ -150,18 +150,18 @@ export function AnnouncementFormDialog({
               placeholder="Nhập nội dung thông báo gửi đến quý phụ huynh và các con..."
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border-2 border-outline-variant/40 bg-surface focus:border-secondary focus:ring-0 outline-none font-sans text-sm text-on-surface resize-none"
+              className="w-full px-3 py-2 rounded-md border border-outline-variant/50 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface resize-none leading-relaxed"
               required
             />
           </div>
 
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-surface-container border border-outline-variant/30">
+          <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-surface-container-low border border-outline-variant/30">
             <input
               type="checkbox"
               id="isImportant"
               checked={isImportant}
               onChange={(e) => setIsImportant(e.target.checked)}
-              className="w-4 h-4 rounded text-secondary focus:ring-secondary cursor-pointer"
+              className="w-4 h-4 rounded text-secondary focus:ring-secondary cursor-pointer accent-secondary"
             />
             <label
               htmlFor="isImportant"
@@ -172,18 +172,18 @@ export function AnnouncementFormDialog({
             </label>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4">
+          <div className="flex justify-end gap-2.5 pt-3 border-t border-outline-variant/20">
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="px-4 py-2.5 rounded-xl bg-surface-container text-on-surface-variant font-bold text-xs hover:bg-surface-container-high transition-colors"
+              className="px-3.5 py-1.5 rounded-lg bg-surface-container text-on-surface-variant font-bold text-xs hover:bg-surface-container-high transition-colors cursor-pointer"
             >
               Hủy
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2.5 rounded-xl bg-secondary text-on-secondary font-heading font-bold text-xs hover:bg-secondary/90 transition-all shadow-sm flex items-center gap-2"
+              className="px-4 py-1.5 rounded-lg bg-secondary text-on-secondary font-heading font-bold text-xs hover:bg-secondary/90 transition-all shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
               {loading ? (
                 <span>Đang gửi...</span>

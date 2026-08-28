@@ -119,13 +119,13 @@ export function NotificationSettingsTab() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="bg-surface-container-lowest p-6 sm:p-8 rounded-3xl border border-outline-variant/30 shadow-custom">
-        <div className="flex items-center gap-3 pb-6 border-b border-outline-variant/20 mb-6">
-          <div className="p-3 rounded-2xl bg-primary-container text-on-primary-container">
-            <Bell className="w-6 h-6" />
+      <div className="bg-surface-container-lowest p-5 sm:p-6 rounded-xl border border-outline-variant/30 shadow-xs">
+        <div className="flex items-center gap-3 pb-5 border-b border-outline-variant/20 mb-5">
+          <div className="p-2.5 rounded-lg bg-primary-container text-on-primary-container">
+            <Bell className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="font-heading font-bold text-xl text-on-surface">
+            <h2 className="font-heading font-bold text-lg text-on-surface">
               Tùy chọn nhận thông báo
             </h2>
             <p className="font-sans text-xs text-on-surface-variant">
@@ -135,18 +135,18 @@ export function NotificationSettingsTab() {
         </div>
 
         {/* Toggle Items */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {/* Toggle 1: New Submissions */}
-          <div className="flex items-start justify-between p-4 sm:p-5 rounded-2xl bg-surface-container-low/60 border border-outline-variant/30 hover:bg-surface-container-low transition-colors">
-            <div className="flex items-start gap-3.5">
-              <div className="p-2.5 rounded-xl bg-surface-container-highest text-primary shrink-0 mt-0.5">
-                <FileText className="w-5 h-5" />
+          <div className="flex items-start justify-between p-3.5 sm:p-4 rounded-lg bg-surface-container-low/60 border border-outline-variant/30 hover:bg-surface-container-low transition-colors">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-md bg-surface-container-highest text-primary shrink-0 mt-0.5">
+                <FileText className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="font-heading font-bold text-sm text-on-surface">
+                <h3 className="font-heading font-bold text-xs sm:text-sm text-on-surface">
                   Thông báo bài nộp & hoàn thành bài học
                 </h3>
-                <p className="font-sans text-xs text-on-surface-variant mt-0.5">
+                <p className="font-sans text-[11px] sm:text-xs text-on-surface-variant mt-0.5">
                   Nhận thông báo tức thì khi có học sinh gửi bài tập mới hoặc hoàn thành trò chơi
                 </p>
               </div>
@@ -157,12 +157,12 @@ export function NotificationSettingsTab() {
               role="switch"
               aria-checked={settings.newSubmissions}
               onClick={() => handleToggle('newSubmissions')}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+              className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                 settings.newSubmissions ? 'bg-primary' : 'bg-surface-container-highest'
               }`}
             >
               <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
                   settings.newSubmissions ? 'translate-x-5' : 'translate-x-0'
                 }`}
               />
@@ -170,16 +170,16 @@ export function NotificationSettingsTab() {
           </div>
 
           {/* Toggle 2: Class Announcements */}
-          <div className="flex items-start justify-between p-4 sm:p-5 rounded-2xl bg-surface-container-low/60 border border-outline-variant/30 hover:bg-surface-container-low transition-colors">
-            <div className="flex items-start gap-3.5">
-              <div className="p-2.5 rounded-xl bg-surface-container-highest text-primary shrink-0 mt-0.5">
-                <MessageSquare className="w-5 h-5" />
+          <div className="flex items-start justify-between p-3.5 sm:p-4 rounded-lg bg-surface-container-low/60 border border-outline-variant/30 hover:bg-surface-container-low transition-colors">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-md bg-surface-container-highest text-primary shrink-0 mt-0.5">
+                <MessageSquare className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="font-heading font-bold text-sm text-on-surface">
+                <h3 className="font-heading font-bold text-xs sm:text-sm text-on-surface">
                   Dặn dò & Thông báo lớp học
                 </h3>
-                <p className="font-sans text-xs text-on-surface-variant mt-0.5">
+                <p className="font-sans text-[11px] sm:text-xs text-on-surface-variant mt-0.5">
                   Cập nhật các trao đổi tin nhắn và thông báo quan trọng gửi tới phụ huynh
                 </p>
               </div>
@@ -190,12 +190,12 @@ export function NotificationSettingsTab() {
               role="switch"
               aria-checked={settings.classAnnouncements}
               onClick={() => handleToggle('classAnnouncements')}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+              className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                 settings.classAnnouncements ? 'bg-primary' : 'bg-surface-container-highest'
               }`}
             >
               <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
                   settings.classAnnouncements ? 'translate-x-5' : 'translate-x-0'
                 }`}
               />
@@ -203,16 +203,16 @@ export function NotificationSettingsTab() {
           </div>
 
           {/* Toggle 3: Attendance Reminder */}
-          <div className="flex items-start justify-between p-4 sm:p-5 rounded-2xl bg-surface-container-low/60 border border-outline-variant/30 hover:bg-surface-container-low transition-colors">
-            <div className="flex items-start gap-3.5">
-              <div className="p-2.5 rounded-xl bg-surface-container-highest text-primary shrink-0 mt-0.5">
-                <CalendarCheck className="w-5 h-5" />
+          <div className="flex items-start justify-between p-3.5 sm:p-4 rounded-lg bg-surface-container-low/60 border border-outline-variant/30 hover:bg-surface-container-low transition-colors">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-md bg-surface-container-highest text-primary shrink-0 mt-0.5">
+                <CalendarCheck className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="font-heading font-bold text-sm text-on-surface">
+                <h3 className="font-heading font-bold text-xs sm:text-sm text-on-surface">
                   Nhắc nhở điểm danh mỗi sáng
                 </h3>
-                <p className="font-sans text-xs text-on-surface-variant mt-0.5">
+                <p className="font-sans text-[11px] sm:text-xs text-on-surface-variant mt-0.5">
                   Gợi ý kiểm tra sĩ số và điểm danh lớp vào 8:00 sáng mỗi ngày học
                 </p>
               </div>
@@ -223,12 +223,12 @@ export function NotificationSettingsTab() {
               role="switch"
               aria-checked={settings.attendanceReminder}
               onClick={() => handleToggle('attendanceReminder')}
-              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+              className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                 settings.attendanceReminder ? 'bg-primary' : 'bg-surface-container-highest'
               }`}
             >
               <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
                   settings.attendanceReminder ? 'translate-x-5' : 'translate-x-0'
                 }`}
               />
@@ -236,33 +236,33 @@ export function NotificationSettingsTab() {
           </div>
 
           {/* Toggle 4: Sound Alerts + Test Chime */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl bg-surface-container-low/60 border border-outline-variant/30 hover:bg-surface-container-low transition-colors gap-4">
-            <div className="flex items-start gap-3.5">
-              <div className="p-2.5 rounded-xl bg-secondary text-on-secondary shrink-0 mt-0.5">
-                <Volume2 className="w-5 h-5" />
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 sm:p-4 rounded-lg bg-surface-container-low/60 border border-outline-variant/30 hover:bg-surface-container-low transition-colors gap-3">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-md bg-secondary text-on-secondary shrink-0 mt-0.5">
+                <Volume2 className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="font-heading font-bold text-sm text-on-surface flex items-center gap-2">
+                <h3 className="font-heading font-bold text-xs sm:text-sm text-on-surface flex items-center gap-2">
                   <span>Âm thanh thông báo vui nhộn</span>
                   <span className="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container text-[10px] font-bold">
                     Web Audio
                   </span>
                 </h3>
-                <p className="font-sans text-xs text-on-surface-variant mt-0.5">
+                <p className="font-sans text-[11px] sm:text-xs text-on-surface-variant mt-0.5">
                   Phát tiếng chuông giai điệu nhẹ nhàng khi có thông báo mới
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 self-end sm:self-center">
+            <div className="flex items-center gap-2.5 self-end sm:self-center">
               <button
                 type="button"
                 onClick={playHarmonicChime}
                 disabled={isPlayingAudio}
-                className="btn-3d-secondary bg-secondary text-on-secondary hover:brightness-105 font-heading font-bold text-xs px-3.5 py-2 rounded-xl flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                className="bg-secondary text-on-secondary hover:brightness-105 font-heading font-bold text-xs px-3 py-1.5 rounded-md flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
               >
-                <Play className={`w-3.5 h-3.5 fill-current ${isPlayingAudio ? 'animate-spin' : ''}`} />
-                <span>{isPlayingAudio ? 'Đang phát...' : 'Nghe thử âm thanh'}</span>
+                <Play className={`w-3 h-3 fill-current ${isPlayingAudio ? 'animate-spin' : ''}`} />
+                <span>{isPlayingAudio ? 'Đang phát...' : 'Nghe thử'}</span>
               </button>
 
               <button
@@ -270,12 +270,12 @@ export function NotificationSettingsTab() {
                 role="switch"
                 aria-checked={settings.soundEnabled}
                 onClick={() => handleToggle('soundEnabled')}
-                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                   settings.soundEnabled ? 'bg-primary' : 'bg-surface-container-highest'
                 }`}
               >
                 <span
-                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                  className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
                     settings.soundEnabled ? 'translate-x-5' : 'translate-x-0'
                   }`}
                 />
@@ -285,11 +285,11 @@ export function NotificationSettingsTab() {
         </div>
 
         {/* Action Button */}
-        <div className="pt-6 mt-6 border-t border-outline-variant/20 flex justify-end">
+        <div className="pt-4 mt-5 border-t border-outline-variant/20 flex justify-end">
           <button
             type="button"
             onClick={handleSaveAll}
-            className="btn-3d bg-primary text-white hover:bg-primary-dark font-heading font-bold text-sm px-6 py-2.5 rounded-2xl flex items-center gap-2 transition-all cursor-pointer"
+            className="bg-primary text-white hover:bg-primary-dark font-heading font-bold text-xs px-5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer shadow-xs"
           >
             <Save className="w-4 h-4" />
             <span>Lưu tùy chọn thông báo</span>

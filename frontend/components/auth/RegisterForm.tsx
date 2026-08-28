@@ -68,12 +68,12 @@ export default function RegisterForm() {
         {/* Name Field */}
         <div>
           <label className="block font-sans text-sm font-bold text-on-surface mb-1.5" htmlFor="fullname">Họ và tên</label>
-          <div className="relative group focus-within:border-primary border-2 border-outline-variant rounded-full overflow-hidden transition-colors bg-surface-container-lowest">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <User className="w-5 h-5 text-outline group-focus-within:text-primary transition-colors" />
+          <div className="relative group focus-within:border-primary border border-outline-variant/60 rounded-lg overflow-hidden transition-all bg-surface-bright focus-within:ring-2 focus-within:ring-primary/20">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+              <User className="w-4 h-4 text-outline group-focus-within:text-primary transition-colors" />
             </div>
             <input
-              className="block w-full pl-12 pr-4 py-3 border-transparent focus:border-transparent focus:ring-0 bg-transparent font-sans text-base text-on-surface outline-none"
+              className="block w-full pl-10 pr-4 py-2.5 border-transparent focus:border-transparent focus:ring-0 bg-transparent font-sans text-sm text-on-surface outline-none"
               id="fullname"
               placeholder="Nhập họ và tên của bạn"
               type="text"
@@ -87,12 +87,12 @@ export default function RegisterForm() {
         {/* Email Field */}
         <div>
           <label className="block font-sans text-sm font-bold text-on-surface mb-1.5" htmlFor="email">Email</label>
-          <div className="relative group focus-within:border-primary border-2 border-outline-variant rounded-full overflow-hidden transition-colors bg-surface-container-lowest">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Mail className="w-5 h-5 text-outline group-focus-within:text-primary transition-colors" />
+          <div className="relative group focus-within:border-primary border border-outline-variant/60 rounded-lg overflow-hidden transition-all bg-surface-bright focus-within:ring-2 focus-within:ring-primary/20">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+              <Mail className="w-4 h-4 text-outline group-focus-within:text-primary transition-colors" />
             </div>
             <input
-              className="block w-full pl-12 pr-4 py-3 border-transparent focus:border-transparent focus:ring-0 bg-transparent font-sans text-base text-on-surface outline-none"
+              className="block w-full pl-10 pr-4 py-2.5 border-transparent focus:border-transparent focus:ring-0 bg-transparent font-sans text-sm text-on-surface outline-none"
               id="email"
               placeholder="Nhập email của bạn"
               type="email"
@@ -106,12 +106,12 @@ export default function RegisterForm() {
         {/* School Field */}
         <div>
           <label className="block font-sans text-sm font-bold text-on-surface mb-1.5" htmlFor="school">Tên trường</label>
-          <div className="relative group focus-within:border-primary border-2 border-outline-variant rounded-full overflow-hidden transition-colors bg-surface-container-lowest">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <School className="w-5 h-5 text-outline group-focus-within:text-primary transition-colors" />
+          <div className="relative group focus-within:border-primary border border-outline-variant/60 rounded-lg overflow-hidden transition-all bg-surface-bright focus-within:ring-2 focus-within:ring-primary/20">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+              <School className="w-4 h-4 text-outline group-focus-within:text-primary transition-colors" />
             </div>
             <input
-              className="block w-full pl-12 pr-4 py-3 border-transparent focus:border-transparent focus:ring-0 bg-transparent font-sans text-base text-on-surface outline-none"
+              className="block w-full pl-10 pr-4 py-2.5 border-transparent focus:border-transparent focus:ring-0 bg-transparent font-sans text-sm text-on-surface outline-none"
               id="school"
               placeholder="Nhập tên trường mầm non"
               type="text"
@@ -124,12 +124,12 @@ export default function RegisterForm() {
         {/* Password Field */}
         <div>
           <label className="block font-sans text-sm font-bold text-on-surface mb-1.5" htmlFor="password">Mật khẩu</label>
-          <div className="relative group focus-within:border-primary border-2 border-outline-variant rounded-full overflow-hidden transition-colors bg-surface-container-lowest">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Lock className="w-5 h-5 text-outline group-focus-within:text-primary transition-colors" />
+          <div className="relative group focus-within:border-primary border border-outline-variant/60 rounded-lg overflow-hidden transition-all bg-surface-bright focus-within:ring-2 focus-within:ring-primary/20">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+              <Lock className="w-4 h-4 text-outline group-focus-within:text-primary transition-colors" />
             </div>
             <input
-              className="block w-full pl-12 pr-4 py-3 border-transparent focus:border-transparent focus:ring-0 bg-transparent font-sans text-base text-on-surface outline-none"
+              className="block w-full pl-10 pr-4 py-2.5 border-transparent focus:border-transparent focus:ring-0 bg-transparent font-sans text-sm text-on-surface outline-none"
               id="password"
               placeholder="Tạo mật khẩu an toàn"
               type="password"
@@ -142,8 +142,8 @@ export default function RegisterForm() {
 
         {/* Submit Button */}
         <div className="pt-2">
-          <Button type="submit" variant="default" className="w-full py-6 text-base rounded-full" disabled={isLoading}>
-            {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
+          <Button type="submit" variant="default" className="w-full py-2.5 text-sm rounded-lg font-bold shadow-xs hover:bg-primary/90 transition-all" disabled={isLoading}>
+            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             Đăng ký
           </Button>
         </div>

@@ -151,11 +151,11 @@ export default function Header() {
     <header className="w-full h-20 bg-surface/90 backdrop-blur-md flex justify-between items-center px-8 z-20 sticky top-0 border-b border-outline-variant/30">
       {/* Search Bar */}
       <div className="relative w-full max-w-md hidden md:block">
-        <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant" />
+        <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
         <input
           type="text"
           placeholder="Tìm lớp học, học sinh..."
-          className="w-full pl-11 pr-4 py-2.5 rounded-xl border-2 border-outline-variant/40 bg-surface-container-lowest focus:border-primary focus:ring-0 outline-none transition-colors font-sans text-sm text-on-surface placeholder:text-on-surface-variant shadow-xs"
+          className="w-full pl-10 pr-4 py-2 rounded-lg border border-outline-variant/50 bg-surface-container-lowest focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-colors font-sans text-xs text-on-surface placeholder:text-on-surface-variant/70 shadow-2xs"
         />
       </div>
 
@@ -166,11 +166,11 @@ export default function Header() {
           type="button"
           onClick={() => setShowNotifications(!showNotifications)}
           aria-label="Thông báo"
-          className="relative p-2.5 rounded-full hover:bg-surface-container text-on-surface-variant transition-colors hover:scale-105 active:scale-95 cursor-pointer"
+          className="relative p-2 rounded-lg hover:bg-surface-container text-on-surface-variant transition-colors cursor-pointer"
         >
           <Bell className="w-5 h-5 hover:text-primary transition-colors" />
           {unreadCount > 0 && (
-            <span className="absolute top-1.5 right-1.5 min-w-[18px] h-[18px] px-1 bg-destructive text-on-destructive text-[10px] font-bold rounded-full flex items-center justify-center ring-2 ring-surface animate-scale-in">
+            <span className="absolute top-1 right-1 min-w-[16px] h-[16px] px-1 bg-destructive text-on-destructive text-[10px] font-bold rounded-full flex items-center justify-center ring-2 ring-surface animate-scale-in">
               {unreadCount > 9 ? '9+' : unreadCount}
             </span>
           )}
@@ -178,12 +178,12 @@ export default function Header() {
 
         {/* Notifications Popover */}
         {showNotifications && (
-          <div className="absolute right-0 top-14 w-80 sm:w-96 bg-surface-container-lowest rounded-3xl shadow-2xl border border-outline-variant/30 p-4 z-50 animate-scale-in">
-            <div className="flex items-center justify-between pb-3 border-b border-outline-variant/20 mb-2">
+          <div className="absolute right-0 top-12 w-80 sm:w-96 bg-surface-container-lowest rounded-xl shadow-xl border border-outline-variant/30 p-3.5 z-50 animate-scale-in">
+            <div className="flex items-center justify-between pb-2.5 border-b border-outline-variant/20 mb-2">
               <div className="flex items-center gap-2">
-                <span className="font-heading font-bold text-sm text-on-surface">Thông báo</span>
+                <span className="font-heading font-bold text-xs text-on-surface">Thông báo</span>
                 {unreadCount > 0 && (
-                  <span className="px-2 py-0.5 bg-primary-container text-on-primary-container text-[11px] font-bold rounded-full">
+                  <span className="px-2 py-0.5 bg-primary-container text-on-primary-container text-[10px] font-bold rounded-md">
                     {unreadCount} mới
                   </span>
                 )}
@@ -198,7 +198,7 @@ export default function Header() {
               )}
             </div>
 
-            <div className="max-h-72 overflow-y-auto space-y-2 pr-1">
+            <div className="max-h-72 overflow-y-auto space-y-1.5 pr-1">
               {notifications.length === 0 ? (
                 <div className="py-8 text-center text-on-surface-variant text-xs font-sans">
                   Không có thông báo mới nào
@@ -207,7 +207,7 @@ export default function Header() {
                 notifications.map((notif) => (
                   <div
                     key={notif.id}
-                    className={`p-3 rounded-2xl transition-colors ${
+                    className={`p-2.5 rounded-lg transition-colors ${
                       notif.isRead
                         ? 'bg-surface-container-low/40 text-on-surface-variant'
                         : 'bg-primary-container/20 text-on-surface font-semibold border-l-2 border-primary'

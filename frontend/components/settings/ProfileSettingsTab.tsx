@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
+import { createClient } from '@/lib/supabase/client';
 import { AvatarPicker } from './AvatarPicker';
 
 export interface UserProfileData {
@@ -102,13 +103,63 @@ export function ProfileSettingsTab({ initialProfile, onProfileUpdated }: Profile
         avatarUrl: avatarUrl.trim() || undefined,
       };
 
-      const response = await api.patch('/users/profile', payload);
-      const updatedData = response.data?.data || response.data;
+      try {
+        const response = await api.patch('/users/profile', payload);
+        const updatedData = response.data?.data || response.data;
+
+        toast.success('Hồ sơ đã được cập nhật thành công! 🎉');
+        
+        if (onProfileUpdated && updatedData) {
+          onProfileUpdated(updatedData);
+        }
+        
+        router.refresh();
+        return;
+      } catch (apiErr) {
+        console.warn('Backend API profile patch failed, falling back to Supabase directly:', apiErr);
+      }
+
+      // Supabase direct fallback
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error('Chưa đăng nhập. Vui lòng đăng nhập lại!');
+      }
+
+      const { error: sbError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          display_name: payload.displayName,
+          phone: payload.phone || null,
+          school: payload.school || null,
+          avatar_url: payload.avatarUrl || null,
+        });
+
+      if (sbError) {
+        throw sbError;
+      }
+
+      // Update auth user metadata
+      await supabase.auth.updateUser({
+        data: {
+          display_name: payload.displayName,
+          phone: payload.phone,
+          school: payload.school,
+          avatar_url: payload.avatarUrl,
+        },
+      });
 
       toast.success('Hồ sơ đã được cập nhật thành công! 🎉');
       
-      if (onProfileUpdated && updatedData) {
-        onProfileUpdated(updatedData);
+      if (onProfileUpdated) {
+        onProfileUpdated({
+          ...initialProfile,
+          displayName: payload.displayName,
+          phone: payload.phone,
+          school: payload.school,
+          avatarUrl: payload.avatarUrl,
+        });
       }
       
       router.refresh();
@@ -117,6 +168,7 @@ export function ProfileSettingsTab({ initialProfile, onProfileUpdated }: Profile
       const errorMessage =
         error.response?.data?.error?.message ||
         error.response?.data?.message ||
+        error.message ||
         'Không thể cập nhật hồ sơ. Vui lòng thử lại!';
       toast.error(errorMessage);
     } finally {
@@ -135,13 +187,13 @@ export function ProfileSettingsTab({ initialProfile, onProfileUpdated }: Profile
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fade-in">
       {/* Left Column: Edit Form (7 cols) */}
-      <div className="lg:col-span-7 bg-surface-container-lowest p-6 sm:p-8 rounded-3xl border border-outline-variant/30 shadow-custom">
-        <div className="flex items-center gap-3 pb-6 border-b border-outline-variant/20 mb-6">
-          <div className="p-3 rounded-2xl bg-primary-container text-on-primary-container">
-            <User className="w-6 h-6" />
+      <div className="lg:col-span-7 bg-surface-container-lowest p-5 sm:p-6 rounded-xl border border-outline-variant/30 shadow-xs">
+        <div className="flex items-center gap-3 pb-5 border-b border-outline-variant/20 mb-5">
+          <div className="p-2.5 rounded-lg bg-primary-container text-on-primary-container">
+            <User className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="font-heading font-bold text-xl text-on-surface">
+            <h2 className="font-heading font-bold text-lg text-on-surface">
               Chỉnh sửa thông tin cá nhân
             </h2>
             <p className="font-sans text-xs text-on-surface-variant">
@@ -150,7 +202,7 @@ export function ProfileSettingsTab({ initialProfile, onProfileUpdated }: Profile
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Avatar Picker Component */}
           <AvatarPicker
             value={avatarUrl}
@@ -159,8 +211,8 @@ export function ProfileSettingsTab({ initialProfile, onProfileUpdated }: Profile
           />
 
           {/* Display Name Input */}
-          <div className="space-y-2">
-            <label className="font-heading font-bold text-sm text-on-surface flex items-center gap-1.5">
+          <div className="space-y-1.5">
+            <label className="font-heading font-bold text-xs text-on-surface flex items-center gap-1.5">
               <span>Họ và tên / Tên hiển thị</span>
               <span className="text-destructive">*</span>
             </label>
@@ -175,10 +227,10 @@ export function ProfileSettingsTab({ initialProfile, onProfileUpdated }: Profile
                   if (errors.displayName) setErrors((prev) => ({ ...prev, displayName: '' }));
                 }}
                 placeholder="VD: Cô Nguyễn Thu Hà"
-                className={`w-full pl-10 pr-4 py-3 rounded-2xl border-2 bg-surface-container-lowest font-sans text-sm text-on-surface placeholder:text-on-surface-variant/50 outline-none transition-all ${
+                className={`w-full pl-10 pr-4 py-2.5 rounded-lg border bg-surface-container-lowest font-sans text-sm text-on-surface placeholder:text-on-surface-variant/50 outline-none transition-all ${
                   errors.displayName
                     ? 'border-destructive focus:border-destructive'
-                    : 'border-outline-variant/40 focus:border-primary focus:ring-2 focus:ring-primary/20'
+                    : 'border-outline-variant/60 focus:border-primary focus:ring-2 focus:ring-primary/20'
                 }`}
               />
             </div>
@@ -191,8 +243,8 @@ export function ProfileSettingsTab({ initialProfile, onProfileUpdated }: Profile
           </div>
 
           {/* Phone Number Input */}
-          <div className="space-y-2">
-            <label className="font-heading font-bold text-sm text-on-surface flex items-center gap-1.5">
+          <div className="space-y-1.5">
+            <label className="font-heading font-bold text-xs text-on-surface flex items-center gap-1.5">
               <span>Số điện thoại liên lạc</span>
             </label>
             <div className="relative">
@@ -206,10 +258,10 @@ export function ProfileSettingsTab({ initialProfile, onProfileUpdated }: Profile
                   if (errors.phone) setErrors((prev) => ({ ...prev, phone: '' }));
                 }}
                 placeholder="VD: 0912345678"
-                className={`w-full pl-10 pr-4 py-3 rounded-2xl border-2 bg-surface-container-lowest font-sans text-sm text-on-surface placeholder:text-on-surface-variant/50 outline-none transition-all ${
+                className={`w-full pl-10 pr-4 py-2.5 rounded-lg border bg-surface-container-lowest font-sans text-sm text-on-surface placeholder:text-on-surface-variant/50 outline-none transition-all ${
                   errors.phone
                     ? 'border-destructive focus:border-destructive'
-                    : 'border-outline-variant/40 focus:border-primary focus:ring-2 focus:ring-primary/20'
+                    : 'border-outline-variant/60 focus:border-primary focus:ring-2 focus:ring-primary/20'
                 }`}
               />
             </div>
@@ -222,8 +274,8 @@ export function ProfileSettingsTab({ initialProfile, onProfileUpdated }: Profile
           </div>
 
           {/* School Name Input */}
-          <div className="space-y-2">
-            <label className="font-heading font-bold text-sm text-on-surface flex items-center gap-1.5">
+          <div className="space-y-1.5">
+            <label className="font-heading font-bold text-xs text-on-surface flex items-center gap-1.5">
               <span>Trường học / Đơn vị giảng dạy</span>
             </label>
             <div className="relative">
@@ -237,10 +289,10 @@ export function ProfileSettingsTab({ initialProfile, onProfileUpdated }: Profile
                   if (errors.school) setErrors((prev) => ({ ...prev, school: '' }));
                 }}
                 placeholder="VD: Trường Mầm non Hoa Sen"
-                className={`w-full pl-10 pr-4 py-3 rounded-2xl border-2 bg-surface-container-lowest font-sans text-sm text-on-surface placeholder:text-on-surface-variant/50 outline-none transition-all ${
+                className={`w-full pl-10 pr-4 py-2.5 rounded-lg border bg-surface-container-lowest font-sans text-sm text-on-surface placeholder:text-on-surface-variant/50 outline-none transition-all ${
                   errors.school
                     ? 'border-destructive focus:border-destructive'
-                    : 'border-outline-variant/40 focus:border-primary focus:ring-2 focus:ring-primary/20'
+                    : 'border-outline-variant/60 focus:border-primary focus:ring-2 focus:ring-primary/20'
                 }`}
               />
             </div>
@@ -253,11 +305,11 @@ export function ProfileSettingsTab({ initialProfile, onProfileUpdated }: Profile
           </div>
 
           {/* Action Button */}
-          <div className="pt-4 flex justify-end">
+          <div className="pt-3 flex justify-end">
             <button
               type="submit"
               disabled={isSaving}
-              className="btn-3d bg-primary text-white hover:bg-primary-dark font-heading font-bold text-sm px-7 py-3 rounded-2xl flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-primary text-white hover:bg-primary-dark font-heading font-bold text-xs px-5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSaving ? (
                 <>

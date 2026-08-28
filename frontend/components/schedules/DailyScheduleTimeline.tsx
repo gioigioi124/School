@@ -58,7 +58,7 @@ export function DailyScheduleTimeline({
   return (
     <div className="space-y-4">
       {/* Day Selector Navigation Pills */}
-      <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-surface-container-low border border-outline-variant/30 overflow-x-auto">
+      <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-lg bg-surface-container-low border border-outline-variant/30 overflow-x-auto">
         {DAYS_LIST.map((d) => {
           const count = schedules.filter((s) => s.dayOfWeek === d.dayOfWeek).length;
           const isSelected = selectedDay === d.dayOfWeek;
@@ -67,9 +67,9 @@ export function DailyScheduleTimeline({
             <button
               key={d.dayOfWeek}
               onClick={() => setSelectedDay(d.dayOfWeek)}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg font-heading font-bold text-xs transition-all duration-150 cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-heading font-bold text-xs transition-all duration-150 cursor-pointer ${
                 isSelected
-                  ? 'bg-primary text-on-primary shadow-2xs scale-[1.01]'
+                  ? 'bg-primary text-on-primary shadow-2xs'
                   : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
               }`}
             >
@@ -89,11 +89,11 @@ export function DailyScheduleTimeline({
       </div>
 
       {/* Daily Content Header */}
-      <div className="flex items-center justify-between bg-surface-container-lowest px-4 py-3 rounded-xl border border-outline-variant/30 shadow-2xs">
+      <div className="flex items-center justify-between bg-surface-container-lowest px-4 py-2.5 rounded-lg border border-outline-variant/30 shadow-2xs">
         <div>
           <h3 className="font-heading text-base font-bold text-on-surface flex items-center gap-2">
             <span>Thời khóa biểu {currentDayInfo.label}</span>
-            <span className="text-xs px-2 py-0.2 rounded-full bg-primary-container text-on-primary-container font-medium">
+            <span className="text-xs px-2 py-0.5 rounded-md bg-primary-container text-on-primary-container font-medium">
               {dayAllSlots.length} tiết
             </span>
           </h3>
@@ -104,7 +104,7 @@ export function DailyScheduleTimeline({
 
         <button
           onClick={() => onAddSlotForDay(selectedDay)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-on-primary font-heading font-bold text-xs shadow-2xs hover:bg-primary/90 transition-all cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary text-on-primary font-heading font-bold text-xs shadow-2xs hover:bg-primary/90 transition-all cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>Thêm tiết học</span>
@@ -113,8 +113,8 @@ export function DailyScheduleTimeline({
 
       {/* Morning & Afternoon Sections */}
       {dayAllSlots.length === 0 ? (
-        <div className="p-10 text-center rounded-2xl bg-surface-container-lowest border border-dashed border-outline-variant/40 flex flex-col items-center justify-center">
-          <div className="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-on-surface-variant mb-2.5">
+        <div className="p-10 text-center rounded-xl bg-surface-container-lowest border border-dashed border-outline-variant/40 flex flex-col items-center justify-center">
+          <div className="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant mb-2.5">
             <Calendar className="w-5 h-5 opacity-60" />
           </div>
           <h4 className="font-heading font-bold text-sm text-on-surface mb-1">
@@ -134,7 +134,7 @@ export function DailyScheduleTimeline({
       ) : (
         <div className="space-y-4">
           {/* ☀️ BUỔI SÁNG SECTION */}
-          <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/30 p-3.5 space-y-2.5 shadow-2xs">
+          <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/30 p-3.5 space-y-2.5 shadow-2xs">
             <div className="flex items-center justify-between border-b border-outline-variant/20 pb-2">
               <div className="flex items-center gap-2">
                 <span className="w-6 h-6 rounded-md bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
@@ -172,7 +172,7 @@ export function DailyScheduleTimeline({
           </div>
 
           {/* 🌤️ BUỔI CHIỀU SECTION */}
-          <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/30 p-3.5 space-y-2.5 shadow-2xs">
+          <div className="bg-surface-container-lowest rounded-lg border border-outline-variant/30 p-3.5 space-y-2.5 shadow-2xs">
             <div className="flex items-center justify-between border-b border-outline-variant/20 pb-2">
               <div className="flex items-center gap-2">
                 <span className="w-6 h-6 rounded-md bg-indigo-100 text-indigo-800 flex items-center justify-center font-bold">
@@ -235,16 +235,16 @@ function DailyTimelineCard({
   return (
     <div
       onClick={() => onEdit(slot)}
-      className="group relative h-[68px] rounded-lg px-3 py-2 border border-outline-variant/30 bg-surface hover:border-primary/50 hover:shadow-xs transition-all duration-150 flex items-center justify-between gap-3 cursor-pointer"
+      className="group relative h-[68px] rounded-md pl-3 pr-2.5 py-1.5 border border-outline-variant/30 bg-surface hover:border-primary/50 hover:shadow-xs transition-all duration-150 flex items-center justify-between gap-3 cursor-pointer"
       style={{
-        borderLeftWidth: '4px',
+        borderLeftWidth: '3.5px',
         borderLeftColor: cardColor,
       }}
     >
       <div className="flex-1 min-w-0 flex flex-col justify-between h-full">
         {/* 1. THỜI GIAN */}
         <div className="flex items-center gap-1 text-[11px] font-bold text-primary leading-none">
-          <Clock className="w-3 h-3 shrink-0" />
+          <Clock className="w-3 h-3 shrink-0 text-primary/80" />
           <span>
             {slot.startTime} - {slot.endTime}
           </span>

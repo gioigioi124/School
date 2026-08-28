@@ -110,26 +110,26 @@ export function AwardStudentDialog({
         render={
           <button
             type="button"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-secondary-container text-on-secondary-container hover:scale-105 transition-all shadow-sm cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80 transition-all shadow-2xs cursor-pointer"
           >
             <Star className="w-3.5 h-3.5 fill-current" />
             Tặng sao
           </button>
         }
       />
-      <DialogContent className="sm:max-w-[420px] bg-surface-container-lowest border-outline-variant/30">
+      <DialogContent className="sm:max-w-[420px] bg-surface-container-lowest border-outline-variant/30 rounded-xl">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl text-on-surface flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-secondary" />
             Khen thưởng bé {studentName}
           </DialogTitle>
-          <DialogDescription className="font-sans text-on-surface-variant flex items-center gap-2 pt-1">
+          <DialogDescription className="font-sans text-xs text-on-surface-variant flex items-center gap-2 pt-1">
             <span className="text-2xl">{avatar || '🐻'}</span>
             <span>Chọn phần thưởng để khích lệ tinh thần học tập của bé!</span>
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-3 py-3">
+        <div className="grid grid-cols-2 gap-2.5 py-2.5">
           {REWARD_TYPES.map((reward) => {
             const Icon = reward.icon;
             const isSelected = selectedReward.id === reward.id;
@@ -138,33 +138,33 @@ export function AwardStudentDialog({
                 key={reward.id}
                 type="button"
                 onClick={() => setSelectedReward(reward)}
-                className={`p-4 rounded-2xl border text-left transition-all relative cursor-pointer ${
+                className={`p-3 rounded-lg border text-left transition-all relative cursor-pointer ${
                   isSelected
-                    ? 'border-primary bg-primary/5 ring-2 ring-primary/20 shadow-custom'
+                    ? 'border-primary bg-primary/5 ring-1 ring-primary/40 shadow-xs'
                     : 'border-outline-variant/40 hover:bg-surface-container-low'
                 }`}
               >
                 {isSelected && (
-                  <span className="absolute top-2 right-2 w-5 h-5 bg-primary text-on-primary rounded-full flex items-center justify-center text-xs">
-                    <Check className="w-3 h-3" />
+                  <span className="absolute top-2 right-2 w-4 h-4 bg-primary text-on-primary rounded-full flex items-center justify-center text-[10px]">
+                    <Check className="w-2.5 h-2.5 stroke-[3]" />
                   </span>
                 )}
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2 ${reward.color}`}>
-                  <Icon className="w-5 h-5" />
+                <div className={`w-8 h-8 rounded-md flex items-center justify-center mb-1.5 ${reward.color}`}>
+                  <Icon className="w-4 h-4" />
                 </div>
-                <div className="font-heading font-bold text-sm text-on-surface">{reward.title}</div>
-                <div className="text-xs text-primary font-bold">+{reward.points} XP • +{reward.stars} ⭐</div>
+                <div className="font-heading font-bold text-xs text-on-surface">{reward.title}</div>
+                <div className="text-[11px] text-primary font-bold">+{reward.points} XP • +{reward.stars} ⭐</div>
               </button>
             );
           })}
         </div>
 
-        <DialogFooter className="pt-2">
+        <DialogFooter className="pt-2 border-t border-outline-variant/20">
           <Button
             type="button"
             variant="outline"
             onClick={() => setOpen(false)}
-            className="rounded-full border-outline-variant text-on-surface-variant hover:bg-surface-container"
+            className="rounded-lg border-outline-variant text-on-surface-variant hover:bg-surface-container text-xs font-bold"
           >
             Đóng
           </Button>
@@ -172,9 +172,9 @@ export function AwardStudentDialog({
             type="button"
             disabled={isLoading}
             onClick={handleAward}
-            className="rounded-full bg-primary text-on-primary hover:bg-primary-dark font-bold btn-3d"
+            className="rounded-lg bg-primary text-on-primary hover:bg-primary-dark font-bold text-xs shadow-xs"
           >
-            {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+            {isLoading ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : null}
             Trao thưởng ngay ⭐
           </Button>
         </DialogFooter>

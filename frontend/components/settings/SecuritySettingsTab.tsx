@@ -84,13 +84,13 @@ export function SecuritySettingsTab({ userEmail }: SecuritySettingsTabProps) {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Account Overview Card */}
-      <div className="bg-surface-container-lowest p-6 sm:p-8 rounded-3xl border border-outline-variant/30 shadow-custom">
-        <div className="flex items-center gap-3 pb-6 border-b border-outline-variant/20 mb-6">
-          <div className="p-3 rounded-2xl bg-primary-container text-on-primary-container">
-            <ShieldCheck className="w-6 h-6" />
+      <div className="bg-surface-container-lowest p-5 sm:p-6 rounded-xl border border-outline-variant/30 shadow-xs">
+        <div className="flex items-center gap-3 pb-5 border-b border-outline-variant/20 mb-5">
+          <div className="p-2.5 rounded-lg bg-primary-container text-on-primary-container">
+            <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="font-heading font-bold text-xl text-on-surface">
+            <h2 className="font-heading font-bold text-lg text-on-surface">
               Thông tin tài khoản & Xác thực
             </h2>
             <p className="font-sans text-xs text-on-surface-variant">
@@ -99,37 +99,37 @@ export function SecuritySettingsTab({ userEmail }: SecuritySettingsTabProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="p-4 rounded-2xl bg-surface-container-low/60 border border-outline-variant/30 flex items-center gap-3.5">
-            <div className="p-2.5 rounded-xl bg-surface-container-highest text-primary">
-              <Mail className="w-5 h-5" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div className="p-3.5 rounded-lg bg-surface-container-low/60 border border-outline-variant/30 flex items-center gap-3">
+            <div className="p-2 rounded-md bg-surface-container-highest text-primary">
+              <Mail className="w-4 h-4" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
                 Email đăng nhập
               </p>
-              <p className="font-semibold text-sm text-on-surface truncate">
+              <p className="font-semibold text-xs text-on-surface truncate">
                 {userEmail || 'Chưa xác định'}
               </p>
-              <div className="inline-flex items-center gap-1 mt-1 text-[11px] text-emerald-700 font-bold">
-                <Check className="w-3.5 h-3.5 stroke-[3]" />
+              <div className="inline-flex items-center gap-1 mt-0.5 text-[10px] text-emerald-700 font-bold">
+                <Check className="w-3 h-3 stroke-[3]" />
                 <span>Đã xác thực</span>
               </div>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-surface-container-low/60 border border-outline-variant/30 flex items-center gap-3.5">
-            <div className="p-2.5 rounded-xl bg-surface-container-highest text-primary">
-              <Fingerprint className="w-5 h-5" />
+          <div className="p-3.5 rounded-lg bg-surface-container-low/60 border border-outline-variant/30 flex items-center gap-3">
+            <div className="p-2 rounded-md bg-surface-container-highest text-primary">
+              <Fingerprint className="w-4 h-4" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
                 Phương thức bảo mật
               </p>
-              <p className="font-semibold text-sm text-on-surface truncate">
+              <p className="font-semibold text-xs text-on-surface truncate">
                 Supabase JWT + Password
               </p>
-              <span className="text-[11px] text-on-surface-variant/80 mt-1 block">
+              <span className="text-[10px] text-on-surface-variant/80 mt-0.5 block">
                 Mã hóa đầu cuối chuẩn SHA-256
               </span>
             </div>
@@ -138,13 +138,13 @@ export function SecuritySettingsTab({ userEmail }: SecuritySettingsTabProps) {
       </div>
 
       {/* Change Password Form */}
-      <div className="bg-surface-container-lowest p-6 sm:p-8 rounded-3xl border border-outline-variant/30 shadow-custom">
-        <div className="flex items-center gap-3 pb-6 border-b border-outline-variant/20 mb-6">
-          <div className="p-3 rounded-2xl bg-secondary text-on-secondary">
-            <KeyRound className="w-6 h-6" />
+      <div className="bg-surface-container-lowest p-5 sm:p-6 rounded-xl border border-outline-variant/30 shadow-xs">
+        <div className="flex items-center gap-3 pb-5 border-b border-outline-variant/20 mb-5">
+          <div className="p-2.5 rounded-lg bg-secondary text-on-secondary">
+            <KeyRound className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="font-heading font-bold text-xl text-on-surface">
+            <h2 className="font-heading font-bold text-lg text-on-surface">
               Đổi mật khẩu tài khoản
             </h2>
             <p className="font-sans text-xs text-on-surface-variant">
@@ -153,10 +153,10 @@ export function SecuritySettingsTab({ userEmail }: SecuritySettingsTabProps) {
           </div>
         </div>
 
-        <form onSubmit={handlePasswordUpdate} className="space-y-6 max-w-xl">
+        <form onSubmit={handlePasswordUpdate} className="space-y-4 max-w-xl">
           {/* New Password Input */}
-          <div className="space-y-2">
-            <label className="font-heading font-bold text-sm text-on-surface flex items-center gap-1.5">
+          <div className="space-y-1.5">
+            <label className="font-heading font-bold text-xs text-on-surface flex items-center gap-1.5">
               <span>Mật khẩu mới</span>
               <span className="text-destructive">*</span>
             </label>
@@ -171,12 +171,12 @@ export function SecuritySettingsTab({ userEmail }: SecuritySettingsTabProps) {
                   setErrorMessage('');
                 }}
                 placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)"
-                className="w-full pl-10 pr-12 py-3 rounded-2xl border-2 border-outline-variant/40 bg-surface-container-lowest font-sans text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                className="w-full pl-10 pr-11 py-2.5 rounded-lg border border-outline-variant/60 bg-surface-container-lowest font-sans text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
               />
               <button
                 type="button"
                 onClick={() => setShowNewPassword(!showNewPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface p-1 rounded-lg cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface p-1 rounded cursor-pointer"
                 aria-label={showNewPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
               >
                 {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -185,8 +185,8 @@ export function SecuritySettingsTab({ userEmail }: SecuritySettingsTabProps) {
           </div>
 
           {/* Confirm Password Input */}
-          <div className="space-y-2">
-            <label className="font-heading font-bold text-sm text-on-surface flex items-center gap-1.5">
+          <div className="space-y-1.5">
+            <label className="font-heading font-bold text-xs text-on-surface flex items-center gap-1.5">
               <span>Xác nhận mật khẩu mới</span>
               <span className="text-destructive">*</span>
             </label>
@@ -201,12 +201,12 @@ export function SecuritySettingsTab({ userEmail }: SecuritySettingsTabProps) {
                   setErrorMessage('');
                 }}
                 placeholder="Nhập lại mật khẩu mới"
-                className="w-full pl-10 pr-12 py-3 rounded-2xl border-2 border-outline-variant/40 bg-surface-container-lowest font-sans text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                className="w-full pl-10 pr-11 py-2.5 rounded-lg border border-outline-variant/60 bg-surface-container-lowest font-sans text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface p-1 rounded-lg cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface p-1 rounded cursor-pointer"
                 aria-label={showConfirmPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
               >
                 {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -215,20 +215,20 @@ export function SecuritySettingsTab({ userEmail }: SecuritySettingsTabProps) {
           </div>
 
           {/* Real-time Checklist */}
-          <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 space-y-2">
+          <div className="p-3 rounded-lg bg-surface-container-low border border-outline-variant/30 space-y-1.5">
             <p className="text-xs font-bold text-on-surface font-heading">
               Yêu cầu mật khẩu an toàn:
             </p>
-            <div className="space-y-1.5 text-xs">
+            <div className="space-y-1 text-xs">
               <div className="flex items-center gap-2">
                 <div
-                  className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                  className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[10px] font-bold ${
                     isMinLength
                       ? 'bg-emerald-500 text-white'
                       : 'bg-surface-container-highest text-on-surface-variant'
                   }`}
                 >
-                  {isMinLength ? <Check className="w-3 h-3 stroke-[3]" /> : '•'}
+                  {isMinLength ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : '•'}
                 </div>
                 <span
                   className={isMinLength ? 'text-emerald-800 font-semibold' : 'text-on-surface-variant'}
@@ -239,13 +239,13 @@ export function SecuritySettingsTab({ userEmail }: SecuritySettingsTabProps) {
 
               <div className="flex items-center gap-2">
                 <div
-                  className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                  className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[10px] font-bold ${
                     isMatch
                       ? 'bg-emerald-500 text-white'
                       : 'bg-surface-container-highest text-on-surface-variant'
                   }`}
                 >
-                  {isMatch ? <Check className="w-3 h-3 stroke-[3]" /> : '•'}
+                  {isMatch ? <Check className="w-2.5 h-2.5 stroke-[3]" /> : '•'}
                 </div>
                 <span className={isMatch ? 'text-emerald-800 font-semibold' : 'text-on-surface-variant'}>
                   Mật khẩu xác nhận trùng khớp
@@ -266,7 +266,7 @@ export function SecuritySettingsTab({ userEmail }: SecuritySettingsTabProps) {
             <button
               type="submit"
               disabled={isUpdating || !isFormValid}
-              className="btn-3d bg-primary text-white hover:bg-primary-dark font-heading font-bold text-sm px-7 py-3 rounded-2xl flex items-center gap-2 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-primary text-white hover:bg-primary-dark font-heading font-bold text-xs px-5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isUpdating ? (
                 <>

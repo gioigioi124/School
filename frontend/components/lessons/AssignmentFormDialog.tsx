@@ -90,19 +90,19 @@ export function AssignmentFormDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-secondary-container text-on-secondary-container font-heading font-bold text-xs hover:bg-secondary-container/80 transition-all cursor-pointer">
+          <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary-container text-on-secondary-container font-heading font-bold text-xs hover:bg-secondary-container/80 transition-all cursor-pointer">
             <Plus className="w-3.5 h-3.5" />
             <span>Thêm câu đố (+XP)</span>
           </button>
         }
       />
 
-      <DialogContent className="max-w-md bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-2xl border-none">
-        <DialogHeader className="space-y-2 pb-2">
-          <div className="w-12 h-12 rounded-2xl bg-secondary-container flex items-center justify-center text-on-secondary-container mb-2">
-            <FileQuestion className="w-6 h-6" />
+      <DialogContent className="max-w-md bg-surface-container-lowest rounded-xl p-5 sm:p-6 shadow-2xl border border-outline-variant/30">
+        <DialogHeader className="space-y-1.5 pb-2 border-b border-outline-variant/20">
+          <div className="w-10 h-10 rounded-lg bg-secondary-container flex items-center justify-center text-on-secondary-container mb-1 shadow-2xs">
+            <FileQuestion className="w-5 h-5" />
           </div>
-          <DialogTitle className="font-heading text-2xl font-bold text-on-surface">
+          <DialogTitle className="font-heading text-xl font-bold text-on-surface">
             Thêm bài tập / Câu đố
           </DialogTitle>
           <p className="font-sans text-xs text-on-surface-variant">
@@ -110,9 +110,9 @@ export function AssignmentFormDialog({
           </p>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-2">
+        <form onSubmit={handleSubmit} className="space-y-3.5 mt-3">
           <div>
-            <label className="block font-heading font-bold text-xs text-on-surface mb-1.5">
+            <label className="block font-heading font-bold text-xs text-on-surface mb-1">
               Tiêu đề bài tập
             </label>
             <input
@@ -120,20 +120,20 @@ export function AssignmentFormDialog({
               placeholder="VD: Đố vui nhận diện màu sắc"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border-2 border-outline-variant/40 bg-surface focus:border-secondary focus:ring-0 outline-none font-sans text-sm text-on-surface"
+              className="w-full px-3 py-2 rounded-md border border-outline-variant/50 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface"
               required
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-heading font-bold text-xs text-on-surface mb-1.5">
+              <label className="block font-heading font-bold text-xs text-on-surface mb-1">
                 Loại bài tập
               </label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border-2 border-outline-variant/40 bg-surface focus:border-secondary focus:ring-0 outline-none font-sans text-xs text-on-surface"
+                className="w-full px-3 py-2 rounded-md border border-outline-variant/50 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface font-semibold"
               >
                 <option value="quiz">Trắc nghiệm nhanh</option>
                 <option value="text">Tự luận / Trả lời ngắn</option>
@@ -142,7 +142,7 @@ export function AssignmentFormDialog({
             </div>
 
             <div>
-              <label className="block font-heading font-bold text-xs text-on-surface mb-1.5 flex items-center gap-1">
+              <label className="block font-heading font-bold text-xs text-on-surface mb-1 flex items-center gap-1">
                 <Award className="w-3.5 h-3.5 text-amber-500" />
                 <span>Thưởng XP</span>
               </label>
@@ -153,13 +153,13 @@ export function AssignmentFormDialog({
                 step="5"
                 value={xpReward}
                 onChange={(e) => setXpReward(Number(e.target.value))}
-                className="w-full px-3 py-2 rounded-xl border-2 border-outline-variant/40 bg-surface focus:border-secondary focus:ring-0 outline-none font-sans text-xs text-on-surface"
+                className="w-full px-3 py-2 rounded-md border border-outline-variant/50 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface"
               />
             </div>
           </div>
 
           {type === 'quiz' && (
-            <div className="space-y-3 p-4 rounded-2xl bg-surface-container border border-outline-variant/30">
+            <div className="space-y-2.5 p-3 rounded-lg bg-surface-container-low border border-outline-variant/30">
               <label className="block font-heading font-bold text-xs text-on-surface">
                 Nội dung câu hỏi
               </label>
@@ -168,7 +168,7 @@ export function AssignmentFormDialog({
                 placeholder="VD: Quả táo có màu gì?"
                 value={questionText}
                 onChange={(e) => setQuestionText(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-outline-variant/40 bg-surface-container-lowest focus:border-secondary focus:ring-0 outline-none font-sans text-xs text-on-surface"
+                className="w-full px-3 py-1.5 rounded-md border border-outline-variant/40 bg-surface focus:border-primary focus:ring-0 outline-none font-sans text-xs text-on-surface"
               />
 
               <label className="block font-heading font-bold text-xs text-on-surface mt-2">
@@ -181,32 +181,32 @@ export function AssignmentFormDialog({
                     name="correctOption"
                     checked={correctOptionIndex === i}
                     onChange={() => setCorrectOptionIndex(i)}
-                    className="w-4 h-4 text-secondary focus:ring-secondary cursor-pointer"
+                    className="w-4 h-4 text-secondary focus:ring-secondary cursor-pointer accent-secondary"
                   />
                   <input
                     type="text"
                     placeholder={`Phương án ${i + 1}`}
                     value={opt}
                     onChange={(e) => handleOptionChange(i, e.target.value)}
-                    className="flex-1 px-3 py-1.5 rounded-lg border border-outline-variant/30 bg-surface-container-lowest text-xs font-sans"
+                    className="flex-1 px-2.5 py-1.5 rounded-md border border-outline-variant/30 bg-surface text-xs font-sans"
                   />
                 </div>
               ))}
             </div>
           )}
 
-          <div className="flex justify-end gap-3 pt-4">
+          <div className="flex justify-end gap-2.5 pt-3 border-t border-outline-variant/20">
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="px-4 py-2.5 rounded-xl bg-surface-container text-on-surface-variant font-bold text-xs hover:bg-surface-container-high transition-colors"
+              className="px-3.5 py-1.5 rounded-lg bg-surface-container text-on-surface-variant font-bold text-xs hover:bg-surface-container-high transition-colors cursor-pointer"
             >
               Hủy
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2.5 rounded-xl bg-secondary text-on-secondary font-heading font-bold text-xs hover:bg-secondary/90 transition-all shadow-sm flex items-center gap-2"
+              className="px-4 py-1.5 rounded-lg bg-secondary text-on-secondary font-heading font-bold text-xs hover:bg-secondary/90 transition-all shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
               {loading ? (
                 <span>Đang lưu...</span>

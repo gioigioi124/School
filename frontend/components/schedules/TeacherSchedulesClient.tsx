@@ -208,9 +208,9 @@ export function TeacherSchedulesClient({
 
   if (classes.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto py-16 text-center bg-surface-container-lowest rounded-3xl border border-dashed border-outline-variant/40 p-8">
-        <div className="w-16 h-16 rounded-3xl bg-primary-container text-on-primary-container flex items-center justify-center mx-auto mb-4">
-          <School className="w-8 h-8" />
+      <div className="max-w-4xl mx-auto py-16 text-center bg-surface-container-lowest rounded-xl border border-dashed border-outline-variant/40 p-8">
+        <div className="w-14 h-14 rounded-xl bg-primary-container text-on-primary-container flex items-center justify-center mx-auto mb-4">
+          <School className="w-7 h-7" />
         </div>
         <h2 className="font-heading text-2xl font-bold text-on-surface mb-2">
           Chưa có lớp học nào
@@ -223,15 +223,15 @@ export function TeacherSchedulesClient({
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 pb-16 animate-fade-in print:p-0 print:m-0">
+    <div className="max-w-7xl mx-auto space-y-4 pb-16 animate-fade-in print:p-0 print:m-0">
       {/* Header Banner */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-surface-container-lowest p-6 rounded-3xl border border-outline-variant/30 shadow-xs print:hidden">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-surface-container-lowest p-5 sm:p-6 rounded-xl border border-outline-variant/30 shadow-xs print:hidden">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="font-heading text-3xl font-bold text-on-surface">
+            <h1 className="font-heading text-2xl sm:text-3xl font-bold text-on-surface">
               Thời khóa biểu lớp học
             </h1>
-            <span className="px-3 py-1 bg-primary-container text-on-primary-container rounded-full text-xs font-bold font-heading flex items-center gap-1">
+            <span className="px-2.5 py-0.5 bg-primary-container text-on-primary-container rounded-md text-xs font-bold font-heading flex items-center gap-1">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Tiêu chuẩn</span>
             </span>
@@ -245,7 +245,7 @@ export function TeacherSchedulesClient({
         <div className="flex flex-wrap items-center gap-2.5">
           <button
             onClick={() => setTemplateDialogOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-heading font-bold text-xs shadow-2xs transition-all transform hover:scale-[1.02] active:scale-98 cursor-pointer"
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300/60 font-heading font-bold text-xs shadow-2xs transition-all cursor-pointer"
           >
             <Wand2 className="w-4 h-4 text-amber-600" />
             <span>Nạp mẫu 1-Chạm</span>
@@ -253,7 +253,7 @@ export function TeacherSchedulesClient({
 
           <button
             onClick={() => handleOpenAdd(2)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-primary text-on-primary font-heading font-bold text-xs shadow-md hover:bg-primary/90 transition-all transform hover:scale-[1.02] active:scale-98 cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-on-primary font-heading font-bold text-xs shadow-xs hover:bg-primary/90 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Thêm tiết học</span>
@@ -262,7 +262,7 @@ export function TeacherSchedulesClient({
           <button
             onClick={handlePrint}
             title="In thời khóa biểu"
-            className="p-2.5 rounded-2xl bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-colors cursor-pointer"
+            className="p-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-colors cursor-pointer"
           >
             <Printer className="w-4 h-4" />
           </button>
@@ -270,7 +270,7 @@ export function TeacherSchedulesClient({
       </div>
 
       {/* Control Bar: Class Selector, Search, View Mode Switcher */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/30 shadow-xs print:hidden">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-surface-container-lowest p-3.5 rounded-lg border border-outline-variant/30 shadow-xs print:hidden">
         {/* Class Selector */}
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2">
@@ -280,7 +280,7 @@ export function TeacherSchedulesClient({
             <select
               value={selectedClassId}
               onChange={(e) => setSelectedClassId(e.target.value)}
-              className="px-4 py-2 rounded-xl border-2 border-outline-variant/40 bg-surface focus:border-primary focus:ring-0 outline-none font-heading font-bold text-sm text-on-surface shadow-2xs cursor-pointer"
+              className="px-3 py-1.5 rounded-md border border-outline-variant/50 bg-surface focus:border-primary focus:ring-0 outline-none font-heading font-bold text-sm text-on-surface shadow-2xs cursor-pointer"
             >
               {classes.map((cls) => (
                 <option key={cls.id} value={cls.id}>
@@ -294,7 +294,7 @@ export function TeacherSchedulesClient({
             onClick={() => loadSchedules(selectedClassId)}
             disabled={loading}
             title="Làm mới dữ liệu"
-            className="p-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-colors cursor-pointer"
+            className="p-1.5 rounded-md bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-colors cursor-pointer"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
@@ -310,15 +310,15 @@ export function TeacherSchedulesClient({
               placeholder="Tìm môn học, phòng..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 pr-3 py-1.5 rounded-xl border border-outline-variant/40 bg-surface text-xs text-on-surface outline-none focus:border-primary w-40 sm:w-48 transition-all"
+              className="pl-8 pr-3 py-1.5 rounded-md border border-outline-variant/40 bg-surface text-xs text-on-surface outline-none focus:border-primary w-40 sm:w-48 transition-all"
             />
           </div>
 
           {/* View Mode Toggle */}
-          <div className="flex items-center p-1 rounded-xl bg-surface-container-low border border-outline-variant/30">
+          <div className="flex items-center p-1 rounded-md bg-surface-container-low border border-outline-variant/30">
             <button
               onClick={() => setViewMode('grid')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-heading font-bold transition-all cursor-pointer ${
                 viewMode === 'grid'
                   ? 'bg-surface text-primary shadow-xs'
                   : 'text-on-surface-variant hover:text-on-surface'
@@ -329,7 +329,7 @@ export function TeacherSchedulesClient({
             </button>
             <button
               onClick={() => setViewMode('timeline')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-heading font-bold transition-all cursor-pointer ${
                 viewMode === 'timeline'
                   ? 'bg-surface text-primary shadow-xs'
                   : 'text-on-surface-variant hover:text-on-surface'
@@ -354,16 +354,16 @@ export function TeacherSchedulesClient({
 
       {/* Main Schedule Content */}
       {loading ? (
-        <div className="p-16 flex flex-col items-center justify-center bg-surface-container-lowest rounded-3xl border border-outline-variant/30">
+        <div className="p-16 flex flex-col items-center justify-center bg-surface-container-lowest rounded-xl border border-outline-variant/30">
           <RefreshCw className="w-8 h-8 text-primary animate-spin mb-3" />
           <p className="font-heading font-bold text-sm text-on-surface">
             Đang tải dữ liệu thời khóa biểu...
           </p>
         </div>
       ) : filteredSchedules.length === 0 && !searchQuery ? (
-        <div className="p-12 text-center bg-surface-container-lowest rounded-3xl border border-dashed border-outline-variant/40 space-y-4">
-          <div className="w-16 h-16 rounded-3xl bg-amber-100 text-amber-700 flex items-center justify-center mx-auto">
-            <CalendarDays className="w-8 h-8" />
+        <div className="p-12 text-center bg-surface-container-lowest rounded-xl border border-dashed border-outline-variant/40 space-y-4">
+          <div className="w-14 h-14 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center mx-auto">
+            <CalendarDays className="w-7 h-7" />
           </div>
           <div>
             <h3 className="font-heading text-xl font-bold text-on-surface">
@@ -376,14 +376,14 @@ export function TeacherSchedulesClient({
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <button
               onClick={() => setTemplateDialogOpen(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-heading font-bold text-xs shadow-sm transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-heading font-bold text-xs shadow-xs transition-all cursor-pointer"
             >
               <Wand2 className="w-4 h-4" />
               <span>Nạp thời khóa biểu mẫu (1-Click)</span>
             </button>
             <button
               onClick={() => handleOpenAdd(2)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-surface-container text-on-surface hover:bg-surface-container-high font-heading font-bold text-xs transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high font-heading font-bold text-xs transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Tự thêm từng tiết</span>

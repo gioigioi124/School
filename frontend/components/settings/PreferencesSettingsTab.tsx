@@ -93,13 +93,13 @@ export function PreferencesSettingsTab() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="bg-surface-container-lowest p-6 sm:p-8 rounded-3xl border border-outline-variant/30 shadow-custom">
-        <div className="flex items-center gap-3 pb-6 border-b border-outline-variant/20 mb-6">
-          <div className="p-3 rounded-2xl bg-primary-container text-on-primary-container">
-            <Sliders className="w-6 h-6" />
+      <div className="bg-surface-container-lowest p-5 sm:p-6 rounded-xl border border-outline-variant/30 shadow-xs">
+        <div className="flex items-center gap-3 pb-5 border-b border-outline-variant/20 mb-5">
+          <div className="p-2.5 rounded-lg bg-primary-container text-on-primary-container">
+            <Sliders className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="font-heading font-bold text-xl text-on-surface">
+            <h2 className="font-heading font-bold text-lg text-on-surface">
               Tùy chỉnh giao diện & Hệ thống
             </h2>
             <p className="font-sans text-xs text-on-surface-variant">
@@ -108,11 +108,11 @@ export function PreferencesSettingsTab() {
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-5">
           {/* Language Selection */}
-          <div className="space-y-3">
-            <label className="font-heading font-bold text-sm text-on-surface flex items-center gap-2">
-              <Globe className="w-4 h-4 text-primary" />
+          <div className="space-y-2.5">
+            <label className="font-heading font-bold text-xs text-on-surface flex items-center gap-2">
+              <Globe className="w-3.5 h-3.5 text-primary" />
               <span>Ngôn ngữ hiển thị (Display Language)</span>
             </label>
 
@@ -120,22 +120,22 @@ export function PreferencesSettingsTab() {
               <button
                 type="button"
                 onClick={() => updatePreference('language', 'vi')}
-                className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                className={`flex items-center justify-between p-3.5 rounded-lg border transition-all cursor-pointer ${
                   preferences.language === 'vi'
-                    ? 'border-primary bg-primary-container/20 shadow-xs'
-                    : 'border-outline-variant/30 bg-surface-container-low/40 hover:bg-surface-container-low'
+                    ? 'border-primary bg-primary-container/20 shadow-2xs'
+                    : 'border-outline-variant/40 bg-surface-container-low/40 hover:bg-surface-container-low'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">🇻🇳</span>
+                  <span className="text-xl">🇻🇳</span>
                   <div className="text-left">
-                    <p className="font-heading font-bold text-sm text-on-surface">Tiếng Việt</p>
-                    <p className="font-sans text-xs text-on-surface-variant">Mặc định hệ thống</p>
+                    <p className="font-heading font-bold text-xs text-on-surface">Tiếng Việt</p>
+                    <p className="font-sans text-[11px] text-on-surface-variant">Mặc định hệ thống</p>
                   </div>
                 </div>
                 {preferences.language === 'vi' && (
-                  <div className="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center">
-                    <Check className="w-3 h-3 stroke-[3]" />
+                  <div className="w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center">
+                    <Check className="w-2.5 h-2.5 stroke-[3]" />
                   </div>
                 )}
               </button>
@@ -143,22 +143,22 @@ export function PreferencesSettingsTab() {
               <button
                 type="button"
                 onClick={() => updatePreference('language', 'en')}
-                className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                className={`flex items-center justify-between p-3.5 rounded-lg border transition-all cursor-pointer ${
                   preferences.language === 'en'
-                    ? 'border-primary bg-primary-container/20 shadow-xs'
-                    : 'border-outline-variant/30 bg-surface-container-low/40 hover:bg-surface-container-low'
+                    ? 'border-primary bg-primary-container/20 shadow-2xs'
+                    : 'border-outline-variant/40 bg-surface-container-low/40 hover:bg-surface-container-low'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">🇬🇧</span>
+                  <span className="text-xl">🇬🇧</span>
                   <div className="text-left">
-                    <p className="font-heading font-bold text-sm text-on-surface">English</p>
-                    <p className="font-sans text-xs text-on-surface-variant">Kinderly Global</p>
+                    <p className="font-heading font-bold text-xs text-on-surface">English</p>
+                    <p className="font-sans text-[11px] text-on-surface-variant">Kinderly Global</p>
                   </div>
                 </div>
                 {preferences.language === 'en' && (
-                  <div className="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center">
-                    <Check className="w-3 h-3 stroke-[3]" />
+                  <div className="w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center">
+                    <Check className="w-2.5 h-2.5 stroke-[3]" />
                   </div>
                 )}
               </button>
@@ -166,9 +166,9 @@ export function PreferencesSettingsTab() {
           </div>
 
           {/* Theme Accent Palette */}
-          <div className="space-y-3 pt-4 border-t border-outline-variant/20">
-            <label className="font-heading font-bold text-sm text-on-surface flex items-center gap-2">
-              <Palette className="w-4 h-4 text-primary" />
+          <div className="space-y-2.5 pt-4 border-t border-outline-variant/20">
+            <label className="font-heading font-bold text-xs text-on-surface flex items-center gap-2">
+              <Palette className="w-3.5 h-3.5 text-primary" />
               <span>Tông màu giao diện giáo viên</span>
             </label>
 
@@ -180,14 +180,14 @@ export function PreferencesSettingsTab() {
                     key={theme.id}
                     type="button"
                     onClick={() => updatePreference('themeTone', theme.id)}
-                    className={`flex flex-col text-left p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+                    className={`flex flex-col text-left p-3.5 rounded-lg border transition-all cursor-pointer ${
                       isSelected
-                        ? 'border-primary bg-primary-container/20 shadow-xs ring-1 ring-primary/30'
-                        : 'border-outline-variant/30 bg-surface-container-low/40 hover:bg-surface-container-low'
+                        ? 'border-primary bg-primary-container/20 shadow-2xs ring-1 ring-primary/30'
+                        : 'border-outline-variant/40 bg-surface-container-low/40 hover:bg-surface-container-low'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className={`w-6 h-6 rounded-full ${theme.bgColor} shadow-xs border border-white`} />
+                      <span className={`w-5 h-5 rounded-full ${theme.bgColor} shadow-2xs border border-white`} />
                       {isSelected && (
                         <div className="w-4 h-4 rounded-full bg-primary text-white flex items-center justify-center">
                           <Check className="w-2.5 h-2.5 stroke-[3]" />
@@ -207,23 +207,23 @@ export function PreferencesSettingsTab() {
           </div>
 
           {/* Density & Automation Toggles */}
-          <div className="space-y-4 pt-4 border-t border-outline-variant/20">
-            <label className="font-heading font-bold text-sm text-on-surface flex items-center gap-2">
-              <LayoutGrid className="w-4 h-4 text-primary" />
+          <div className="space-y-3 pt-4 border-t border-outline-variant/20">
+            <label className="font-heading font-bold text-xs text-on-surface flex items-center gap-2">
+              <LayoutGrid className="w-3.5 h-3.5 text-primary" />
               <span>Bố cục & Tính năng bổ trợ</span>
             </label>
 
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-surface-container-low/60 border border-outline-variant/30">
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between p-3.5 rounded-lg bg-surface-container-low/60 border border-outline-variant/30">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-surface-container-highest text-primary">
+                  <div className="p-2 rounded-md bg-surface-container-highest text-primary">
                     <LayoutGrid className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="font-heading font-bold text-xs sm:text-sm text-on-surface">
+                    <p className="font-heading font-bold text-xs text-on-surface">
                       Chế độ bố cục thu gọn (Compact View)
                     </p>
-                    <p className="font-sans text-[11px] sm:text-xs text-on-surface-variant">
+                    <p className="font-sans text-[11px] text-on-surface-variant">
                       Giảm khoảng cách các dòng bảng để xem nhiều học sinh hơn trên một màn hình
                     </p>
                   </div>
@@ -234,28 +234,28 @@ export function PreferencesSettingsTab() {
                   role="switch"
                   aria-checked={preferences.compactMode}
                   onClick={() => updatePreference('compactMode', !preferences.compactMode)}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                     preferences.compactMode ? 'bg-primary' : 'bg-surface-container-highest'
                   }`}
                 >
                   <span
-                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
                       preferences.compactMode ? 'translate-x-5' : 'translate-x-0'
                     }`}
                   />
                 </button>
               </div>
 
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-surface-container-low/60 border border-outline-variant/30">
+              <div className="flex items-center justify-between p-3.5 rounded-lg bg-surface-container-low/60 border border-outline-variant/30">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-surface-container-highest text-primary">
+                  <div className="p-2 rounded-md bg-surface-container-highest text-primary">
                     <FileCheck className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="font-heading font-bold text-xs sm:text-sm text-on-surface">
+                    <p className="font-heading font-bold text-xs text-on-surface">
                       Tự động lưu bản nháp (Auto-Save Drafts)
                     </p>
-                    <p className="font-sans text-[11px] sm:text-xs text-on-surface-variant">
+                    <p className="font-sans text-[11px] text-on-surface-variant">
                       Tự động lưu tạm nội dung bài học và thông báo khi đang soạn thảo
                     </p>
                   </div>
@@ -266,12 +266,12 @@ export function PreferencesSettingsTab() {
                   role="switch"
                   aria-checked={preferences.autoSaveDrafts}
                   onClick={() => updatePreference('autoSaveDrafts', !preferences.autoSaveDrafts)}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                     preferences.autoSaveDrafts ? 'bg-primary' : 'bg-surface-container-highest'
                   }`}
                 >
                   <span
-                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
                       preferences.autoSaveDrafts ? 'translate-x-5' : 'translate-x-0'
                     }`}
                   />
@@ -282,11 +282,11 @@ export function PreferencesSettingsTab() {
         </div>
 
         {/* Action Button */}
-        <div className="pt-6 mt-6 border-t border-outline-variant/20 flex justify-end">
+        <div className="pt-4 mt-5 border-t border-outline-variant/20 flex justify-end">
           <button
             type="button"
             onClick={handleSave}
-            className="btn-3d bg-primary text-white hover:bg-primary-dark font-heading font-bold text-sm px-6 py-2.5 rounded-2xl flex items-center gap-2 transition-all cursor-pointer"
+            className="bg-primary text-white hover:bg-primary-dark font-heading font-bold text-xs px-5 py-2.5 rounded-lg flex items-center gap-2 transition-all cursor-pointer shadow-xs"
           >
             <Save className="w-4 h-4" />
             <span>Lưu cài đặt giao diện</span>

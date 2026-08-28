@@ -134,14 +134,14 @@ export function QuickTemplateDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       {triggerButton && <DialogTrigger render={triggerButton} />}
 
-      <DialogContent className="sm:max-w-xl bg-surface-container-lowest rounded-2xl p-6 sm:p-7 shadow-2xl border border-outline-variant/30">
-        <DialogHeader className="space-y-2 pb-1">
-          <div className="w-11 h-11 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center mb-1 shadow-2xs">
+      <DialogContent className="sm:max-w-xl bg-surface-container-lowest rounded-xl p-5 sm:p-6 shadow-2xl border border-outline-variant/30">
+        <DialogHeader className="space-y-1.5 pb-1">
+          <div className="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center mb-1 shadow-2xs">
             <Wand2 className="w-5 h-5" />
           </div>
-          <DialogTitle className="font-heading text-xl sm:text-2xl font-bold text-on-surface flex items-center gap-2">
+          <DialogTitle className="font-heading text-lg sm:text-xl font-bold text-on-surface flex items-center gap-2">
             <span>Nạp thời khóa biểu mẫu chuẩn</span>
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] bg-amber-200/60 text-amber-800 font-bold font-sans">
+            <span className="px-2 py-0.5 rounded-md text-[11px] bg-amber-500/15 text-amber-900 font-bold font-sans">
               1-Click
             </span>
           </DialogTitle>
@@ -151,8 +151,8 @@ export function QuickTemplateDialog({
         </DialogHeader>
 
         {/* Template Overview */}
-        <div className="space-y-3.5 my-2">
-          <div className="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/30 space-y-2.5">
+        <div className="space-y-3 my-2">
+          <div className="p-3 rounded-lg bg-surface-container-low border border-outline-variant/30 space-y-2">
             <div className="flex items-center justify-between text-xs font-bold text-on-surface font-heading">
               <span className="flex items-center gap-1.5">
                 <CalendarDays className="w-4 h-4 text-primary" />
@@ -165,7 +165,7 @@ export function QuickTemplateDialog({
               {TEMPLATE_HIGHLIGHTS.map((t) => (
                 <div
                   key={t.day}
-                  className="flex items-center gap-2.5 p-2 rounded-lg bg-surface border border-outline-variant/20 overflow-hidden"
+                  className="flex items-center gap-2.5 p-2 rounded-md bg-surface border border-outline-variant/20 overflow-hidden"
                 >
                   <span className="font-bold text-primary shrink-0 w-12 text-[11px]">
                     {t.day}:
@@ -186,19 +186,19 @@ export function QuickTemplateDialog({
           </div>
 
           {/* Replace option toggle */}
-          <div className="flex items-start gap-3 p-3 rounded-xl bg-surface-container/70 border border-outline-variant/30">
+          <div className="flex items-start gap-2.5 p-3 rounded-lg bg-surface-container/70 border border-outline-variant/30">
             <input
               type="checkbox"
               id="replaceExisting"
               checked={replaceExisting}
               onChange={(e) => setReplaceExisting(e.target.checked)}
-              className="w-4 h-4 mt-0.5 rounded text-amber-600 focus:ring-amber-500 cursor-pointer shrink-0"
+              className="w-4 h-4 mt-0.5 rounded text-amber-600 focus:ring-amber-500 cursor-pointer shrink-0 accent-amber-600"
             />
             <label
               htmlFor="replaceExisting"
               className="text-xs text-on-surface cursor-pointer leading-relaxed"
             >
-              <span className="font-bold text-amber-800 block">
+              <span className="font-bold text-amber-900 block">
                 Xóa các tiết học hiện có trước khi nạp
               </span>
               <span className="text-on-surface-variant text-[11px]">
@@ -209,11 +209,11 @@ export function QuickTemplateDialog({
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-3 pt-3 border-t border-outline-variant/30">
+        <div className="flex justify-end gap-2.5 pt-2.5 border-t border-outline-variant/30">
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="px-4 py-2 rounded-xl bg-surface-container text-on-surface-variant font-bold text-xs hover:bg-surface-container-high transition-colors cursor-pointer"
+            className="px-3.5 py-1.5 rounded-lg bg-surface-container text-on-surface-variant font-bold text-xs hover:bg-surface-container-high transition-colors cursor-pointer"
           >
             Hủy
           </button>
@@ -221,13 +221,13 @@ export function QuickTemplateDialog({
             type="button"
             onClick={handleApply}
             disabled={loading}
-            className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-heading font-bold text-xs transition-all shadow-sm flex items-center gap-2 cursor-pointer disabled:opacity-50"
+            className="px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-heading font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
           >
             {loading ? (
               <span>Đang áp dụng...</span>
             ) : (
               <>
-                <Sparkles className="w-4 h-4" />
+                <Sparkles className="w-3.5 h-3.5" />
                 <span>Áp dụng mẫu ngay</span>
               </>
             )}
