@@ -27,7 +27,15 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   // Enable CORS
-  app.enableCors();
+  const frontendUrl = process.env.FRONTEND_URL;
+  app.enableCors({
+    origin: frontendUrl
+      ? [frontendUrl, /\.vercel\.app$/, 'http://localhost:3000']
+      : true,
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type,Accept,Authorization',
+  });
 
   // Setup Swagger
   const config = new DocumentBuilder()
@@ -37,11 +45,11 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  // Actually SwaggerModule needs to be awaited in v11 sometimes, or just createDocument is synchronous.
-  // We use SwaggerModule.createDocument
   SwaggerModule.setup('api/docs', app, document);
 
-  // Ensure port 3001 is used for backend
-  await app.listen(process.env.PORT ?? 3001);
+  // Ensure port is used for backend (Render assigns process.env.PORT)
+  const port = process.env.PORT ?? 3001;
+  await app.listen(port);
+  console.log(`🚀 LMS Backend running on port ${port}`);
 }
 bootstrap();
