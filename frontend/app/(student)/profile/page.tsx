@@ -1,14 +1,15 @@
-import { createClient } from '@/lib/supabase/server';
+import { getServerUser, createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { StudentProfileView } from '@/components/student/StudentProfileView';
 
 export default async function StudentProfilePage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getServerUser();
 
   if (!user) {
     redirect('/login');
   }
+
+  const supabase = await createClient();
 
   // Extract phone number from email
   const userEmail = user.email || '';
@@ -39,43 +40,48 @@ export default async function StudentProfilePage() {
     school: 'Trường Mầm non Kinderly',
   };
 
-  // Fetch class enrollment
-  const { data: enrollments } = await supabase
-    .from('class_enrollments')
-    .select('class_id, classes(id, name, grade)')
-    .eq('profile_id', studentProfile.id)
-    .eq('role', 'student')
-    .limit(1);
+  // Fetch enrollments, xpData, allBadges, userBadges, and xpHistory concurrently in parallel
+  const [enrollmentsRes, xpDataRes, allBadgesRes, userBadgesRes, xpHistoryRes] = await Promise.all([
+    supabase
+      .from('class_enrollments')
+      .select('class_id, classes(id, name, grade)')
+      .eq('profile_id', studentProfile.id)
+      .eq('role', 'student')
+      .limit(1),
+    supabase
+      .from('user_xp')
+      .select('total_xp, current_level, total_stars')
+      .eq('student_id', studentProfile.id)
+      .maybeSingle(),
+    supabase
+      .from('badges')
+      .select('*')
+      .order('xp_bonus', { ascending: true }),
+    supabase
+      .from('user_badges')
+      .select('badge_id, unlocked_at')
+      .eq('student_id', studentProfile.id),
+    supabase
+      .from('xp_history')
+      .select('id, action, xp_amount, source_type, created_at')
+      .eq('student_id', studentProfile.id)
+      .order('created_at', { ascending: false })
+      .limit(15),
+  ]);
 
-  const className = (enrollments?.[0]?.classes as any)?.name || 'Lớp Mầm A1';
-  const grade = (enrollments?.[0]?.classes as any)?.grade || 'Mẫu giáo';
+  const enrollments = enrollmentsRes.data;
+  const xpData = xpDataRes.data;
+  const allBadges = allBadgesRes.data;
+  const userBadges = userBadgesRes.data;
+  const xpHistory = xpHistoryRes.data;
 
-  // Fetch user_xp
-  const { data: xpData } = await supabase
-    .from('user_xp')
-    .select('total_xp, current_level, total_stars')
-    .eq('student_id', studentProfile.id)
-    .maybeSingle();
-
-  // Fetch all badges & unlocked badges
-  const { data: allBadges } = await supabase.from('badges').select('*').order('xp_bonus', { ascending: true });
-  const { data: userBadges } = await supabase
-    .from('user_badges')
-    .select('badge_id, unlocked_at')
-    .eq('student_id', studentProfile.id);
+  const className = (enrollments?.[0]?.classes as any)?.name || 'Lớp 1A1';
+  const grade = (enrollments?.[0]?.classes as any)?.grade || 'Lớp 1';
 
   const unlockedMap: Record<string, string> = {};
   (userBadges || []).forEach((ub) => {
     unlockedMap[ub.badge_id] = ub.unlocked_at;
   });
-
-  // Fetch XP history
-  const { data: xpHistory } = await supabase
-    .from('xp_history')
-    .select('id, action, xp_amount, source_type, created_at')
-    .eq('student_id', studentProfile.id)
-    .order('created_at', { ascending: false })
-    .limit(15);
 
   return (
     <StudentProfileView

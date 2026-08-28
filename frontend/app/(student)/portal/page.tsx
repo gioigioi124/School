@@ -1,14 +1,15 @@
-import { createClient } from '@/lib/supabase/server';
+import { getServerUser, createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { StudentPortalView } from '@/components/portal/StudentPortalView';
 
 export default async function PortalPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getServerUser();
 
   if (!user) {
     redirect('/login');
   }
+
+  const supabase = await createClient();
 
   // Extract phone number from email (e.g. 0943663662@kinderly.com -> 0943663662)
   const userEmail = user.email || '';
@@ -30,13 +31,28 @@ export default async function PortalPage() {
     .or(filterQuery);
 
   const profileIds = (childProfiles || []).map((p) => p.id);
+  const safeProfileIds = profileIds.length > 0 ? profileIds : ['00000000-0000-0000-0000-000000000000'];
 
-  // Fetch class enrollments for these children
-  const { data: enrollments } = await supabase
-    .from('class_enrollments')
-    .select('profile_id, class_id, classes(id, name, grade)')
-    .in('profile_id', profileIds.length > 0 ? profileIds : ['00000000-0000-0000-0000-000000000000'])
-    .eq('role', 'student');
+  // Fetch enrollments, user_xp and progresses in parallel
+  const [enrollmentsRes, xpDataRes, progressesRes] = await Promise.all([
+    supabase
+      .from('class_enrollments')
+      .select('profile_id, class_id, classes(id, name, grade)')
+      .in('profile_id', safeProfileIds)
+      .eq('role', 'student'),
+    supabase
+      .from('user_xp')
+      .select('student_id, total_xp, current_level, total_stars')
+      .in('student_id', safeProfileIds),
+    supabase
+      .from('student_progress')
+      .select('student_id, lesson_id, is_completed')
+      .in('student_id', safeProfileIds),
+  ]);
+
+  const enrollments = enrollmentsRes.data;
+  const xpData = xpDataRes.data;
+  const progresses = progressesRes.data;
 
   const enrollmentMap: Record<string, { className: string; grade?: string; classId?: string }> = {};
   const classIds: string[] = [];
@@ -55,12 +71,6 @@ export default async function PortalPage() {
     }
   });
 
-  // Fetch user_xp for these children
-  const { data: xpData } = await supabase
-    .from('user_xp')
-    .select('student_id, total_xp, current_level, total_stars')
-    .in('student_id', profileIds.length > 0 ? profileIds : ['00000000-0000-0000-0000-000000000000']);
-
   const xpMap: Record<string, { totalXp: number; currentLevel: number; totalStars: number }> = {};
   (xpData || []).forEach((x: any) => {
     xpMap[x.student_id] = {
@@ -77,12 +87,6 @@ export default async function PortalPage() {
     .in('class_id', classIds.length > 0 ? classIds : ['00000000-0000-0000-0000-000000000000'])
     .order('order_index', { ascending: true })
     .limit(8);
-
-  // Fetch student_progress for completed status
-  const { data: progresses } = await supabase
-    .from('student_progress')
-    .select('student_id, lesson_id, is_completed')
-    .in('student_id', profileIds.length > 0 ? profileIds : ['00000000-0000-0000-0000-000000000000']);
 
   const progressSet = new Set(
     (progresses || []).filter((p: any) => p.is_completed).map((p: any) => `${p.student_id}_${p.lesson_id}`)

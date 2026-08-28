@@ -36,12 +36,8 @@ export default function LoginForm() {
 
       toast.success('Đăng nhập thành công!');
       
-      if (!isEmail || normalizedEmail.endsWith('@kinderly.com')) {
-        router.push('/portal');
-      } else {
-        router.push('/dashboard');
-      }
-      router.refresh();
+      const targetUrl = (!isEmail || normalizedEmail.endsWith('@kinderly.com')) ? '/portal' : '/dashboard';
+      window.location.href = targetUrl;
     } catch (error: unknown) {
       if (error instanceof Error) {
         let message = error.message;

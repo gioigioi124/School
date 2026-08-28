@@ -1,7 +1,7 @@
 import React from 'react';
 import { StudentSidebar } from '@/components/student/StudentSidebar';
 import { StudentMobileNav } from '@/components/student/StudentMobileNav';
-import { createClient } from '@/lib/supabase/server';
+import { getServerUser } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { determineUserRole } from '@/lib/auth-helpers';
 
@@ -10,8 +10,7 @@ export default async function StudentLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getServerUser();
 
   if (!user) {
     redirect('/login');

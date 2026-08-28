@@ -14,53 +14,79 @@ import {
   BookOpen,
   Plus
 } from 'lucide-react';
-import { createClient } from '@/lib/supabase/server';
+import { getServerUser, createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { CreateClassDialog } from '@/components/classes/CreateClassDialog';
 
 export default async function DashboardPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getServerUser();
 
   if (!user) {
     redirect('/login');
   }
 
-  // 1. Get user profile
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('display_name, school')
-    .eq('id', user.id)
-    .single();
+  const supabase = await createClient();
 
+  // 1 & 2. Fetch profile, teacher enrollments and classes in parallel
+  const [profileRes, teacherEnrollmentsRes, allClassesRes] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('display_name, school')
+      .eq('id', user.id)
+      .single(),
+    supabase
+      .from('class_enrollments')
+      .select('class_id, classes(*)')
+      .eq('profile_id', user.id)
+      .eq('role', 'teacher'),
+    supabase
+      .from('classes')
+      .select('*')
+      .order('created_at', { ascending: false }),
+  ]);
+
+  const profile = profileRes.data;
+  const teacherEnrollments = teacherEnrollmentsRes.data;
+  const allClasses = allClassesRes.data;
   const displayName = profile?.display_name || 'Cô Mai';
-
-  // 2. Fetch classes that the teacher is enrolled in
-  const { data: teacherEnrollments } = await supabase
-    .from('class_enrollments')
-    .select('class_id, classes(*)')
-    .eq('profile_id', user.id)
-    .eq('role', 'teacher');
-
-  // Fallback for admin or general viewing
-  const { data: allClasses } = await supabase
-    .from('classes')
-    .select('*')
-    .order('created_at', { ascending: false });
 
   let myClasses = (teacherEnrollments?.map(e => Array.isArray(e.classes) ? e.classes[0] : e.classes).filter(Boolean) || []) as any[];
   if (myClasses.length === 0) {
     myClasses = (allClasses || []) as any[];
   }
 
-  // 3. Fetch all student enrollments across these classes
   const classIds = myClasses.map(c => c.id);
-  const { data: allEnrollments } = await supabase
-    .from('class_enrollments')
-    .select('id, class_id, profile_id, created_at, role, profiles(*)')
-    .in('class_id', classIds.length > 0 ? classIds : ['00000000-0000-0000-0000-000000000000'])
-    .order('created_at', { ascending: false });
+  const safeClassIds = classIds.length > 0 ? classIds : ['00000000-0000-0000-0000-000000000000'];
+
+  // 3 & 4. Fetch enrollments and schedules in parallel
+  const [allEnrollmentsRes, rawSchedulesRes] = await Promise.all([
+    supabase
+      .from('class_enrollments')
+      .select('id, class_id, profile_id, created_at, role, profiles(*)')
+      .in('class_id', safeClassIds)
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('schedules')
+      .select(`
+        id,
+        class_id,
+        day_of_week,
+        start_time,
+        end_time,
+        subject,
+        room,
+        color,
+        description,
+        classes:class_id(name, grade)
+      `)
+      .in('class_id', safeClassIds)
+      .order('day_of_week', { ascending: true })
+      .order('start_time', { ascending: true }),
+  ]);
+
+  const allEnrollments = allEnrollmentsRes.data;
+  const rawSchedules = rawSchedulesRes.data;
 
   const studentEnrollments = (allEnrollments || []).filter(e => e.role === 'student');
 
@@ -70,25 +96,6 @@ export default async function DashboardPage() {
     const cid = e.class_id || e.classId;
     studentCountMap[cid] = (studentCountMap[cid] || 0) + 1;
   });
-
-  // 4. Fetch schedules for teacher's classes
-  const { data: rawSchedules } = await supabase
-    .from('schedules')
-    .select(`
-      id,
-      class_id,
-      day_of_week,
-      start_time,
-      end_time,
-      subject,
-      room,
-      color,
-      description,
-      classes:class_id(name, grade)
-    `)
-    .in('class_id', classIds.length > 0 ? classIds : ['00000000-0000-0000-0000-000000000000'])
-    .order('day_of_week', { ascending: true })
-    .order('start_time', { ascending: true });
 
   // Determine current day of week in VN format (2 = Thứ 2, ..., 8 = Chủ Nhật)
   const now = new Date();

@@ -115,8 +115,7 @@ export function StudentSidebar() {
   const handleLogout = async () => {
     sounds.playPop();
     await supabase.auth.signOut();
-    router.push('/login');
-    router.refresh();
+    window.location.href = '/login';
   };
 
   return (

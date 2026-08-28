@@ -33,14 +33,30 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Refresh auth session
+  const pathname = request.nextUrl.pathname;
+  const allCookies = request.cookies.getAll();
+  const hasAuthCookie = allCookies.some(
+    (c) => c.name.startsWith('sb-') && c.name.includes('-auth-token')
+  );
+
+  // Fast path: If user has no Supabase auth token cookies
+  if (!hasAuthCookie) {
+    if (isTeacherRoute(pathname) || isStudentRoute(pathname)) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      url.searchParams.set('redirect', pathname);
+      return NextResponse.redirect(url);
+    }
+    // Public routes (login, register, landing) can render immediately without remote auth check
+    return supabaseResponse;
+  }
+
+  // User has auth cookies -> Refresh and verify session with Supabase
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const pathname = request.nextUrl.pathname;
-
-  // 1. Unauthenticated users handling
+  // 1. Unauthenticated users handling (cookie expired or invalid)
   if (!user) {
     if (isTeacherRoute(pathname) || isStudentRoute(pathname)) {
       const url = request.nextUrl.clone();

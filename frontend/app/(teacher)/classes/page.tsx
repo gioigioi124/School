@@ -1,34 +1,38 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { School } from 'lucide-react';
-import { createClient } from '@/lib/supabase/server';
+import { getServerUser, createClient } from '@/lib/supabase/server';
 import { CreateClassDialog } from '@/components/classes/CreateClassDialog';
 import { ClassCard } from '@/components/classes/ClassCard';
 
 export default async function ClassesPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getServerUser();
 
   if (!user) return null;
 
-  // 1. Fetch classes that the teacher is enrolled in
-  const { data: teacherEnrollments } = await supabase
-    .from('class_enrollments')
-    .select('class_id, classes(*)')
-    .eq('profile_id', user.id)
-    .eq('role', 'teacher');
+  const supabase = await createClient();
 
-  // Fallback for admin or general viewing
-  const { data: allClasses } = await supabase
-    .from('classes')
-    .select('*')
-    .order('created_at', { ascending: false });
+  // Fetch teacher enrollments and all classes in parallel
+  const [teacherEnrollmentsRes, allClassesRes] = await Promise.all([
+    supabase
+      .from('class_enrollments')
+      .select('class_id, classes(*)')
+      .eq('profile_id', user.id)
+      .eq('role', 'teacher'),
+    supabase
+      .from('classes')
+      .select('*')
+      .order('created_at', { ascending: false }),
+  ]);
+
+  const teacherEnrollments = teacherEnrollmentsRes.data;
+  const allClasses = allClassesRes.data;
 
   let displayClasses = (teacherEnrollments?.map(e => Array.isArray(e.classes) ? e.classes[0] : e.classes).filter(Boolean) || []) as any[];
   if (displayClasses.length === 0) {
     displayClasses = (allClasses || []) as any[];
   }
 
-  // 2. Fetch student counts for these classes
+  // Fetch student counts for these classes
   const classIds = displayClasses.map(c => c.id);
   const { data: studentEnrollments } = await supabase
     .from('class_enrollments')
