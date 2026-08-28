@@ -14,34 +14,34 @@ export default async function StudentsPage() {
   // 1. Fetch teacher's enrolled classes
   const { data: teacherEnrollments } = await supabase
     .from('class_enrollments')
-    .select('classId, classes(id, name, grade)')
-    .eq('profileId', user.id)
+    .select('class_id, classes(id, name, grade)')
+    .eq('profile_id', user.id)
     .eq('role', 'teacher');
 
-  const teacherClassIds = teacherEnrollments?.map(e => e.classId) || [];
+  const teacherClassIds = teacherEnrollments?.map((e: any) => e.class_id || e.classId) || [];
 
   // 2. Fetch students in teacher's classes (or all students if admin/general)
   const { data: enrollments } = await supabase
     .from('class_enrollments')
     .select(`
       id,
-      classId,
+      class_id,
       classes ( id, name, grade ),
-      profiles:profileId ( id, displayName, email, avatarUrl, parentPhone, parentName, phone, createdAt )
+      profiles:profile_id ( id, display_name, email, avatar_url, parent_phone, parent_name, phone, created_at )
     `)
     .eq('role', 'student')
-    .in('classId', teacherClassIds.length > 0 ? teacherClassIds : ['00000000-0000-0000-0000-000000000000']);
+    .in('class_id', teacherClassIds.length > 0 ? teacherClassIds : ['00000000-0000-0000-0000-000000000000']);
 
   // Format student records
   const studentList = (enrollments || []).map((e: any) => ({
     id: e.profiles?.id || e.id,
-    displayName: e.profiles?.displayName || 'Bé chưa đặt tên',
-    avatarUrl: e.profiles?.avatarUrl || '🐻',
-    parentPhone: e.profiles?.parentPhone || e.profiles?.phone || 'Chưa cập nhật',
-    parentName: e.profiles?.parentName || 'Phụ huynh',
+    displayName: e.profiles?.display_name || e.profiles?.displayName || 'Bé chưa đặt tên',
+    avatarUrl: e.profiles?.avatar_url || e.profiles?.avatarUrl || '🐻',
+    parentPhone: e.profiles?.parent_phone || e.profiles?.parentPhone || e.profiles?.phone || 'Chưa cập nhật',
+    parentName: e.profiles?.parent_name || e.profiles?.parentName || 'Phụ huynh',
     className: e.classes?.name || 'Chưa phân lớp',
-    classId: e.classId,
-    createdAt: e.profiles?.createdAt,
+    classId: e.class_id || e.classId,
+    createdAt: e.profiles?.created_at || e.profiles?.createdAt,
   }));
 
   // Calculate unique parent phone numbers

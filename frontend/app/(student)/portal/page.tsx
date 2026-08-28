@@ -18,7 +18,7 @@ export default async function PortalPage() {
   // Fetch all child profiles matching this user (by ID, parentPhone, phone, or email)
   let filterQuery = `id.eq.${user.id}`;
   if (userPhone) {
-    filterQuery += `,parentPhone.eq.${userPhone},phone.eq.${userPhone}`;
+    filterQuery += `,parent_phone.eq.${userPhone},phone.eq.${userPhone}`;
   }
   if (userEmail) {
     filterQuery += `,email.eq.${userEmail}`;
@@ -26,56 +26,139 @@ export default async function PortalPage() {
 
   const { data: childProfiles } = await supabase
     .from('profiles')
-    .select('id, displayName, avatarUrl, parentPhone, parentName, email')
+    .select('id, display_name, avatar_url, parent_phone, parent_name, email')
     .or(filterQuery);
 
-  const profileIds = (childProfiles || []).map(p => p.id);
+  const profileIds = (childProfiles || []).map((p) => p.id);
 
   // Fetch class enrollments for these children
   const { data: enrollments } = await supabase
     .from('class_enrollments')
-    .select('profileId, classId, classes(id, name, grade)')
-    .in('profileId', profileIds.length > 0 ? profileIds : ['00000000-0000-0000-0000-000000000000'])
+    .select('profile_id, class_id, classes(id, name, grade)')
+    .in('profile_id', profileIds.length > 0 ? profileIds : ['00000000-0000-0000-0000-000000000000'])
     .eq('role', 'student');
 
   const enrollmentMap: Record<string, { className: string; grade?: string; classId?: string }> = {};
-  (enrollments || []).forEach(e => {
+  const classIds: string[] = [];
+  (enrollments || []).forEach((e: any) => {
+    const pid = e.profile_id || e.profileId;
     const cls = Array.isArray(e.classes) ? e.classes[0] : e.classes;
     if (cls) {
-      enrollmentMap[e.profileId] = {
+      enrollmentMap[pid] = {
         className: cls.name,
         grade: cls.grade || undefined,
         classId: cls.id,
       };
+      if (!classIds.includes(cls.id)) {
+        classIds.push(cls.id);
+      }
     }
   });
 
-  const formattedChildren = (childProfiles || []).map(child => ({
+  // Fetch user_xp for these children
+  const { data: xpData } = await supabase
+    .from('user_xp')
+    .select('student_id, total_xp, current_level, total_stars')
+    .in('student_id', profileIds.length > 0 ? profileIds : ['00000000-0000-0000-0000-000000000000']);
+
+  const xpMap: Record<string, { totalXp: number; currentLevel: number; totalStars: number }> = {};
+  (xpData || []).forEach((x: any) => {
+    xpMap[x.student_id] = {
+      totalXp: x.total_xp || 0,
+      currentLevel: x.current_level || 1,
+      totalStars: x.total_stars || 0,
+    };
+  });
+
+  // Fetch real lessons from enrolled classes
+  const { data: realLessons } = await supabase
+    .from('lessons')
+    .select('id, class_id, title, description, duration, thumbnail_url, order_index')
+    .in('class_id', classIds.length > 0 ? classIds : ['00000000-0000-0000-0000-000000000000'])
+    .order('order_index', { ascending: true })
+    .limit(8);
+
+  // Fetch student_progress for completed status
+  const { data: progresses } = await supabase
+    .from('student_progress')
+    .select('student_id, lesson_id, is_completed')
+    .in('student_id', profileIds.length > 0 ? profileIds : ['00000000-0000-0000-0000-000000000000']);
+
+  const progressSet = new Set(
+    (progresses || []).filter((p: any) => p.is_completed).map((p: any) => `${p.student_id}_${p.lesson_id}`)
+  );
+
+  // Fetch badges
+  const { data: allBadges } = await supabase.from('badges').select('*');
+  const { data: userBadges } = await supabase
+    .from('user_badges')
+    .select('student_id, badge_id, unlocked_at')
+    .in('student_id', profileIds.length > 0 ? profileIds : ['00000000-0000-0000-0000-000000000000']);
+
+  const userBadgeMap: Record<string, string[]> = {};
+  (userBadges || []).forEach((ub: any) => {
+    if (!userBadgeMap[ub.student_id]) userBadgeMap[ub.student_id] = [];
+    userBadgeMap[ub.student_id].push(ub.badge_id);
+  });
+
+  // Fetch class schedules for enrolled classes
+  const { data: rawSchedules } = await supabase
+    .from('schedules')
+    .select('id, class_id, day_of_week, start_time, end_time, subject, room, color, description, classes(name, grade), profiles:teacher_id(display_name)')
+    .in('class_id', classIds.length > 0 ? classIds : ['00000000-0000-0000-0000-000000000000'])
+    .order('day_of_week', { ascending: true })
+    .order('start_time', { ascending: true });
+
+  // Fetch recent announcements
+  const { data: announcements } = await supabase
+    .from('announcements')
+    .select('id, title, content, is_important, created_at, class_id')
+    .in('class_id', classIds.length > 0 ? classIds : ['00000000-0000-0000-0000-000000000000'])
+    .order('created_at', { ascending: false })
+    .limit(3);
+
+  const formattedChildren = (childProfiles || []).map((child) => ({
     id: child.id,
-    displayName: child.displayName || 'Bé yêu',
-    avatarUrl: child.avatarUrl || '🐻',
-    parentPhone: child.parentPhone || userPhone,
-    parentName: child.parentName || 'Phụ huynh',
-    className: enrollmentMap[child.id]?.className || 'Lớp Mầm A1',
-    grade: enrollmentMap[child.id]?.grade || 'Mẫu giáo',
+    displayName: (child as any).display_name || (child as any).displayName || 'Bé yêu',
+    avatarUrl: (child as any).avatar_url || (child as any).avatarUrl || '🎒',
+    parentPhone: (child as any).parent_phone || (child as any).parentPhone || userPhone,
+    parentName: (child as any).parent_name || (child as any).parentName || 'Phụ huynh',
+    className: enrollmentMap[child.id]?.className || 'Lớp 1A1',
+    grade: enrollmentMap[child.id]?.grade || 'Lớp 1',
     classId: enrollmentMap[child.id]?.classId,
     teacherName: 'Cô Nguyễn Lan',
+    totalXp: xpMap[child.id]?.totalXp ?? 150,
+    currentLevel: xpMap[child.id]?.currentLevel ?? 1,
+    totalStars: xpMap[child.id]?.totalStars ?? 12,
+    unlockedBadgeIds: userBadgeMap[child.id] || [],
   }));
 
-  // Fallback if no child profile is found yet
   if (formattedChildren.length === 0) {
     formattedChildren.push({
       id: user.id,
-      displayName: 'Bé yêu',
-      avatarUrl: '🐻',
+      displayName: 'Học sinh Tiểu học',
+      avatarUrl: '🎒',
       parentPhone: userPhone,
       parentName: 'Phụ huynh',
-      className: 'Lớp Mầm A1',
-      grade: 'Mẫu giáo',
+      className: 'Lớp 1A1',
+      grade: 'Lớp 1',
       classId: undefined,
       teacherName: 'Cô Nguyễn Lan',
+      totalXp: 150,
+      currentLevel: 1,
+      totalStars: 12,
+      unlockedBadgeIds: [],
     });
   }
 
-  return <StudentPortalView childrenList={formattedChildren} />;
+  return (
+    <StudentPortalView 
+      childrenList={formattedChildren} 
+      initialLessons={realLessons || []}
+      completedLessonIds={Array.from(progressSet)}
+      allBadges={allBadges || []}
+      announcements={announcements || []}
+      schedules={rawSchedules || []}
+    />
+  );
 }

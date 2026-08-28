@@ -32,18 +32,18 @@ export default function Header() {
       // 1. Fetch Profile
       const { data: profile } = await supabase
         .from('profiles')
-        .select('displayName, school')
+        .select('display_name, school')
         .eq('id', user.id)
         .single();
-      if (profile?.displayName) setDisplayName(profile.displayName);
+      if (profile?.display_name) setDisplayName(profile.display_name);
       if (profile?.school) setSchool(profile.school);
 
       // 2. Fetch initial notifications
       const { data: notifs } = await supabase
         .from('notifications')
         .select('*')
-        .eq('userId', user.id)
-        .order('createdAt', { ascending: false })
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
         .limit(10);
 
       if (notifs) {
@@ -141,8 +141,8 @@ export default function Header() {
     if (user) {
       await supabase
         .from('notifications')
-        .update({ isRead: true })
-        .eq('userId', user.id);
+        .update({ is_read: true })
+        .eq('user_id', user.id);
     }
     toast.success('Đã đánh dấu tất cả là đã đọc');
   };

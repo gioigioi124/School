@@ -16,8 +16,8 @@ export declare class LessonsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        classId: string;
         content: string | null;
+        classId: string;
         teacherId: string;
         videoUrl: string | null;
         thumbnailUrl: string | null;
@@ -51,8 +51,8 @@ export declare class LessonsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        classId: string;
         content: string | null;
+        classId: string;
         teacherId: string;
         videoUrl: string | null;
         thumbnailUrl: string | null;
@@ -94,8 +94,8 @@ export declare class LessonsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        classId: string;
         content: string | null;
+        classId: string;
         teacherId: string;
         videoUrl: string | null;
         thumbnailUrl: string | null;
@@ -108,8 +108,8 @@ export declare class LessonsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        classId: string;
         content: string | null;
+        classId: string;
         teacherId: string;
         videoUrl: string | null;
         thumbnailUrl: string | null;
@@ -122,8 +122,8 @@ export declare class LessonsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        classId: string;
         content: string | null;
+        classId: string;
         teacherId: string;
         videoUrl: string | null;
         thumbnailUrl: string | null;

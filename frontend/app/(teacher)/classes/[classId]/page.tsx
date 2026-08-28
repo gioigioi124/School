@@ -32,22 +32,38 @@ export default async function ClassDetailPage({ params }: PageProps) {
   const { data: enrollments } = await supabase
     .from('class_enrollments')
     .select('role, profiles(*)')
-    .eq('classId', classId);
+    .eq('class_id', classId);
 
   const students = (enrollments || [])
     .filter(e => e.role === 'student' && e.profiles)
-    .map(e => (Array.isArray(e.profiles) ? e.profiles[0] : e.profiles) as any);
+    .map(e => {
+      const p = Array.isArray(e.profiles) ? e.profiles[0] : e.profiles;
+      return {
+        id: p?.id,
+        email: p?.email,
+        displayName: p?.display_name || p?.displayName || 'Bé chưa đặt tên',
+        avatarUrl: p?.avatar_url || p?.avatarUrl || '🐻',
+        createdAt: p?.created_at || p?.createdAt,
+      };
+    });
 
   // Find teacher name
   const teacherEnrollment = (enrollments || []).find(e => e.role === 'teacher' && e.profiles);
   const teacherProfile = teacherEnrollment?.profiles;
-  const teacherName = Array.isArray(teacherProfile) 
-    ? teacherProfile[0]?.displayName 
-    : (teacherProfile as any)?.displayName;
+  const t = Array.isArray(teacherProfile) ? teacherProfile[0] : teacherProfile;
+  const teacherName = (t as any)?.display_name || (t as any)?.displayName || 'Cô giáo';
 
   return (
     <ClassDetailView 
-      classData={classData} 
+      classData={{
+        id: classData.id,
+        name: classData.name,
+        description: classData.description,
+        grade: classData.grade,
+        avatarUrl: classData.avatar_url || classData.avatarUrl || '📚',
+        school: classData.school,
+        createdAt: classData.created_at || classData.createdAt,
+      }} 
       students={students} 
       teacherName={teacherName} 
     />

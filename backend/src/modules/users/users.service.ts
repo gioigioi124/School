@@ -24,11 +24,26 @@ export class UsersService {
   }
 
   async updateProfile(userId: string, updateData: UpdateProfileDto) {
+    const existing = await this.prisma.profile.findUnique({
+      where: { id: userId },
+    });
+
+    if (!existing) {
+      throw new NotFoundException('Profile not found');
+    }
+
     return this.prisma.profile.update({
       where: { id: userId },
       data: {
-        displayName: updateData.displayName,
-        avatarUrl: updateData.avatarUrl,
+        ...(updateData.displayName !== undefined && { displayName: updateData.displayName }),
+        ...(updateData.phone !== undefined && { phone: updateData.phone }),
+        ...(updateData.school !== undefined && { school: updateData.school }),
+        ...(updateData.avatarUrl !== undefined && { avatarUrl: updateData.avatarUrl }),
+      },
+      include: {
+        roleAssignments: {
+          include: { role: true },
+        },
       },
     });
   }

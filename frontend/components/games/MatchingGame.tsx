@@ -60,15 +60,61 @@ export function MatchingGame() {
           { duration: 4000 }
         );
 
-        // Record score to Supabase
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          await supabase.from('xp_history').insert({
-            studentId: user.id,
-            action: 'Chơi game: Nối Hình Con Vật (100 điểm)',
-            xpAmount: 20,
-            sourceType: 'game',
-          });
+        // Record score and sync XP to Supabase / Backend
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            // Find student profile id
+            const { data: profiles } = await supabase
+              .from('profiles')
+              .select('id')
+              .or(`id.eq.${user.id},email.eq.${user.email}`);
+            
+            const studentId = profiles?.[0]?.id || user.id;
+
+            // 1. Insert history
+            await supabase.from('xp_history').insert({
+              student_id: studentId,
+              action: 'Chơi game: Nối Hình Con Vật (100 điểm)',
+              xp_amount: 20,
+              source_type: 'game',
+            });
+
+            // 2. Update user_xp
+            const { data: currentXp } = await supabase
+              .from('user_xp')
+              .select('*')
+              .eq('student_id', studentId)
+              .single();
+
+            const totalXp = (currentXp?.total_xp || 0) + 20;
+            const totalStars = (currentXp?.total_stars || 0) + 1;
+            const currentLevel = Math.floor(totalXp / 1000) + 1;
+
+            await supabase.from('user_xp').upsert({
+              student_id: studentId,
+              total_xp: totalXp,
+              total_stars: totalStars,
+              current_level: currentLevel,
+            });
+
+            // 3. Check first_lesson badge
+            if (totalXp >= 10) {
+              const { data: badge } = await supabase
+                .from('badges')
+                .select('id')
+                .eq('code', 'first_lesson')
+                .single();
+              if (badge) {
+                await supabase.from('user_badges').upsert({
+                  student_id: studentId,
+                  badge_id: badge.id,
+                }, { onConflict: 'student_id,badge_id' });
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Error recording game xp:', err);
         }
       }
     } else {

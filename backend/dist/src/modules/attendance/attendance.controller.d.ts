@@ -21,13 +21,13 @@ export declare class AttendanceController {
     getClassAttendance(classId: string, date: string): Promise<({
         student: {
             displayName: string | null;
+            phone: string | null;
+            school: string | null;
             avatarUrl: string | null;
             id: string;
             email: string;
-            phone: string | null;
             parentPhone: string | null;
             parentName: string | null;
-            school: string | null;
             createdAt: Date;
             updatedAt: Date;
         };

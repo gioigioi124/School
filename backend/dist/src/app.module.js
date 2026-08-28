@@ -21,6 +21,7 @@ const lessons_module_1 = require("./modules/lessons/lessons.module");
 const assignments_module_1 = require("./modules/assignments/assignments.module");
 const gamification_module_1 = require("./modules/gamification/gamification.module");
 const games_module_1 = require("./modules/games/games.module");
+const schedules_module_1 = require("./modules/schedules/schedules.module");
 const prisma_module_1 = require("./prisma/prisma.module");
 let AppModule = class AppModule {
 };
@@ -40,6 +41,7 @@ exports.AppModule = AppModule = __decorate([
             assignments_module_1.AssignmentsModule,
             gamification_module_1.GamificationModule,
             games_module_1.GamesModule,
+            schedules_module_1.SchedulesModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

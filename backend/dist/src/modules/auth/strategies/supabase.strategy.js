@@ -16,20 +16,38 @@ const passport_jwt_1 = require("passport-jwt");
 const jwks_rsa_1 = require("jwks-rsa");
 let SupabaseStrategy = class SupabaseStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
     constructor() {
-        super({
-            jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
-            ignoreExpiration: false,
-            secretOrKeyProvider: (0, jwks_rsa_1.passportJwtSecret)({
-                cache: true,
-                rateLimit: true,
-                jwksRequestsPerMinute: 5,
-                jwksUri: process.env.SUPABASE_JWKS_URL || '',
-            }),
-            algorithms: ['RS256', 'ES256', 'HS256'],
-        });
+        const jwksUri = process.env.SUPABASE_JWKS_URL;
+        const jwtSecret = process.env.SUPABASE_JWT_SECRET;
+        if (jwksUri) {
+            super({
+                jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
+                ignoreExpiration: false,
+                secretOrKeyProvider: (0, jwks_rsa_1.passportJwtSecret)({
+                    cache: true,
+                    rateLimit: true,
+                    jwksRequestsPerMinute: 5,
+                    jwksUri: jwksUri,
+                }),
+                algorithms: ['RS256', 'ES256', 'HS256'],
+            });
+        }
+        else {
+            super({
+                jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
+                ignoreExpiration: false,
+                secretOrKey: jwtSecret || 'default-dev-secret-change-in-production',
+                algorithms: ['HS256', 'RS256', 'ES256'],
+            });
+        }
     }
     async validate(payload) {
-        return { id: payload.sub, email: payload.email, role: payload.role };
+        return {
+            id: payload.sub,
+            email: payload.email,
+            role: payload.role || payload.app_metadata?.role || 'authenticated',
+            appMetadata: payload.app_metadata,
+            userMetadata: payload.user_metadata,
+        };
     }
 };
 exports.SupabaseStrategy = SupabaseStrategy;

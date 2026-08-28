@@ -19,25 +19,39 @@ export declare class UsersService {
         })[];
     } & {
         displayName: string | null;
+        phone: string | null;
+        school: string | null;
         avatarUrl: string | null;
         id: string;
         email: string;
-        phone: string | null;
         parentPhone: string | null;
         parentName: string | null;
-        school: string | null;
         createdAt: Date;
         updatedAt: Date;
     }>;
     updateProfile(userId: string, updateData: UpdateProfileDto): Promise<{
+        roleAssignments: ({
+            role: {
+                description: string | null;
+                id: string;
+                createdAt: Date;
+                name: string;
+            };
+        } & {
+            id: string;
+            createdAt: Date;
+            profileId: string;
+            roleId: string;
+        })[];
+    } & {
         displayName: string | null;
+        phone: string | null;
+        school: string | null;
         avatarUrl: string | null;
         id: string;
         email: string;
-        phone: string | null;
         parentPhone: string | null;
         parentName: string | null;
-        school: string | null;
         createdAt: Date;
         updatedAt: Date;
     }>;

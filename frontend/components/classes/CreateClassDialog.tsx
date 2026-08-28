@@ -50,7 +50,7 @@ export function CreateClassDialog({ profileId, variant = 'primary', customTrigge
           name: name.trim(),
           grade: grade.trim() || null,
           description: description.trim() || null,
-          avatarUrl: selectedEmoji,
+          avatar_url: selectedEmoji,
         })
         .select()
         .single();
@@ -62,8 +62,8 @@ export function CreateClassDialog({ profileId, variant = 'primary', customTrigge
         .from('class_enrollments')
         .insert({
           id: crypto.randomUUID(),
-          classId: newClass.id,
-          profileId: profileId,
+          class_id: newClass.id,
+          profile_id: profileId,
           role: 'teacher',
         });
 

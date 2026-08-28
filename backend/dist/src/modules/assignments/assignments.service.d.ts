@@ -20,8 +20,8 @@ export declare class AssignmentsService {
     getAssignmentsByLesson(lessonId: string, studentId?: string): Promise<{
         submission: {
             id: string;
-            grade: import("@prisma/client-runtime-utils").Decimal | null;
             content: import("@prisma/client/runtime/client").JsonValue | null;
+            grade: import("@prisma/client-runtime-utils").Decimal | null;
             studentId: string;
             status: string;
             xpEarned: number;
@@ -34,8 +34,8 @@ export declare class AssignmentsService {
         isGraded: boolean;
         submissions: {
             id: string;
-            grade: import("@prisma/client-runtime-utils").Decimal | null;
             content: import("@prisma/client/runtime/client").JsonValue | null;
+            grade: import("@prisma/client-runtime-utils").Decimal | null;
             studentId: string;
             status: string;
             xpEarned: number;
@@ -60,8 +60,8 @@ export declare class AssignmentsService {
         xpAwarded: number;
         submission: {
             id: string;
-            grade: import("@prisma/client-runtime-utils").Decimal | null;
             content: import("@prisma/client/runtime/client").JsonValue | null;
+            grade: import("@prisma/client-runtime-utils").Decimal | null;
             studentId: string;
             status: string;
             xpEarned: number;
@@ -80,8 +80,8 @@ export declare class AssignmentsService {
         };
     } & {
         id: string;
-        grade: import("@prisma/client-runtime-utils").Decimal | null;
         content: import("@prisma/client/runtime/client").JsonValue | null;
+        grade: import("@prisma/client-runtime-utils").Decimal | null;
         studentId: string;
         status: string;
         xpEarned: number;
@@ -92,8 +92,8 @@ export declare class AssignmentsService {
     })[]>;
     gradeSubmission(submissionId: string, currentUserId: string, dto: GradeSubmissionDto): Promise<{
         id: string;
-        grade: import("@prisma/client-runtime-utils").Decimal | null;
         content: import("@prisma/client/runtime/client").JsonValue | null;
+        grade: import("@prisma/client-runtime-utils").Decimal | null;
         studentId: string;
         status: string;
         xpEarned: number;

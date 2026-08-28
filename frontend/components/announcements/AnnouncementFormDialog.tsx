@@ -58,28 +58,16 @@ export function AnnouncementFormDialog({
       const { data: announcement, error: insertError } = await supabase
         .from('announcements')
         .insert({
-          teacherId: user.id,
-          classId,
+          teacher_id: user.id,
+          class_id: classId,
           title,
           content,
-          isImportant,
+          is_important: isImportant,
         })
         .select()
         .single();
 
-      if (insertError) {
-        // Try snake_case column names if schema mapped
-        const { error: insertError2 } = await supabase
-          .from('announcements')
-          .insert({
-            teacher_id: user.id,
-            class_id: classId,
-            title,
-            content,
-            is_important: isImportant,
-          });
-        if (insertError2) throw insertError2;
-      }
+      if (insertError) throw insertError;
 
       toast.success('Đã gửi thông báo thành công!');
       setOpen(false);

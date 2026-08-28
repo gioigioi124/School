@@ -49,8 +49,8 @@ export async function POST(req: Request) {
     // Check if parent already has children in the system
     const { data: existingProfiles } = await supabase
       .from('profiles')
-      .select('id, displayName, parentPhone, email')
-      .or(`parentPhone.eq.${cleanPhone},phone.eq.${cleanPhone},email.eq.${parentAuthEmail}`);
+      .select('id, display_name, parent_phone, email')
+      .or(`parent_phone.eq.${cleanPhone},phone.eq.${cleanPhone},email.eq.${parentAuthEmail}`);
 
     const isExistingParent = Boolean(existingProfiles && existingProfiles.length > 0);
 
@@ -73,10 +73,10 @@ export async function POST(req: Request) {
       .upsert({
         id: studentProfileId,
         email: studentEmail,
-        displayName: studentName.trim(),
-        avatarUrl: avatarUrl,
-        parentPhone: cleanPhone,
-        parentName: parentName?.trim() || null,
+        display_name: studentName.trim(),
+        avatar_url: avatarUrl,
+        parent_phone: cleanPhone,
+        parent_name: parentName?.trim() || null,
         phone: cleanPhone,
       })
       .select()
@@ -87,14 +87,22 @@ export async function POST(req: Request) {
       throw profileError;
     }
 
+    // Initialize user_xp for the new student
+    await supabase.from('user_xp').upsert({
+      student_id: studentProfileId,
+      total_xp: 0,
+      current_level: 1,
+      total_stars: 0,
+    });
+
     // 3. Enroll in class if provided
     if (classId) {
       const { error: enrollError } = await supabase
         .from('class_enrollments')
         .insert({
           id: crypto.randomUUID(),
-          classId: classId,
-          profileId: studentProfileId,
+          class_id: classId,
+          profile_id: studentProfileId,
           role: 'student',
         });
 

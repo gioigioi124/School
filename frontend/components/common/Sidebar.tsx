@@ -8,6 +8,7 @@ import {
   Users, 
   MessageSquare, 
   BookOpen,
+  CalendarDays,
   Settings, 
   LogOut,
   Sparkles
@@ -27,6 +28,11 @@ const sidebarItems = [
     title: 'Lớp học',
     href: '/classes',
     icon: School
+  },
+  {
+    title: 'Thời khóa biểu',
+    href: '/schedules',
+    icon: CalendarDays
   },
   {
     title: 'Bài học',

@@ -52,8 +52,8 @@ export function EditClassDialog({ classItem, customTrigger }: EditClassDialogPro
           name: name.trim(),
           grade: grade.trim() || null,
           description: description.trim() || null,
-          avatarUrl: selectedEmoji,
-          updatedAt: new Date().toISOString(),
+          avatar_url: selectedEmoji,
+          updated_at: new Date().toISOString(),
         })
         .eq('id', classItem.id);
 

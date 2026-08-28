@@ -6,9 +6,9 @@ export declare class ClassesController {
     constructor(classesService: ClassesService);
     createClass(user: any, createClassDto: CreateClassDto): Promise<{
         description: string | null;
+        school: string | null;
         avatarUrl: string | null;
         id: string;
-        school: string | null;
         createdAt: Date;
         updatedAt: Date;
         name: string;
@@ -21,9 +21,9 @@ export declare class ClassesController {
             enrollments: number;
         };
         description: string | null;
+        school: string | null;
         avatarUrl: string | null;
         id: string;
-        school: string | null;
         createdAt: Date;
         updatedAt: Date;
         name: string;
@@ -32,25 +32,25 @@ export declare class ClassesController {
     getClassById(user: any, classId: string): Promise<{
         teachers: {
             displayName: string | null;
+            phone: string | null;
+            school: string | null;
             avatarUrl: string | null;
             id: string;
             email: string;
-            phone: string | null;
             parentPhone: string | null;
             parentName: string | null;
-            school: string | null;
             createdAt: Date;
             updatedAt: Date;
         }[];
         students: {
             displayName: string | null;
+            phone: string | null;
+            school: string | null;
             avatarUrl: string | null;
             id: string;
             email: string;
-            phone: string | null;
             parentPhone: string | null;
             parentName: string | null;
-            school: string | null;
             createdAt: Date;
             updatedAt: Date;
         }[];
@@ -58,13 +58,13 @@ export declare class ClassesController {
         enrollments: ({
             profile: {
                 displayName: string | null;
+                phone: string | null;
+                school: string | null;
                 avatarUrl: string | null;
                 id: string;
                 email: string;
-                phone: string | null;
                 parentPhone: string | null;
                 parentName: string | null;
-                school: string | null;
                 createdAt: Date;
                 updatedAt: Date;
             };
@@ -72,16 +72,16 @@ export declare class ClassesController {
             role: string;
             id: string;
             createdAt: Date;
-            profileId: string;
             classId: string;
+            profileId: string;
         })[];
         _count: {
             enrollments: number;
         };
         description: string | null;
+        school: string | null;
         avatarUrl: string | null;
         id: string;
-        school: string | null;
         createdAt: Date;
         updatedAt: Date;
         name: string;
@@ -89,9 +89,9 @@ export declare class ClassesController {
     }>;
     updateClass(user: any, classId: string, updateClassDto: UpdateClassDto): Promise<{
         description: string | null;
+        school: string | null;
         avatarUrl: string | null;
         id: string;
-        school: string | null;
         createdAt: Date;
         updatedAt: Date;
         name: string;
@@ -99,9 +99,9 @@ export declare class ClassesController {
     }>;
     deleteClass(user: any, classId: string): Promise<{
         description: string | null;
+        school: string | null;
         avatarUrl: string | null;
         id: string;
-        school: string | null;
         createdAt: Date;
         updatedAt: Date;
         name: string;

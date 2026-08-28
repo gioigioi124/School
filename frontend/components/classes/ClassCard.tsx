@@ -12,8 +12,10 @@ interface ClassCardProps {
     name: string;
     description: string | null;
     grade: string | null;
-    avatarUrl: string | null;
-    createdAt: string;
+    avatarUrl?: string | null;
+    avatar_url?: string | null;
+    createdAt?: string;
+    created_at?: string;
   };
   studentCount?: number;
 }
@@ -25,6 +27,7 @@ export function ClassCard({ classItem, studentCount = 0 }: ClassCardProps) {
   const isSenior = classItem.grade?.toLowerCase().includes('lớn') || classItem.grade?.includes('5') || classItem.grade?.includes('6');
   const bgBlobColor = isSenior ? 'bg-primary-container' : 'bg-secondary-container';
   const avatarBgColor = isSenior ? 'bg-primary-container text-on-primary-container' : 'bg-secondary-container text-on-secondary-container';
+  const avatarIcon = classItem.avatar_url || classItem.avatarUrl || '📚';
 
   return (
     <div 
@@ -38,7 +41,7 @@ export function ClassCard({ classItem, studentCount = 0 }: ClassCardProps) {
         {/* Header Row: Icon on left, Student Count & Quick Actions on right */}
         <div className="flex items-start justify-between gap-3 mb-5 relative z-10">
           <div className={`w-14 h-14 rounded-2xl ${avatarBgColor} flex items-center justify-center text-2xl shadow-xs group-hover:rotate-12 transition-transform duration-200 shrink-0`}>
-            <span>{classItem.avatarUrl || '📚'}</span>
+            <span>{avatarIcon}</span>
           </div>
 
           <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>

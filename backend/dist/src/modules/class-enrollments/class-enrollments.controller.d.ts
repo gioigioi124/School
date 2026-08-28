@@ -6,21 +6,21 @@ export declare class ClassEnrollmentsController {
     enrollStudent(user: any, enrollStudentDto: EnrollStudentDto): Promise<{
         profile: {
             displayName: string | null;
+            phone: string | null;
+            school: string | null;
             avatarUrl: string | null;
             id: string;
             email: string;
-            phone: string | null;
             parentPhone: string | null;
             parentName: string | null;
-            school: string | null;
             createdAt: Date;
             updatedAt: Date;
         };
         class: {
             description: string | null;
+            school: string | null;
             avatarUrl: string | null;
             id: string;
-            school: string | null;
             createdAt: Date;
             updatedAt: Date;
             name: string;
@@ -30,19 +30,19 @@ export declare class ClassEnrollmentsController {
         role: string;
         id: string;
         createdAt: Date;
-        profileId: string;
         classId: string;
+        profileId: string;
     }>;
     getEnrollmentsByClass(classId: string): Promise<({
         profile: {
             displayName: string | null;
+            phone: string | null;
+            school: string | null;
             avatarUrl: string | null;
             id: string;
             email: string;
-            phone: string | null;
             parentPhone: string | null;
             parentName: string | null;
-            school: string | null;
             createdAt: Date;
             updatedAt: Date;
         };
@@ -50,14 +50,14 @@ export declare class ClassEnrollmentsController {
         role: string;
         id: string;
         createdAt: Date;
-        profileId: string;
         classId: string;
+        profileId: string;
     })[]>;
     removeStudent(user: any, classId: string, studentId: string): Promise<{
         role: string;
         id: string;
         createdAt: Date;
-        profileId: string;
         classId: string;
+        profileId: string;
     }>;
 }

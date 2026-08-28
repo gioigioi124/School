@@ -13,15 +13,15 @@ export default async function ClassesPage() {
   // 1. Fetch classes that the teacher is enrolled in
   const { data: teacherEnrollments } = await supabase
     .from('class_enrollments')
-    .select('classId, classes(*)')
-    .eq('profileId', user.id)
+    .select('class_id, classes(*)')
+    .eq('profile_id', user.id)
     .eq('role', 'teacher');
 
   // Fallback for admin or general viewing
   const { data: allClasses } = await supabase
     .from('classes')
     .select('*')
-    .order('createdAt', { ascending: false });
+    .order('created_at', { ascending: false });
 
   let displayClasses = (teacherEnrollments?.map(e => Array.isArray(e.classes) ? e.classes[0] : e.classes).filter(Boolean) || []) as any[];
   if (displayClasses.length === 0) {
@@ -32,13 +32,14 @@ export default async function ClassesPage() {
   const classIds = displayClasses.map(c => c.id);
   const { data: studentEnrollments } = await supabase
     .from('class_enrollments')
-    .select('classId')
-    .in('classId', classIds.length > 0 ? classIds : ['00000000-0000-0000-0000-000000000000'])
+    .select('class_id')
+    .in('class_id', classIds.length > 0 ? classIds : ['00000000-0000-0000-0000-000000000000'])
     .eq('role', 'student');
 
   const studentCountMap: Record<string, number> = {};
-  (studentEnrollments || []).forEach(e => {
-    studentCountMap[e.classId] = (studentCountMap[e.classId] || 0) + 1;
+  (studentEnrollments || []).forEach((e: any) => {
+    const cid = e.class_id || e.classId;
+    studentCountMap[cid] = (studentCountMap[cid] || 0) + 1;
   });
 
   return (

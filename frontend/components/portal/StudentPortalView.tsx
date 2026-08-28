@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
@@ -11,62 +11,93 @@ import {
   Trophy, 
   BookOpen, 
   CheckCircle2, 
-  Circle, 
   Play, 
   Users, 
   School, 
   Utensils, 
   MessageSquare, 
-  LogOut, 
-  ChevronDown,
+  ChevronRight,
   Award,
   Heart,
-  Smile,
-  ShieldCheck
+  Gamepad2,
+  Film,
+  ArrowRight,
+  CalendarDays,
+  Clock,
+  MapPin
 } from 'lucide-react';
 import Link from 'next/link';
+import { StudentHeader, StudentChildInfo } from '@/components/student/StudentHeader';
+import { CelebrationConfetti } from '@/components/student/CelebrationConfetti';
+import { sounds } from '@/lib/sounds';
 
-interface StudentProfile {
-  id: string;
-  displayName: string;
-  avatarUrl: string;
+interface StudentProfileExtended extends StudentChildInfo {
   parentPhone: string;
   parentName?: string;
-  className: string;
-  grade?: string;
-  classId?: string;
   teacherName?: string;
+  totalXp: number;
+  currentLevel: number;
+  totalStars: number;
+  unlockedBadgeIds: string[];
 }
 
 interface StudentPortalViewProps {
-  childrenList: StudentProfile[];
+  childrenList: StudentProfileExtended[];
+  initialLessons?: any[];
+  completedLessonIds?: string[];
+  allBadges?: any[];
+  announcements?: any[];
+  schedules?: any[];
 }
 
-export function StudentPortalView({ childrenList }: StudentPortalViewProps) {
+export function StudentPortalView({
+  childrenList,
+  initialLessons = [],
+  completedLessonIds = [],
+  allBadges = [],
+  announcements = [],
+  schedules = [],
+}: StudentPortalViewProps) {
   const [selectedChildIndex, setSelectedChildIndex] = useState(0);
-  const [completedQuests, setCompletedQuests] = useState<Record<string, boolean>>({});
-  const [stars, setStars] = useState(45);
-  const [xp, setXp] = useState(260);
+  const [showConfetti, setShowConfetti] = useState(false);
   const router = useRouter();
   const supabase = createClient();
 
-  const currentChild = childrenList[selectedChildIndex] || {
+  const currentChild = childrenList[selectedChildIndex] || childrenList[0] || {
     id: 'default',
     displayName: 'Bé yêu',
-    avatarUrl: '🐻',
+    avatarUrl: '🎒',
     parentPhone: '',
-    className: 'Lớp Mầm A1',
-    grade: 'Mẫu giáo',
-    teacherName: 'Cô Lan',
+    className: 'Lớp 1A1',
+    grade: 'Lớp 1',
+    teacherName: 'Cô Nguyễn Lan',
+    totalXp: 150,
+    currentLevel: 1,
+    totalStars: 12,
+    unlockedBadgeIds: [],
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push('/login');
-    router.refresh();
-  };
+  // Local state for interactive instant gamification updates
+  const [xp, setXp] = useState(currentChild.totalXp);
+  const [stars, setStars] = useState(currentChild.totalStars);
+  const [completedQuests, setCompletedQuests] = useState<Record<string, boolean>>(() => {
+    const map: Record<string, boolean> = {};
+    completedLessonIds.forEach((key) => {
+      const parts = key.split('_');
+      if (parts[0] === currentChild.id) {
+        map[parts[1]] = true;
+      }
+    });
+    return map;
+  });
 
-  const quests = [
+  const level = Math.floor(xp / 1000) + 1;
+  const currentLevelBaseXp = (level - 1) * 1000;
+  const levelProgressXp = xp - currentLevelBaseXp;
+  const progressPercent = Math.min(100, Math.round((levelProgressXp / 1000) * 100));
+
+  // Fallback default quests if class has no lessons yet
+  const defaultQuests = [
     {
       id: 'quest-1',
       title: 'Bé tập tô màu Chú Bướm rực rỡ',
@@ -99,91 +130,193 @@ export function StudentPortalView({ childrenList }: StudentPortalViewProps) {
     },
   ];
 
-  const handleCompleteQuest = (quest: typeof quests[0]) => {
+  const activeQuests = initialLessons.length > 0
+    ? initialLessons.map((l, index) => ({
+        id: l.id,
+        title: l.title,
+        subject: 'Bài học lớp ' + (currentChild.className || ''),
+        duration: l.duration ? `${l.duration} phút` : '15 phút',
+        xpReward: 20,
+        starReward: 1,
+        icon: l.thumbnail_url || (index % 3 === 0 ? '🎨' : index % 3 === 1 ? '🔢' : '🦁'),
+        color: index % 3 === 0 ? 'bg-pink-100 text-pink-700' : index % 3 === 1 ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700',
+      }))
+    : defaultQuests;
+
+  const handleSelectChild = (childId: string) => {
+    const idx = childrenList.findIndex((c) => c.id === childId);
+    if (idx !== -1) {
+      setSelectedChildIndex(idx);
+      const child = childrenList[idx];
+      setXp(child.totalXp);
+      setStars(child.totalStars);
+    }
+  };
+
+  const handleCompleteQuest = async (quest: typeof activeQuests[0]) => {
     if (completedQuests[quest.id]) return;
 
-    setCompletedQuests(prev => ({ ...prev, [quest.id]: true }));
-    setStars(prev => prev + quest.starReward);
-    setXp(prev => prev + quest.xpReward);
+    sounds.playCorrect();
+    sounds.playStar();
+    setShowConfetti(true);
+
+    const newXp = xp + quest.xpReward;
+    const newStars = stars + quest.starReward;
+    const newLevel = Math.floor(newXp / 1000) + 1;
+
+    if (newLevel > level) {
+      setTimeout(() => sounds.playLevelUp(), 400);
+    }
+
+    setCompletedQuests((prev) => ({ ...prev, [quest.id]: true }));
+    setXp(newXp);
+    setStars(newStars);
 
     toast.success(
       `Bé ${currentChild.displayName} giỏi quá! Nhận được +${quest.xpReward} XP và +${quest.starReward} ⭐! 🎉`,
       { duration: 4000 }
     );
+
+    // Save to Backend / Supabase
+    try {
+      // 1. Record progress if it's a real lesson
+      if (initialLessons.some((l) => l.id === quest.id)) {
+        await supabase.from('student_progress').upsert({
+          student_id: currentChild.id,
+          lesson_id: quest.id,
+          is_completed: true,
+          completed_at: new Date().toISOString(),
+          xp_earned: quest.xpReward,
+        }, { onConflict: 'student_id,lesson_id' });
+      }
+
+      // 2. Insert xp_history
+      await supabase.from('xp_history').insert({
+        student_id: currentChild.id,
+        action: `Hoàn thành: ${quest.title}`,
+        xp_amount: quest.xpReward,
+        source_type: 'lesson',
+        source_id: initialLessons.some((l) => l.id === quest.id) ? quest.id : null,
+      });
+
+      // 3. Upsert user_xp
+      await supabase.from('user_xp').upsert({
+        student_id: currentChild.id,
+        total_xp: newXp,
+        total_stars: newStars,
+        current_level: newLevel,
+      });
+    } catch (err) {
+      console.error('Error syncing quest completion:', err);
+    }
   };
 
-  const badges = [
-    { id: '1', title: 'Bé Chăm Chỉ', desc: 'Học 3 ngày liên tục', icon: '🔥', earned: true },
-    { id: '2', title: 'Họa Sĩ Nhí', desc: 'Hoàn thành 5 bài vẽ', icon: '🎨', earned: true },
-    { id: '3', title: 'Ngôi Sao Toán', desc: 'Đếm số thành thạo', icon: '⭐', earned: true },
-    { id: '4', title: 'Nhà Thám Hiểm', desc: 'Khám phá thế giới', icon: '🚀', earned: false },
+  // Fallback badges if DB badges empty
+  const defaultBadges = [
+    { id: '1', name: 'Bé Chăm Chỉ', description: 'Học 3 ngày liên tục', icon: '🔥', code: 'streak_3' },
+    { id: '2', name: 'Họa Sĩ Nhí', description: 'Hoàn thành 5 bài vẽ', icon: '🎨', code: 'artist_5' },
+    { id: '3', name: 'Ngôi Sao Toán', description: 'Đếm số thành thạo', icon: '⭐', code: 'math_star' },
+    { id: '4', name: 'Nhà Thám Hiểm', description: 'Khám phá thế giới', icon: '🚀', code: 'explorer' },
+  ];
+
+  const displayBadges = allBadges.length > 0 ? allBadges.slice(0, 4) : defaultBadges;
+
+  // Determine current day in VN format (2 = Thứ 2, ..., 8 = Chủ Nhật)
+  const now = new Date();
+  const currentDayOfWeek = now.getDay() === 0 ? 8 : now.getDay() + 1;
+  const dayNames = ['', '', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật'];
+  const currentDayLabel = dayNames[currentDayOfWeek] || 'Hôm nay';
+
+  const todaySchedules = (schedules || []).filter(
+    (s: any) => s.day_of_week === currentDayOfWeek || s.dayOfWeek === currentDayOfWeek
+  );
+
+  const defaultSubjectIcons: Record<string, string> = {
+    'Toán': '🔢',
+    'Tiếng Việt': '📖',
+    'Tiếng Anh': '🗣️',
+    'Khoa học': '🔬',
+    'Tự nhiên': '🔬',
+    'Lịch sử': '🗺️',
+    'Tin học': '💻',
+    'Đạo đức': '🌟',
+    'Mỹ thuật': '🎨',
+    'Âm nhạc': '🎵',
+    'Thể chất': '🏃',
+    'Chào cờ': '🔔',
+    'Sinh hoạt': '🎪',
+    'Trải nghiệm': '🎪',
+  };
+
+  const getSubjectIcon = (subject: string) => {
+    for (const key in defaultSubjectIcons) {
+      if (subject.toLowerCase().includes(key.toLowerCase())) {
+        return defaultSubjectIcons[key];
+      }
+    }
+    return '📚';
+  };
+
+  const displayTodaySchedules = todaySchedules.length > 0 ? todaySchedules : [
+    {
+      id: 'st-1',
+      day_of_week: currentDayOfWeek,
+      start_time: '08:00',
+      end_time: '08:45',
+      subject: 'Toán học (Khám phá & Luyện tập)',
+      room: 'Phòng 101',
+      color: '#3B82F6',
+      description: 'Mang theo vở bài tập toán và bút chì',
+    },
+    {
+      id: 'st-2',
+      day_of_week: currentDayOfWeek,
+      start_time: '09:00',
+      end_time: '09:45',
+      subject: 'Tiếng Việt (Tập đọc & Chính tả)',
+      room: 'Phòng 101',
+      color: '#F97316',
+      description: 'Luyện đọc bài mới và viết chữ đẹp',
+    },
+    {
+      id: 'st-3',
+      day_of_week: currentDayOfWeek,
+      start_time: '10:00',
+      end_time: '10:45',
+      subject: 'Tiếng Anh Tiểu học (Phonics & Kể chuyện)',
+      room: 'Phòng Ngoại ngữ',
+      color: '#EC4899',
+      description: 'Học từ vựng theo chủ đề và thực hành nhóm',
+    },
+    {
+      id: 'st-4',
+      day_of_week: currentDayOfWeek,
+      start_time: '14:30',
+      end_time: '15:15',
+      subject: 'Tự nhiên & Xã hội / Khoa học',
+      room: 'Phòng 101',
+      color: '#06B6D4',
+      description: 'Khám phá thế giới động thực vật xung quanh',
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-surface-bright flex flex-col font-sans text-on-surface">
-      {/* Kid & Parent Top Navbar */}
-      <header className="sticky top-0 z-40 bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/30 px-4 md:px-8 py-3.5 shadow-2xs">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-secondary-container flex items-center justify-center text-2xl shadow-xs">
-              🌟
-            </div>
-            <div>
-              <h1 className="font-heading text-2xl font-bold text-primary tracking-tight">Kinderly Kids</h1>
-              <p className="font-sans text-[11px] font-bold text-on-surface-variant -mt-0.5">Không gian học tập của bé</p>
-            </div>
-          </div>
+    <div className="min-h-screen flex flex-col font-sans text-on-surface">
+      <CelebrationConfetti trigger={showConfetti} onComplete={() => setShowConfetti(false)} />
 
-          {/* Center: Switch Child Profile (if multiple children) */}
-          {childrenList.length > 1 && (
-            <div className="flex items-center gap-2 bg-surface-container-low p-1 rounded-full border border-outline-variant/30 shadow-2xs">
-              {childrenList.map((child, index) => (
-                <button
-                  key={child.id}
-                  type="button"
-                  onClick={() => setSelectedChildIndex(index)}
-                  className={`px-3.5 py-1.5 rounded-full font-sans font-bold text-xs flex items-center gap-2 transition-all cursor-pointer ${
-                    selectedChildIndex === index
-                      ? 'bg-surface-container-lowest text-primary shadow-xs ring-2 ring-primary/20 scale-102'
-                      : 'text-on-surface-variant hover:text-on-surface'
-                  }`}
-                >
-                  <span className="text-base">{child.avatarUrl || '🐻'}</span>
-                  <span>{child.displayName}</span>
-                </button>
-              ))}
-            </div>
-          )}
+      {/* Top Header */}
+      <StudentHeader
+        childrenList={childrenList}
+        selectedChildId={currentChild.id}
+        onSelectChild={handleSelectChild}
+        stars={stars}
+        totalXp={xp}
+        level={level}
+        streakDays={3}
+      />
 
-          {/* Right: Gamification Stats & Logout */}
-          <div className="flex items-center gap-3">
-            {/* Stars counter */}
-            <div className="bg-secondary-container text-on-secondary-container px-3.5 py-1.5 rounded-full font-sans font-bold text-xs flex items-center gap-1.5 shadow-xs">
-              <Star className="w-4 h-4 fill-current text-secondary" />
-              <span>{stars} Sao</span>
-            </div>
-
-            {/* Streak */}
-            <div className="bg-amber-100 text-amber-800 px-3 py-1.5 rounded-full font-sans font-bold text-xs hidden sm:flex items-center gap-1.5 shadow-xs">
-              <Flame className="w-4 h-4 fill-current text-amber-600 animate-bounce" />
-              <span>3 ngày</span>
-            </div>
-
-            {/* Logout */}
-            <button
-              onClick={handleLogout}
-              className="p-2 rounded-full text-on-surface-variant hover:text-destructive hover:bg-error-container/40 transition-colors cursor-pointer"
-              title="Đăng xuất"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Container */}
-      <main className="flex-1 max-w-7xl mx-auto p-4 md:p-8 space-y-8 w-full animate-fade-in">
+      {/* Main Content Area */}
+      <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-8 w-full animate-fade-in">
         {/* Hero Greeting Banner */}
         <section className="bg-gradient-to-r from-primary-container via-secondary-container/40 to-surface-container-lowest rounded-3xl p-6 md:p-8 shadow-soft border border-outline-variant/30 relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="relative z-10 space-y-2">
@@ -193,10 +326,10 @@ export function StudentPortalView({ childrenList }: StudentPortalViewProps) {
             </div>
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-on-surface flex items-center gap-3">
               <span>Xin chào bé {currentChild.displayName}!</span>
-              <span className="text-4xl animate-bounce">{currentChild.avatarUrl || '🐻'}</span>
+              <span className="text-4xl animate-bounce">{currentChild.avatarUrl || '🎒'}</span>
             </h2>
             <p className="font-sans text-sm text-on-surface-variant max-w-lg">
-              Hôm nay bé có <strong>{quests.filter(q => !completedQuests[q.id]).length} thử thách thú vị</strong> đang chờ. Cùng khám phá và nhận thật nhiều sao ⭐ nhé!
+              Hôm nay là <strong>{currentDayLabel}</strong>. Cùng xem thời khóa biểu và hoàn thành <strong>{activeQuests.filter((q) => !completedQuests[q.id]).length} bài tập thú vị</strong> để nhận thật nhiều sao ⭐ nhé!
             </p>
 
             {/* Level XP Progress Bar */}
@@ -204,54 +337,233 @@ export function StudentPortalView({ childrenList }: StudentPortalViewProps) {
               <div className="flex justify-between items-center text-xs font-bold text-on-surface mb-1.5">
                 <span className="text-primary flex items-center gap-1">
                   <Trophy className="w-3.5 h-3.5" />
-                  Cấp độ 2 (Họa sĩ nhí)
+                  Cấp độ {level} ({level === 1 ? 'Khởi đầu hứng khởi' : level === 2 ? 'Ngôi sao chăm học' : 'Nhà thông thái nhí'})
                 </span>
-                <span className="text-on-surface-variant">{xp} / 500 XP</span>
+                <span className="text-on-surface-variant font-medium">
+                  {levelProgressXp} / 1000 XP ({progressPercent}%)
+                </span>
               </div>
-              <div className="w-full h-3 bg-surface-container-high rounded-full overflow-hidden p-0.5">
+              <div className="w-full h-3 bg-surface-container-high rounded-full overflow-hidden p-0.5 shadow-inner">
                 <div 
-                  className="h-full bg-gradient-to-r from-primary to-primary-container rounded-full transition-all duration-500" 
-                  style={{ width: `${(xp / 500) * 100}%` }}
+                  className="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-500" 
+                  style={{ width: `${progressPercent}%` }}
                 />
               </div>
             </div>
           </div>
 
-          {/* Quick Play Illustration Card */}
-          <div className="relative z-10 flex flex-col items-center justify-center p-6 bg-surface-container-lowest/90 backdrop-blur-sm rounded-2xl shadow-soft border border-white/60 text-center w-full md:w-64 shrink-0">
-            <span className="text-5xl mb-2">🚀</span>
-            <h4 className="font-heading font-bold text-base text-on-surface">Khám phá hôm nay</h4>
-            <span className="text-xs text-on-surface-variant mt-0.5 mb-3">{currentChild.className}</span>
-            <button
-              onClick={() => handleCompleteQuest(quests[0])}
-              className="w-full py-2.5 bg-primary text-on-primary rounded-full font-sans font-bold text-xs btn-3d hover:bg-primary-dark transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+          {/* Quick Action Cards Grid */}
+          <div className="relative z-10 grid grid-cols-2 gap-3 w-full md:w-80 shrink-0">
+            <Link
+              href="/learn"
+              onClick={() => sounds.playPop()}
+              className="p-4 bg-surface-container-lowest/95 backdrop-blur-sm rounded-2xl shadow-soft border border-primary/20 hover:border-primary transition-all flex flex-col items-center justify-center text-center group cursor-pointer hover:scale-103"
             >
-              <Play className="w-3.5 h-3.5 fill-current" />
-              <span>Chơi ngay</span>
-            </button>
+              <span className="text-3xl mb-1 group-hover:scale-110 transition-transform">📚</span>
+              <span className="font-heading font-bold text-xs text-on-surface">Bài học hôm nay</span>
+              <span className="text-[10px] text-primary font-bold mt-0.5">Vào học ngay →</span>
+            </Link>
+
+            <Link
+              href="/games"
+              onClick={() => sounds.playPop()}
+              className="p-4 bg-surface-container-lowest/95 backdrop-blur-sm rounded-2xl shadow-soft border border-secondary/20 hover:border-secondary transition-all flex flex-col items-center justify-center text-center group cursor-pointer hover:scale-103"
+            >
+              <span className="text-3xl mb-1 group-hover:scale-110 transition-transform">🎮</span>
+              <span className="font-heading font-bold text-xs text-on-surface">Góc trò chơi</span>
+              <span className="text-[10px] text-secondary font-bold mt-0.5">Chơi & Nhận XP →</span>
+            </Link>
+
+            <Link
+              href="/leaderboard"
+              onClick={() => sounds.playPop()}
+              className="p-4 bg-surface-container-lowest/95 backdrop-blur-sm rounded-2xl shadow-soft border border-amber-200 hover:border-amber-400 transition-all flex flex-col items-center justify-center text-center group cursor-pointer hover:scale-103"
+            >
+              <span className="text-3xl mb-1 group-hover:scale-110 transition-transform">🏆</span>
+              <span className="font-heading font-bold text-xs text-on-surface">Bảng vàng thi đua</span>
+              <span className="text-[10px] text-amber-600 font-bold mt-0.5">Xem thứ hạng →</span>
+            </Link>
+
+            <Link
+              href="/videos"
+              onClick={() => sounds.playPop()}
+              className="p-4 bg-surface-container-lowest/95 backdrop-blur-sm rounded-2xl shadow-soft border border-rose-200 hover:border-rose-400 transition-all flex flex-col items-center justify-center text-center group cursor-pointer hover:scale-103"
+            >
+              <span className="text-3xl mb-1 group-hover:scale-110 transition-transform">🎬</span>
+              <span className="font-heading font-bold text-xs text-on-surface">Rạp chiếu phim</span>
+              <span className="text-[10px] text-rose-600 font-bold mt-0.5">Xem video vui →</span>
+            </Link>
           </div>
+        </section>
+
+        {/* Student Schedule Section with Sáng / Chiều distinction */}
+        <section className="bg-surface-container-lowest rounded-2xl p-5 sm:p-6 border border-outline-variant/30 shadow-soft space-y-3.5">
+          <div className="flex items-center justify-between pb-3 border-b border-outline-variant/20">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-lg shadow-2xs">
+                <CalendarDays className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-heading text-lg sm:text-xl font-bold text-on-surface flex items-center gap-2">
+                  <span>Thời khóa biểu {currentDayLabel} của bé</span>
+                  <span className="px-2 py-0.2 rounded-full text-xs bg-amber-100 text-amber-800 font-bold font-sans">
+                    {displayTodaySchedules.length} tiết
+                  </span>
+                </h3>
+                <p className="font-sans text-xs text-on-surface-variant mt-0.5">
+                  Lịch học theo ca Sáng & Chiều giúp bé và phụ huynh chuẩn bị sách vở chu đáo.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {(() => {
+            const morningSlots = displayTodaySchedules.filter((s: any) => {
+              const time = s.start_time || s.startTime || '08:00';
+              const hour = parseInt(time.split(':')[0], 10);
+              return hour < 12 || (hour === 12 && parseInt(time.split(':')[1] || '0', 10) < 30);
+            });
+            const afternoonSlots = displayTodaySchedules.filter((s: any) => {
+              const time = s.start_time || s.startTime || '14:00';
+              const hour = parseInt(time.split(':')[0], 10);
+              return !(hour < 12 || (hour === 12 && parseInt(time.split(':')[1] || '0', 10) < 30));
+            });
+
+            return (
+              <div className="space-y-4 pt-1">
+                {/* Sáng */}
+                {morningSlots.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900 bg-amber-50/90 px-2.5 py-0.5 rounded-md border border-amber-200/60 w-fit">
+                      <span>☀️ Buổi Sáng ({morningSlots.length} tiết)</span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {morningSlots.map((slot: any, idx: number) => {
+                        const icon = getSubjectIcon(slot.subject);
+                        const slotColor = slot.color || '#3B82F6';
+                        const startTime = slot.start_time || slot.startTime;
+                        const endTime = slot.end_time || slot.endTime;
+                        const note = slot.description || (slot.room ? `Phòng ${slot.room}` : 'Mang theo đồ dùng học tập');
+
+                        return (
+                          <div
+                            key={slot.id || idx}
+                            className="h-[68px] bg-surface rounded-lg px-3 py-1.5 border border-outline-variant/30 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between overflow-hidden group hover:border-primary/40"
+                            style={{
+                              borderLeftWidth: '3.5px',
+                              borderLeftColor: slotColor,
+                            }}
+                          >
+                            <div className="flex items-center justify-between gap-1 leading-none">
+                              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-primary">
+                                <Clock className="w-2.5 h-2.5" />
+                                <span>{startTime} - {endTime}</span>
+                              </span>
+                              <span className="text-[10px] font-heading px-1.5 py-0.2 rounded-full bg-primary/10 text-primary font-semibold">
+                                Tiết {idx + 1}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <span className="text-xs shrink-0">{icon}</span>
+                              <h4 className="font-heading font-bold text-xs text-on-surface truncate leading-tight group-hover:text-primary transition-colors">
+                                {slot.subject}
+                              </h4>
+                            </div>
+
+                            <p className="text-[10px] text-on-surface-variant/80 truncate italic leading-none">
+                              {note}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Chiều */}
+                {afternoonSlots.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-900 bg-indigo-50/90 px-2.5 py-0.5 rounded-md border border-indigo-200/60 w-fit">
+                      <span>🌤️ Buổi Chiều ({afternoonSlots.length} tiết)</span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                      {afternoonSlots.map((slot: any, idx: number) => {
+                        const icon = getSubjectIcon(slot.subject);
+                        const slotColor = slot.color || '#8B5CF6';
+                        const startTime = slot.start_time || slot.startTime;
+                        const endTime = slot.end_time || slot.endTime;
+                        const note = slot.description || (slot.room ? `Phòng ${slot.room}` : 'Mang theo đồ dùng học tập');
+
+                        return (
+                          <div
+                            key={slot.id || idx}
+                            className="h-[68px] bg-surface rounded-lg px-3 py-1.5 border border-outline-variant/30 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between overflow-hidden group hover:border-indigo-400"
+                            style={{
+                              borderLeftWidth: '3.5px',
+                              borderLeftColor: slotColor,
+                            }}
+                          >
+                            <div className="flex items-center justify-between gap-1 leading-none">
+                              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-700">
+                                <Clock className="w-2.5 h-2.5" />
+                                <span>{startTime} - {endTime}</span>
+                              </span>
+                              <span className="text-[10px] font-heading px-1.5 py-0.2 rounded-full bg-indigo-50 text-indigo-700 font-semibold">
+                                Tiết {idx + 1}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <span className="text-xs shrink-0">{icon}</span>
+                              <h4 className="font-heading font-bold text-xs text-on-surface truncate leading-tight group-hover:text-primary transition-colors">
+                                {slot.subject}
+                              </h4>
+                            </div>
+
+                            <p className="text-[10px] text-on-surface-variant/80 truncate italic leading-none">
+                              {note}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
         </section>
 
         {/* Bento Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Column: Daily Quests / Missions (8 cols) */}
           <section className="lg:col-span-8 space-y-6">
-            <div className="bg-surface-container-lowest rounded-2xl p-6 shadow-soft border border-outline-variant/30 space-y-5">
+            <div className="bg-surface-container-lowest rounded-3xl p-6 md:p-8 shadow-soft border border-outline-variant/30 space-y-5">
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="font-heading text-2xl font-bold text-on-surface flex items-center gap-2">
                     <span>Nhiệm vụ học tập vui vẻ</span>
-                    <span className="text-xl">🎯</span>
+                    <span className="text-2xl">🎯</span>
                   </h3>
                   <p className="font-sans text-xs text-on-surface-variant mt-0.5">
-                    Hoàn thành bài học để nhận thêm điểm XP và Sao bé ngoan
+                    Hoàn thành thử thách để nhận điểm thưởng XP và Sao bé ngoan
                   </p>
                 </div>
+
+                <Link
+                  href="/learn"
+                  onClick={() => sounds.playPop()}
+                  className="inline-flex items-center text-xs font-bold text-primary hover:text-primary-dark transition-colors gap-1"
+                >
+                  <span>Xem tất cả bài học</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
               </div>
 
               {/* Quest List */}
               <div className="space-y-3.5">
-                {quests.map((quest) => {
+                {activeQuests.map((quest) => {
                   const isDone = completedQuests[quest.id];
                   return (
                     <div
@@ -260,7 +572,7 @@ export function StudentPortalView({ childrenList }: StudentPortalViewProps) {
                       className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-4 group ${
                         isDone
                           ? 'bg-surface-container-low/60 border-outline-variant/30 opacity-75'
-                          : 'bg-surface-bright border-outline-variant/40 hover:border-primary-container shadow-2xs hover-scale'
+                          : 'bg-surface-bright border-outline-variant/40 hover:border-primary-container shadow-2xs hover:scale-101'
                       }`}
                     >
                       <div className="flex items-center gap-4">
@@ -286,7 +598,7 @@ export function StudentPortalView({ childrenList }: StudentPortalViewProps) {
 
                       <div className="shrink-0">
                         {isDone ? (
-                          <span className="px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-800 font-sans font-bold text-xs flex items-center gap-1.5 shadow-2xs">
+                          <span className="px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-800 font-sans font-bold text-xs flex items-center gap-1.5 shadow-2xs">
                             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                             <span>Đã hoàn thành</span>
                           </span>
@@ -306,30 +618,41 @@ export function StudentPortalView({ childrenList }: StudentPortalViewProps) {
               </div>
             </div>
 
-            {/* Badges Collection */}
-            <div className="bg-surface-container-lowest rounded-2xl p-6 shadow-soft border border-outline-variant/30 space-y-4">
+            {/* Badges Collection Showcase */}
+            <div className="bg-surface-container-lowest rounded-3xl p-6 md:p-8 shadow-soft border border-outline-variant/30 space-y-4">
               <div className="flex justify-between items-center">
                 <h3 className="font-heading text-xl font-bold text-on-surface flex items-center gap-2">
                   <Award className="w-5 h-5 text-secondary" />
                   <span>Bộ sưu tập Huy hiệu bé ngoan</span>
                 </h3>
+                <Link
+                  href="/profile"
+                  onClick={() => sounds.playPop()}
+                  className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
+                >
+                  <span>Kho huy hiệu</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-                {badges.map((badge) => (
-                  <div
-                    key={badge.id}
-                    className={`p-4 rounded-2xl border text-center flex flex-col items-center justify-center transition-all ${
-                      badge.earned
-                        ? 'bg-surface-bright border-secondary/30 shadow-2xs'
-                        : 'bg-surface-container-low/40 border-outline-variant/20 opacity-50 grayscale'
-                    }`}
-                  >
-                    <span className="text-3xl mb-1.5">{badge.icon}</span>
-                    <h5 className="font-sans font-bold text-xs text-on-surface">{badge.title}</h5>
-                    <span className="text-[10px] text-on-surface-variant mt-0.5">{badge.desc}</span>
-                  </div>
-                ))}
+                {displayBadges.map((badge) => {
+                  const isEarned = currentChild.unlockedBadgeIds?.includes(badge.id) || xp >= 100;
+                  return (
+                    <div
+                      key={badge.id}
+                      className={`p-4 rounded-2xl border text-center flex flex-col items-center justify-center transition-all ${
+                        isEarned
+                          ? 'bg-surface-bright border-secondary/40 shadow-2xs'
+                          : 'bg-surface-container-low/40 border-outline-variant/20 opacity-50 grayscale'
+                      }`}
+                    >
+                      <span className="text-3xl mb-1.5">{badge.icon || '🌟'}</span>
+                      <h5 className="font-sans font-bold text-xs text-on-surface">{badge.name}</h5>
+                      <span className="text-[10px] text-on-surface-variant mt-0.5 line-clamp-1">{badge.description}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </section>
@@ -337,9 +660,9 @@ export function StudentPortalView({ childrenList }: StudentPortalViewProps) {
           {/* Right Column: Classroom & Parent Noticeboard (4 cols) */}
           <aside className="lg:col-span-4 space-y-6">
             {/* Classroom Info Card */}
-            <div className="bg-surface-container-lowest rounded-2xl p-6 shadow-soft border border-outline-variant/30 space-y-4">
+            <div className="bg-surface-container-lowest rounded-3xl p-6 shadow-soft border border-outline-variant/30 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="px-3 py-1 rounded-full bg-primary-container text-on-primary-container text-xs font-bold">
+                <span className="px-3 py-1 rounded-full bg-primary-container text-on-primary-container text-xs font-bold font-heading">
                   {currentChild.grade || 'Mẫu giáo'}
                 </span>
                 <span className="px-2.5 py-1 rounded-full bg-[#f0fdf4] text-[#166534] text-xs font-bold flex items-center gap-1 border border-emerald-100">
@@ -354,12 +677,12 @@ export function StudentPortalView({ childrenList }: StudentPortalViewProps) {
                 </h3>
                 <p className="font-sans text-xs text-on-surface-variant mt-1 flex items-center gap-1.5">
                   <School className="w-3.5 h-3.5 text-outline" />
-                  <span>Phòng 102 • Năm học 2025 - 2026</span>
+                  <span>Trường Mầm non & Tiểu học Kinderly</span>
                 </p>
               </div>
 
-              <div className="p-3.5 bg-surface-container-low rounded-xl flex items-center gap-3 border border-outline-variant/20">
-                <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center font-heading font-bold text-base text-secondary shrink-0">
+              <div className="p-3.5 bg-surface-container-low rounded-2xl flex items-center gap-3 border border-outline-variant/20">
+                <div className="w-10 h-10 rounded-2xl bg-secondary-container flex items-center justify-center font-heading font-bold text-base text-secondary shrink-0">
                   {currentChild.teacherName?.charAt(0) || 'L'}
                 </div>
                 <div>
@@ -370,14 +693,23 @@ export function StudentPortalView({ childrenList }: StudentPortalViewProps) {
             </div>
 
             {/* Parent Notice & Electronic Contact Book */}
-            <div className="bg-surface-container-lowest rounded-2xl p-6 shadow-soft border border-outline-variant/30 space-y-4">
-              <h4 className="font-heading text-lg font-bold text-on-surface flex items-center gap-2">
-                <MessageSquare className="w-4 h-4 text-primary" />
-                <span>Sổ liên lạc hôm nay</span>
-              </h4>
+            <div className="bg-surface-container-lowest rounded-3xl p-6 shadow-soft border border-outline-variant/30 space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="font-heading text-lg font-bold text-on-surface flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4 text-primary" />
+                  <span>Sổ liên lạc hôm nay</span>
+                </h4>
+                <Link
+                  href="/diary"
+                  onClick={() => sounds.playPop()}
+                  className="text-xs font-bold text-primary hover:underline"
+                >
+                  Xem chi tiết →
+                </Link>
+              </div>
 
               <div className="space-y-3">
-                <div className="p-3.5 bg-primary-container/20 rounded-xl border border-primary-container/40 space-y-1">
+                <div className="p-3.5 bg-primary-container/20 rounded-2xl border border-primary-container/40 space-y-1">
                   <span className="text-[10px] font-sans font-bold text-primary uppercase tracking-wider flex items-center gap-1">
                     <Heart className="w-3 h-3 fill-current" />
                     Lời khen từ Cô giáo
@@ -387,7 +719,7 @@ export function StudentPortalView({ childrenList }: StudentPortalViewProps) {
                   </p>
                 </div>
 
-                <div className="p-3.5 bg-secondary-container/20 rounded-xl border border-secondary-container/40 space-y-1">
+                <div className="p-3.5 bg-secondary-container/20 rounded-2xl border border-secondary-container/40 space-y-1">
                   <span className="text-[10px] font-sans font-bold text-secondary uppercase tracking-wider flex items-center gap-1">
                     <Utensils className="w-3 h-3" />
                     Thực đơn dinh dưỡng
@@ -400,7 +732,7 @@ export function StudentPortalView({ childrenList }: StudentPortalViewProps) {
             </div>
           </aside>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

@@ -34,7 +34,10 @@ let UsersController = class UsersController {
 exports.UsersController = UsersController;
 __decorate([
     (0, common_1.Get)('profile'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get current user profile' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Lấy thông tin hồ sơ người dùng hiện tại' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Lấy thông tin hồ sơ thành công' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Chưa xác thực' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Không tìm thấy hồ sơ người dùng' }),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -42,7 +45,11 @@ __decorate([
 ], UsersController.prototype, "getProfile", null);
 __decorate([
     (0, common_1.Patch)('profile'),
-    (0, swagger_1.ApiOperation)({ summary: 'Update current user profile' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Cập nhật thông tin hồ sơ người dùng hiện tại' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Cập nhật thông tin hồ sơ thành công' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Dữ liệu cập nhật không hợp lệ' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Chưa xác thực' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Không tìm thấy hồ sơ người dùng' }),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),

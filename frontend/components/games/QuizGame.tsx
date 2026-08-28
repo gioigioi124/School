@@ -65,14 +65,60 @@ export function QuizGame() {
       const earnedXp = Math.round((score / 100) * 25);
       toast.success(`Bé hoàn thành bài đố vui và nhận được +${earnedXp} XP!`);
 
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from('xp_history').insert({
-          studentId: user.id,
-          action: `Chơi game: Đố Vui Thông Thái (${score}/100 điểm)`,
-          xpAmount: earnedXp,
-          sourceType: 'game',
-        });
+      // Record score and sync XP to Supabase / Backend
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profiles } = await supabase
+            .from('profiles')
+            .select('id')
+            .or(`id.eq.${user.id},email.eq.${user.email}`);
+          
+          const studentId = profiles?.[0]?.id || user.id;
+
+          // 1. Insert history
+          await supabase.from('xp_history').insert({
+            student_id: studentId,
+            action: `Chơi game: Đố Vui Thông Thái (${score}/100 điểm)`,
+            xp_amount: earnedXp,
+            source_type: 'game',
+          });
+
+          // 2. Update user_xp
+          const { data: currentXp } = await supabase
+            .from('user_xp')
+            .select('*')
+            .eq('student_id', studentId)
+            .single();
+
+          const totalXp = (currentXp?.total_xp || 0) + earnedXp;
+          const totalStars = (currentXp?.total_stars || 0) + 1;
+          const currentLevel = Math.floor(totalXp / 1000) + 1;
+
+          await supabase.from('user_xp').upsert({
+            student_id: studentId,
+            total_xp: totalXp,
+            total_stars: totalStars,
+            current_level: currentLevel,
+          });
+
+          // 3. Check first_lesson or quiz_master badge
+          if (score === 100) {
+            const { data: badge } = await supabase
+              .from('badges')
+              .select('id')
+              .eq('code', 'quiz_master')
+              .single();
+            if (badge) {
+              await supabase.from('user_badges').upsert({
+                student_id: studentId,
+                badge_id: badge.id,
+              }, { onConflict: 'student_id,badge_id' });
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error recording quiz game xp:', err);
       }
     }
   };

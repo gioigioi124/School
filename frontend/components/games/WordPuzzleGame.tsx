@@ -42,17 +42,48 @@ export function WordPuzzleGame() {
         }, 1200);
       } else {
         setIsCompleted(true);
-        // Record score to Supabase
-        supabase.auth.getUser().then(({ data: { user } }) => {
-          if (user) {
-            supabase.from('xp_history').insert({
-              studentId: user.id,
-              action: 'Chơi game: Ghép Chữ Thành Từ',
-              xpAmount: 20,
-              sourceType: 'game',
-            });
+        // Record score to Supabase and update user XP
+        (async () => {
+          try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              const { data: profiles } = await supabase
+                .from('profiles')
+                .select('id')
+                .or(`id.eq.${user.id},email.eq.${user.email}`);
+              
+              const studentId = profiles?.[0]?.id || user.id;
+
+              // 1. Insert history
+              await supabase.from('xp_history').insert({
+                student_id: studentId,
+                action: 'Chơi game: Ghép Chữ Thành Từ',
+                xp_amount: 20,
+                source_type: 'game',
+              });
+
+              // 2. Update user_xp
+              const { data: currentXp } = await supabase
+                .from('user_xp')
+                .select('*')
+                .eq('student_id', studentId)
+                .single();
+
+              const totalXp = (currentXp?.total_xp || 0) + 20;
+              const totalStars = (currentXp?.total_stars || 0) + 1;
+              const currentLevel = Math.floor(totalXp / 1000) + 1;
+
+              await supabase.from('user_xp').upsert({
+                student_id: studentId,
+                total_xp: totalXp,
+                total_stars: totalStars,
+                current_level: currentLevel,
+              });
+            }
+          } catch (err) {
+            console.error('Error recording word puzzle xp:', err);
           }
-        });
+        })();
       }
     }
   };

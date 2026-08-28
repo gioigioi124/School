@@ -82,8 +82,8 @@ export function CreateStudentAccountDialog({
 
         const { data: teacherEnrollments } = await supabase
           .from('class_enrollments')
-          .select('classId, classes(id, name, grade)')
-          .eq('profileId', user.id)
+          .select('class_id, classes(id, name, grade)')
+          .eq('profile_id', user.id)
           .eq('role', 'teacher');
 
         const { data: allClasses } = await supabase

@@ -6,9 +6,9 @@ export declare class ClassesService {
     constructor(prisma: PrismaService);
     createClass(userId: string, dto: CreateClassDto): Promise<{
         description: string | null;
+        school: string | null;
         avatarUrl: string | null;
         id: string;
-        school: string | null;
         createdAt: Date;
         updatedAt: Date;
         name: string;
@@ -21,9 +21,9 @@ export declare class ClassesService {
             enrollments: number;
         };
         description: string | null;
+        school: string | null;
         avatarUrl: string | null;
         id: string;
-        school: string | null;
         createdAt: Date;
         updatedAt: Date;
         name: string;
@@ -32,25 +32,25 @@ export declare class ClassesService {
     getClassById(classId: string, userId?: string): Promise<{
         teachers: {
             displayName: string | null;
+            phone: string | null;
+            school: string | null;
             avatarUrl: string | null;
             id: string;
             email: string;
-            phone: string | null;
             parentPhone: string | null;
             parentName: string | null;
-            school: string | null;
             createdAt: Date;
             updatedAt: Date;
         }[];
         students: {
             displayName: string | null;
+            phone: string | null;
+            school: string | null;
             avatarUrl: string | null;
             id: string;
             email: string;
-            phone: string | null;
             parentPhone: string | null;
             parentName: string | null;
-            school: string | null;
             createdAt: Date;
             updatedAt: Date;
         }[];
@@ -58,13 +58,13 @@ export declare class ClassesService {
         enrollments: ({
             profile: {
                 displayName: string | null;
+                phone: string | null;
+                school: string | null;
                 avatarUrl: string | null;
                 id: string;
                 email: string;
-                phone: string | null;
                 parentPhone: string | null;
                 parentName: string | null;
-                school: string | null;
                 createdAt: Date;
                 updatedAt: Date;
             };
@@ -72,16 +72,16 @@ export declare class ClassesService {
             role: string;
             id: string;
             createdAt: Date;
-            profileId: string;
             classId: string;
+            profileId: string;
         })[];
         _count: {
             enrollments: number;
         };
         description: string | null;
+        school: string | null;
         avatarUrl: string | null;
         id: string;
-        school: string | null;
         createdAt: Date;
         updatedAt: Date;
         name: string;
@@ -89,9 +89,9 @@ export declare class ClassesService {
     }>;
     updateClass(classId: string, userId: string, dto: UpdateClassDto): Promise<{
         description: string | null;
+        school: string | null;
         avatarUrl: string | null;
         id: string;
-        school: string | null;
         createdAt: Date;
         updatedAt: Date;
         name: string;
@@ -99,9 +99,9 @@ export declare class ClassesService {
     }>;
     deleteClass(classId: string, userId: string): Promise<{
         description: string | null;
+        school: string | null;
         avatarUrl: string | null;
         id: string;
-        school: string | null;
         createdAt: Date;
         updatedAt: Date;
         name: string;

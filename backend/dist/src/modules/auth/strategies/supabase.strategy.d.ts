@@ -8,6 +8,8 @@ export declare class SupabaseStrategy extends SupabaseStrategy_base {
         id: any;
         email: any;
         role: any;
+        appMetadata: any;
+        userMetadata: any;
     }>;
 }
 export {};

@@ -7,9 +7,9 @@ export declare class AnnouncementsController {
     createAnnouncement(user: any, dto: CreateAnnouncementDto): Promise<{
         class: {
             description: string | null;
+            school: string | null;
             avatarUrl: string | null;
             id: string;
-            school: string | null;
             createdAt: Date;
             updatedAt: Date;
             name: string;
@@ -17,13 +17,13 @@ export declare class AnnouncementsController {
         };
         teacher: {
             displayName: string | null;
+            phone: string | null;
+            school: string | null;
             avatarUrl: string | null;
             id: string;
             email: string;
-            phone: string | null;
             parentPhone: string | null;
             parentName: string | null;
-            school: string | null;
             createdAt: Date;
             updatedAt: Date;
         };
@@ -32,17 +32,17 @@ export declare class AnnouncementsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        classId: string;
         content: string;
+        classId: string;
         isImportant: boolean;
         teacherId: string;
     }>;
     getFeed(user: any): Promise<({
         class: {
             description: string | null;
+            school: string | null;
             avatarUrl: string | null;
             id: string;
-            school: string | null;
             createdAt: Date;
             updatedAt: Date;
             name: string;
@@ -58,8 +58,8 @@ export declare class AnnouncementsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        classId: string;
         content: string;
+        classId: string;
         isImportant: boolean;
         teacherId: string;
     })[]>;
@@ -75,17 +75,17 @@ export declare class AnnouncementsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        classId: string;
         content: string;
+        classId: string;
         isImportant: boolean;
         teacherId: string;
     })[]>;
     getAnnouncementById(id: string): Promise<{
         class: {
             description: string | null;
+            school: string | null;
             avatarUrl: string | null;
             id: string;
-            school: string | null;
             createdAt: Date;
             updatedAt: Date;
             name: string;
@@ -93,13 +93,13 @@ export declare class AnnouncementsController {
         };
         teacher: {
             displayName: string | null;
+            phone: string | null;
+            school: string | null;
             avatarUrl: string | null;
             id: string;
             email: string;
-            phone: string | null;
             parentPhone: string | null;
             parentName: string | null;
-            school: string | null;
             createdAt: Date;
             updatedAt: Date;
         };
@@ -108,8 +108,8 @@ export declare class AnnouncementsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        classId: string;
         content: string;
+        classId: string;
         isImportant: boolean;
         teacherId: string;
     }>;
@@ -118,8 +118,8 @@ export declare class AnnouncementsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        classId: string;
         content: string;
+        classId: string;
         isImportant: boolean;
         teacherId: string;
     }>;
@@ -128,8 +128,8 @@ export declare class AnnouncementsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        classId: string;
         content: string;
+        classId: string;
         isImportant: boolean;
         teacherId: string;
     }>;

@@ -59,30 +59,16 @@ export function LessonFormDialog({
       const { error: insertError } = await supabase
         .from('lessons')
         .insert({
-          classId,
-          teacherId: user.id,
+          class_id: classId,
+          teacher_id: user.id,
           title,
           description,
           content,
-          videoUrl: videoUrl.trim() || null,
+          video_url: videoUrl.trim() || null,
           duration: Number(duration) || 0,
         });
 
-      if (insertError) {
-        // Fallback for snake_case schema columns
-        const { error: insertError2 } = await supabase
-          .from('lessons')
-          .insert({
-            class_id: classId,
-            teacher_id: user.id,
-            title,
-            description,
-            content,
-            video_url: videoUrl.trim() || null,
-            duration: Number(duration) || 0,
-          });
-        if (insertError2) throw insertError2;
-      }
+      if (insertError) throw insertError;
 
       toast.success('Đã tạo bài học mới thành công!');
       setOpen(false);

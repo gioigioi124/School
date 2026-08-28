@@ -12,6 +12,7 @@ import { LessonsModule } from './modules/lessons/lessons.module';
 import { AssignmentsModule } from './modules/assignments/assignments.module';
 import { GamificationModule } from './modules/gamification/gamification.module';
 import { GamesModule } from './modules/games/games.module';
+import { SchedulesModule } from './modules/schedules/schedules.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
@@ -28,6 +29,7 @@ import { PrismaModule } from './prisma/prisma.module';
     AssignmentsModule,
     GamificationModule,
     GamesModule,
+    SchedulesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

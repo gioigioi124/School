@@ -61,26 +61,15 @@ export function AssignmentFormDialog({
       };
 
       const { error: insertError } = await supabase.from('assignments').insert({
-        lessonId,
+        lesson_id: lessonId,
         title,
         description,
         type,
         content: contentPayload,
-        xpReward: Number(xpReward) || 20,
+        xp_reward: Number(xpReward) || 20,
       });
 
-      if (insertError) {
-        // Fallback for snake_case schema columns
-        const { error: insertError2 } = await supabase.from('assignments').insert({
-          lesson_id: lessonId,
-          title,
-          description,
-          type,
-          content: contentPayload,
-          xp_reward: Number(xpReward) || 20,
-        });
-        if (insertError2) throw insertError2;
-      }
+      if (insertError) throw insertError;
 
       toast.success('Đã thêm bài tập/câu đố thành công!');
       setOpen(false);

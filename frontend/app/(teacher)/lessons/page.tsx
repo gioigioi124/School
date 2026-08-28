@@ -12,14 +12,14 @@ export default async function LessonsPage() {
   // 1. Fetch teacher classes
   const { data: teacherEnrollments } = await supabase
     .from('class_enrollments')
-    .select('classId, classes(id, name, grade)')
-    .eq('profileId', user.id)
+    .select('class_id, classes(id, name, grade)')
+    .eq('profile_id', user.id)
     .eq('role', 'teacher');
 
   const { data: allClasses } = await supabase
     .from('classes')
     .select('id, name, grade')
-    .order('createdAt', { ascending: false });
+    .order('created_at', { ascending: false });
 
   let teacherClasses: Array<{ id: string; name: string; grade?: string }> = 
     (teacherEnrollments?.map((e: any) => Array.isArray(e.classes) ? e.classes[0] : e.classes).filter(Boolean) || []);
@@ -37,16 +37,14 @@ export default async function LessonsPage() {
       title,
       description,
       content,
-      videoUrl,
       video_url,
       duration,
-      classId,
       class_id,
       classes(name, grade),
-      assignments(id, title, type, xpReward, xp_reward)
+      assignments(id, title, type, xp_reward)
     `)
-    .in('classId', classIds.length > 0 ? classIds : ['00000000-0000-0000-0000-000000000000'])
-    .order('createdAt', { ascending: false });
+    .in('class_id', classIds.length > 0 ? classIds : ['00000000-0000-0000-0000-000000000000'])
+    .order('created_at', { ascending: false });
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-fade-in pb-12">

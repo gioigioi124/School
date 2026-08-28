@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   ArrowLeft, 
@@ -19,13 +19,17 @@ import {
   Sparkles,
   BookOpen,
   HelpCircle,
-  Award
+  Award,
+  Save,
+  Loader2
 } from 'lucide-react';
 import { AddStudentDialog } from '@/components/classes/AddStudentDialog';
 import { AwardStudentDialog } from '@/components/classes/AwardStudentDialog';
 import { EditClassDialog } from '@/components/classes/EditClassDialog';
 import { DeleteClassDialog } from '@/components/classes/DeleteClassDialog';
 import toast from 'react-hot-toast';
+import api from '@/lib/api';
+import { createClient } from '@/lib/supabase/client';
 
 interface Student {
   id: string;
@@ -54,6 +58,35 @@ interface ClassDetailViewProps {
 export function ClassDetailView({ classData, students, teacherName }: ClassDetailViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [attendance, setAttendance] = useState<Record<string, 'present' | 'absent' | 'leave'>>({});
+  const [isSavingAttendance, setIsSavingAttendance] = useState(false);
+  const supabase = createClient();
+
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  // Load existing attendance for today
+  useEffect(() => {
+    const fetchTodayAttendance = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('attendance')
+          .select('student_id, status')
+          .eq('class_id', classData.id)
+          .eq('date', todayStr);
+
+        if (data && data.length > 0) {
+          const map: Record<string, 'present' | 'absent' | 'leave'> = {};
+          data.forEach((r: any) => {
+            map[r.student_id] = r.status as 'present' | 'absent' | 'leave';
+          });
+          setAttendance(map);
+        }
+      } catch (err) {
+        console.error('Error fetching today attendance:', err);
+      }
+    };
+
+    fetchTodayAttendance();
+  }, [classData.id, todayStr]);
 
   const filteredStudents = students.filter(s => 
     (s.displayName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -67,7 +100,50 @@ export function ClassDetailView({ classData, students, teacherName }: ClassDetai
       const next = current === 'present' ? 'absent' : current === 'absent' ? 'leave' : 'present';
       return { ...prev, [studentId]: next };
     });
-    toast.success(`Đã cập nhật trạng thái điểm danh!`, { duration: 1500 });
+  };
+
+  const handleSaveAttendance = async () => {
+    if (students.length === 0) return;
+    setIsSavingAttendance(true);
+
+    const records = students.map((s) => ({
+      studentId: s.id,
+      status: attendance[s.id] || 'present',
+      note: null,
+    }));
+
+    try {
+      // 1. Try Backend NestJS API
+      try {
+        await api.post('/attendance/batch', {
+          classId: classData.id,
+          date: todayStr,
+          records,
+        });
+      } catch (apiErr) {
+        // 2. Direct Supabase Upsert Fallback
+        const upsertData = records.map((r) => ({
+          class_id: classData.id,
+          student_id: r.studentId,
+          date: todayStr,
+          status: r.status,
+        }));
+        const { error } = await supabase
+          .from('attendance')
+          .upsert(upsertData, { onConflict: 'class_id,student_id,date' });
+        if (error) throw error;
+      }
+
+      toast.success('Đã lưu điểm danh hôm nay thành công! 📋', {
+        icon: '✅',
+        duration: 3000,
+      });
+    } catch (error: any) {
+      console.error('Save attendance error:', error);
+      toast.error('Lỗi khi lưu điểm danh.');
+    } finally {
+      setIsSavingAttendance(false);
+    }
   };
 
   // Count attendance stats
@@ -184,15 +260,31 @@ export function ClassDetailView({ classData, students, teacherName }: ClassDetai
                   </p>
                 </div>
 
-                <div className="relative w-full sm:w-60">
-                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" />
-                  <input
-                    type="text"
-                    placeholder="Tìm tên bé..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-3 py-1.5 rounded-full border border-outline-variant/40 bg-surface-container-low focus:border-primary outline-none font-sans text-xs text-on-surface transition-colors"
-                  />
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <div className="relative flex-1 sm:w-56">
+                    <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" />
+                    <input
+                      type="text"
+                      placeholder="Tìm tên bé..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-9 pr-3 py-1.5 rounded-full border border-outline-variant/40 bg-surface-container-low focus:border-primary outline-none font-sans text-xs text-on-surface transition-colors"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleSaveAttendance}
+                    disabled={isSavingAttendance || students.length === 0}
+                    className="px-4 py-2 bg-primary text-on-primary rounded-full font-sans font-bold text-xs hover:bg-primary-dark transition-all flex items-center gap-1.5 shadow-sm cursor-pointer shrink-0 disabled:opacity-50"
+                  >
+                    {isSavingAttendance ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Save className="w-3.5 h-3.5" />
+                    )}
+                    <span>Lưu điểm danh</span>
+                  </button>
                 </div>
               </div>
 
@@ -237,8 +329,10 @@ export function ClassDetailView({ classData, students, teacherName }: ClassDetai
                       {/* Quick Award Button */}
                       <div onClick={(e) => e.stopPropagation()}>
                         <AwardStudentDialog
+                          studentId={student.id}
                           studentName={student.displayName || 'Học sinh'}
                           avatar={student.avatarUrl || '🐻'}
+                          classId={classData.id}
                         />
                       </div>
                     </div>
