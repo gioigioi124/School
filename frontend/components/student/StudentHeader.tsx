@@ -175,20 +175,20 @@ export function StudentHeader({
         </div>
 
         {/* Right: Gamification Badges & Actions */}
-        <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+        <div className="flex items-center gap-1.5 sm:gap-3 ml-auto">
           {/* Level Badge */}
           <Link
             href="/profile"
             onClick={() => sounds.playPop()}
-            className="bg-primary-container text-on-primary-container px-3 py-1.5 rounded-full font-heading font-bold text-xs flex items-center gap-1.5 shadow-xs hover:scale-105 transition-transform"
+            className="bg-primary-container text-on-primary-container px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full font-heading font-bold text-[11px] sm:text-xs flex items-center gap-1 sm:gap-1.5 shadow-xs hover:scale-105 transition-transform shrink-0"
           >
-            <Trophy className="w-3.5 h-3.5 text-primary" />
+            <Trophy className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-primary shrink-0" />
             <span>Cấp {currentLevel}</span>
           </Link>
 
           {/* Stars Counter */}
-          <div className="bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-full font-sans font-bold text-xs flex items-center gap-1.5 shadow-xs">
-            <Star className="w-3.5 h-3.5 fill-current text-secondary" />
+          <div className="bg-secondary-container text-on-secondary-container px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full font-sans font-bold text-[11px] sm:text-xs flex items-center gap-1 sm:gap-1.5 shadow-xs shrink-0">
+            <Star className="w-3 sm:w-3.5 h-3 sm:h-3.5 fill-current text-secondary shrink-0" />
             <span>{currentStars} ⭐</span>
           </div>
 
@@ -202,14 +202,14 @@ export function StudentHeader({
           <button
             type="button"
             onClick={handleToggleSound}
-            className={`p-2 rounded-full border transition-all cursor-pointer ${
+            className={`p-1.5 sm:p-2 rounded-full border transition-all cursor-pointer shrink-0 ${
               isMuted
                 ? 'bg-surface-container text-on-surface-variant border-outline-variant/30'
                 : 'bg-primary-container text-primary border-primary/20 shadow-2xs'
             }`}
             title={isMuted ? 'Bật âm thanh' : 'Tắt âm thanh'}
           >
-            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+            {isMuted ? <VolumeX className="w-3.5 sm:w-4 h-3.5 sm:h-4" /> : <Volume2 className="w-3.5 sm:w-4 h-3.5 sm:h-4" />}
           </button>
 
           {/* Mobile Logout (Desktop has logout in sidebar) */}
@@ -217,7 +217,7 @@ export function StudentHeader({
             <button
               type="button"
               onClick={handleLogout}
-              className="p-2 rounded-full text-on-surface-variant hover:text-destructive hover:bg-error-container/40 transition-colors cursor-pointer"
+              className="p-1.5 sm:p-2 rounded-full text-on-surface-variant hover:text-destructive hover:bg-error-container/40 transition-colors cursor-pointer"
               title="Đăng xuất"
             >
               <LogOut className="w-4 h-4" />

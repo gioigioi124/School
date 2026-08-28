@@ -170,33 +170,38 @@ export function ClassDetailView({ classData, students, teacherName }: ClassDetai
       <section className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           {/* Badges row */}
-          <div className="flex items-center gap-2.5 mb-2.5">
-            <span className="px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full text-xs font-sans font-bold shadow-2xs">
-              {classData.grade || 'Mẫu giáo'}
-            </span>
-            <span className="px-3 py-1 bg-surface-container-high text-on-surface-variant rounded-full text-xs font-sans font-bold flex items-center gap-1.5 shadow-2xs">
-              <Calendar className="w-3.5 h-3.5" />
-              <span>Năm học {currentYear} - {currentYear + 1}</span>
+          {/* Breadcrumb back */}
+          <div className="flex items-center gap-2 text-on-surface-variant font-sans text-xs font-bold mb-3">
+            <Link 
+              href="/classes" 
+              className="hover:text-primary transition-colors flex items-center gap-1 group"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+              <span>Lớp học</span>
+            </Link>
+            <span>/</span>
+            <span className="text-primary truncate max-w-[200px]">
+              {classData.name}
             </span>
           </div>
 
           {/* Class Title */}
-          <h1 className="font-heading text-4xl font-bold text-primary mb-2 flex items-center gap-3">
-            <span>{classData.name}</span>
-            <span className="text-3xl p-1 bg-surface-container-low rounded-2xl shadow-xs border border-outline-variant/30">
+          <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-primary mb-2 flex items-center gap-2.5 sm:gap-3">
+            <span className="truncate">{classData.name}</span>
+            <span className="text-2xl sm:text-3xl p-1 bg-surface-container-low rounded-xl sm:rounded-2xl shadow-xs border border-outline-variant/30 shrink-0">
               {classData.avatarUrl || '📚'}
             </span>
           </h1>
 
           {/* Meta specs row */}
-          <div className="flex flex-wrap gap-6 text-on-surface-variant font-sans text-sm font-medium">
+          <div className="flex flex-wrap gap-3 sm:gap-6 text-on-surface-variant font-sans text-xs sm:text-sm font-medium">
             <span className="flex items-center gap-1.5">
               <Users className="w-4 h-4 text-outline" />
               <span>{students.length} Học sinh</span>
             </span>
             <span className="flex items-center gap-1.5">
               <Cake className="w-4 h-4 text-outline" />
-              <span>{classData.grade || '3 - 4 tuổi'}</span>
+              <span>{classData.grade || 'Cấp Tiểu học'}</span>
             </span>
             <span className="flex items-center gap-1.5">
               <DoorClosed className="w-4 h-4 text-outline" />
@@ -206,13 +211,13 @@ export function ClassDetailView({ classData, students, teacherName }: ClassDetai
         </div>
 
         {/* Header Action Buttons */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
           <EditClassDialog
             classItem={classData}
             customTrigger={
               <button
                 type="button"
-                className="px-5 py-2.5 bg-surface-container-lowest border-2 border-surface-container-high text-on-surface-variant rounded-full font-sans font-bold text-sm hover:bg-surface-container-low hover:text-on-surface transition-all flex items-center gap-2 shadow-xs cursor-pointer"
+                className="px-4 sm:px-5 py-2 sm:py-2.5 bg-surface-container-lowest border-2 border-surface-container-high text-on-surface-variant rounded-full font-sans font-bold text-xs sm:text-sm hover:bg-surface-container-low hover:text-on-surface transition-all flex items-center gap-2 shadow-xs cursor-pointer"
               >
                 <Edit3 className="w-4 h-4" />
                 <span>Chỉnh sửa</span>
@@ -232,7 +237,7 @@ export function ClassDetailView({ classData, students, teacherName }: ClassDetai
             customTrigger={
               <button
                 type="button"
-                className="px-4 py-2.5 bg-surface-container-lowest border-2 border-destructive/20 text-destructive rounded-full font-sans font-bold text-sm hover:bg-error-container/40 transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
+                className="px-3.5 sm:px-4 py-2 sm:py-2.5 bg-surface-container-lowest border-2 border-destructive/20 text-destructive rounded-full font-sans font-bold text-xs sm:text-sm hover:bg-error-container/40 transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
                 title="Xóa lớp học"
               >
                 <Trash2 className="w-4 h-4" />
@@ -247,12 +252,12 @@ export function ClassDetailView({ classData, students, teacherName }: ClassDetai
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Student List & Quick Stats (8 Cols) */}
         <section className="lg:col-span-8 space-y-6 flex flex-col">
-          <div className="bg-surface-container-lowest rounded-2xl p-6 shadow-soft border border-outline-variant/30 bento-hover transition-all duration-300 flex-1 flex flex-col justify-between">
+          <div className="bg-surface-container-lowest rounded-2xl p-4 sm:p-6 shadow-soft border border-outline-variant/30 bento-hover transition-all duration-300 flex-1 flex flex-col justify-between">
             <div>
               {/* Card Header & Search */}
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <div>
-                  <h2 className="font-heading text-2xl font-bold text-on-surface">
+                  <h2 className="font-heading text-xl sm:text-2xl font-bold text-on-surface">
                     Danh sách học sinh
                   </h2>
                   <p className="font-sans text-xs text-on-surface-variant mt-0.5">
@@ -260,7 +265,7 @@ export function ClassDetailView({ classData, students, teacherName }: ClassDetai
                   </p>
                 </div>
 
-                <div className="flex items-center gap-3 w-full sm:w-auto">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
                   <div className="relative flex-1 sm:w-56">
                     <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" />
                     <input
@@ -276,7 +281,7 @@ export function ClassDetailView({ classData, students, teacherName }: ClassDetai
                     type="button"
                     onClick={handleSaveAttendance}
                     disabled={isSavingAttendance || students.length === 0}
-                    className="px-4 py-2 bg-primary text-on-primary rounded-full font-sans font-bold text-xs hover:bg-primary-dark transition-all flex items-center gap-1.5 shadow-sm cursor-pointer shrink-0 disabled:opacity-50"
+                    className="px-4 py-2 bg-primary text-on-primary rounded-full font-sans font-bold text-xs hover:bg-primary-dark transition-all flex items-center justify-center gap-1.5 shadow-sm cursor-pointer shrink-0 disabled:opacity-50"
                   >
                     {isSavingAttendance ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />

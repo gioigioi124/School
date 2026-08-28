@@ -113,7 +113,7 @@ export default function RegisterForm() {
             <input
               className="block w-full pl-10 pr-4 py-2.5 border-transparent focus:border-transparent focus:ring-0 bg-transparent font-sans text-sm text-on-surface outline-none"
               id="school"
-              placeholder="Nhập tên trường mầm non"
+              placeholder="Nhập tên trường tiểu học"
               type="text"
               value={school}
               onChange={(e) => setSchool(e.target.value)}

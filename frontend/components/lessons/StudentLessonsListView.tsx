@@ -147,16 +147,17 @@ export function StudentLessonsListView({
       </div>
 
       {/* Category Pills & Search */}
-      <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+      <div className="flex flex-col md:flex-row gap-3 sm:gap-4 items-stretch md:items-center justify-between">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.id}
+              type="button"
               onClick={() => {
                 sounds.playPop();
                 setSelectedCategory(cat.id);
               }}
-              className={`px-4 py-2.5 rounded-2xl font-heading font-bold text-xs shrink-0 transition-all cursor-pointer flex items-center gap-1.5 ${
+              className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-2xl font-heading font-bold text-xs shrink-0 transition-all cursor-pointer flex items-center gap-1.5 ${
                 selectedCategory === cat.id
                   ? 'bg-primary text-on-primary shadow-sm scale-102 ring-2 ring-primary/20'
                   : 'bg-surface-container-lowest hover:bg-surface-container-low text-on-surface border border-outline-variant/30'
@@ -168,7 +169,7 @@ export function StudentLessonsListView({
           ))}
         </div>
 
-        <div className="relative min-w-[240px]">
+        <div className="relative min-w-full sm:min-w-[240px]">
           <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-outline" />
           <input
             type="text"

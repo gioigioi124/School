@@ -82,12 +82,13 @@ export function AnnouncementList({
   return (
     <div className="space-y-6">
       {/* Filter & Search Bar */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center bg-surface-container-lowest p-4 rounded-2xl shadow-xs border border-outline-variant/30">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-between items-stretch sm:items-center bg-surface-container-lowest p-3.5 sm:p-4 rounded-2xl shadow-xs border border-outline-variant/30">
         {/* Class Filter Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 no-scrollbar">
           <button
+            type="button"
             onClick={() => setSelectedClassId('all')}
-            className={`px-4 py-2 rounded-xl text-xs font-heading font-bold transition-all shrink-0 cursor-pointer ${
+            className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-heading font-bold transition-all shrink-0 cursor-pointer ${
               selectedClassId === 'all'
                 ? 'bg-primary text-on-primary shadow-xs'
                 : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high'
@@ -102,8 +103,9 @@ export function AnnouncementList({
             return (
               <button
                 key={cls.id}
+                type="button"
                 onClick={() => setSelectedClassId(cls.id)}
-                className={`px-4 py-2 rounded-xl text-xs font-heading font-bold transition-all shrink-0 cursor-pointer ${
+                className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-heading font-bold transition-all shrink-0 cursor-pointer ${
                   selectedClassId === cls.id
                     ? 'bg-primary text-on-primary shadow-xs'
                     : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high'
@@ -116,7 +118,7 @@ export function AnnouncementList({
         </div>
 
         {/* Search Bar */}
-        <div className="relative min-w-[240px]">
+        <div className="relative min-w-full sm:min-w-[220px]">
           <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
           <input
             type="text"

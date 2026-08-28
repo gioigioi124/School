@@ -212,22 +212,22 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto w-full space-y-8 animate-fade-in pb-12">
+    <div className="max-w-7xl mx-auto w-full space-y-6 sm:space-y-8 animate-fade-in pb-12">
       {/* Greeting Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-2">
         <div>
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold text-on-surface mb-2">
+          <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-on-surface mb-1.5 leading-tight">
             Chào buổi sáng, <span className="text-primary">{displayName}!</span> 👋
           </h2>
-          <p className="font-sans text-sm sm:text-base text-on-surface-variant">
+          <p className="font-sans text-xs sm:text-sm lg:text-base text-on-surface-variant">
             Hôm nay là {currentDayLabel} — Chúc bạn một ngày giảng dạy đầy cảm hứng và hiệu quả.
           </p>
         </div>
         
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
           <Link
             href="/schedules"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-surface-container-high hover:bg-surface-container text-on-surface font-heading font-bold text-xs border border-outline-variant/30 transition-all hover:scale-102 cursor-pointer shadow-xs"
+            className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl bg-surface-container-high hover:bg-surface-container text-on-surface font-heading font-bold text-xs border border-outline-variant/30 transition-all hover:scale-102 cursor-pointer shadow-xs"
           >
             <CalendarDays className="w-4 h-4 text-primary" />
             <span>Thời khóa biểu</span>

@@ -270,17 +270,17 @@ export function TeacherSchedulesClient({
       </div>
 
       {/* Control Bar: Class Selector, Search, View Mode Switcher */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-surface-container-lowest p-3.5 rounded-lg border border-outline-variant/30 shadow-xs print:hidden">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-surface-container-lowest p-3.5 sm:p-4 rounded-xl border border-outline-variant/30 shadow-xs print:hidden">
         {/* Class Selector */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex items-center gap-2 flex-1 sm:flex-initial">
             <span className="text-xs font-bold font-heading text-on-surface-variant shrink-0">
               Lớp học:
             </span>
             <select
               value={selectedClassId}
               onChange={(e) => setSelectedClassId(e.target.value)}
-              className="px-3 py-1.5 rounded-md border border-outline-variant/50 bg-surface focus:border-primary focus:ring-0 outline-none font-heading font-bold text-sm text-on-surface shadow-2xs cursor-pointer"
+              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg border border-outline-variant/50 bg-surface focus:border-primary focus:ring-0 outline-none font-heading font-bold text-xs sm:text-sm text-on-surface shadow-2xs cursor-pointer"
             >
               {classes.map((cls) => (
                 <option key={cls.id} value={cls.id}>
@@ -291,52 +291,55 @@ export function TeacherSchedulesClient({
           </div>
 
           <button
+            type="button"
             onClick={() => loadSchedules(selectedClassId)}
             disabled={loading}
             title="Làm mới dữ liệu"
-            className="p-1.5 rounded-md bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-colors cursor-pointer"
+            className="p-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-colors cursor-pointer"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
         </div>
 
         {/* Search & View Mode Switcher */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
           {/* Quick Search */}
-          <div className="relative">
+          <div className="relative flex-1 sm:flex-initial">
             <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" />
             <input
               type="text"
               placeholder="Tìm môn học, phòng..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 pr-3 py-1.5 rounded-md border border-outline-variant/40 bg-surface text-xs text-on-surface outline-none focus:border-primary w-40 sm:w-48 transition-all"
+              className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-outline-variant/40 bg-surface text-xs text-on-surface outline-none focus:border-primary sm:w-48 transition-all"
             />
           </div>
 
           {/* View Mode Toggle */}
-          <div className="flex items-center p-1 rounded-md bg-surface-container-low border border-outline-variant/30">
+          <div className="flex items-center justify-center p-1 rounded-lg bg-surface-container-low border border-outline-variant/30">
             <button
+              type="button"
               onClick={() => setViewMode('grid')}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-heading font-bold transition-all cursor-pointer ${
+              className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-heading font-bold transition-all cursor-pointer ${
                 viewMode === 'grid'
                   ? 'bg-surface text-primary shadow-xs'
                   : 'text-on-surface-variant hover:text-on-surface'
               }`}
             >
               <LayoutGrid className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Lưới tuần</span>
+              <span>Lưới tuần</span>
             </button>
             <button
+              type="button"
               onClick={() => setViewMode('timeline')}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-heading font-bold transition-all cursor-pointer ${
+              className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-heading font-bold transition-all cursor-pointer ${
                 viewMode === 'timeline'
                   ? 'bg-surface text-primary shadow-xs'
                   : 'text-on-surface-variant hover:text-on-surface'
               }`}
             >
               <ListFilter className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Timeline ngày</span>
+              <span>Timeline ngày</span>
             </button>
           </div>
         </div>

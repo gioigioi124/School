@@ -124,57 +124,57 @@ export function StudentProfileView({
         </p>
       </div>
 
-      {/* Profile Overview Card */}
-      <div className="bg-gradient-to-r from-primary-container via-secondary-container/40 to-surface-container-lowest rounded-3xl p-6 md:p-8 shadow-soft border border-outline-variant/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="flex items-center gap-5">
+      {/* Hero Profile Banner */}
+      <div className="bg-surface-container-low rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-outline-variant/30 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div className="flex items-center gap-4 sm:gap-6">
           <div className="relative group">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-surface-container-lowest shadow-md flex items-center justify-center text-5xl sm:text-6xl border-2 border-primary/20">
+            <div className="w-18 h-18 sm:w-24 sm:h-24 rounded-2xl sm:rounded-3xl bg-surface-container-lowest shadow-md flex items-center justify-center text-4xl sm:text-6xl border-2 border-primary/20">
               {currentAvatar}
             </div>
-            <div className="absolute -bottom-2 -right-2 bg-primary text-on-primary rounded-full p-1.5 shadow-xs">
-              <Edit3 className="w-3.5 h-3.5" />
+            <div className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 bg-primary text-on-primary rounded-full p-1 sm:p-1.5 shadow-xs">
+              <Edit3 className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
             </div>
           </div>
 
           <div className="space-y-1">
-            <span className="px-3 py-1 rounded-full bg-surface-container-lowest text-primary font-heading font-bold text-xs shadow-2xs inline-block">
+            <span className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-surface-container-lowest text-primary font-heading font-bold text-[11px] sm:text-xs shadow-2xs inline-block">
               {grade} • {className}
             </span>
-            <h2 className="font-heading text-2xl sm:text-3xl font-bold text-on-surface">
+            <h2 className="font-heading text-xl sm:text-3xl font-bold text-on-surface">
               {student.display_name || 'Bé yêu'}
             </h2>
             <p className="font-sans text-xs text-on-surface-variant flex items-center gap-1.5">
               <School className="w-3.5 h-3.5 text-outline" />
-              <span>{student.school || 'Trường Mầm non & Tiểu học Kinderly'}</span>
+              <span>{student.school || 'Trường Tiểu học Kinderly'}</span>
             </p>
           </div>
         </div>
 
         {/* Stats Badges */}
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/30 shadow-2xs text-center min-w-[100px]">
-            <Trophy className="w-5 h-5 text-primary mx-auto mb-1" />
-            <span className="font-heading font-bold text-lg text-primary block">Cấp {level}</span>
+        <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap w-full md:w-auto">
+          <div className="flex-1 sm:flex-initial bg-surface-container-lowest p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-outline-variant/30 shadow-2xs text-center min-w-[90px]">
+            <Trophy className="w-4 sm:w-5 h-4 sm:h-5 text-primary mx-auto mb-1" />
+            <span className="font-heading font-bold text-base sm:text-lg text-primary block">Cấp {level}</span>
             <span className="text-[10px] text-on-surface-variant font-medium">Họa sĩ nhí</span>
           </div>
 
-          <div className="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/30 shadow-2xs text-center min-w-[100px]">
-            <Star className="w-5 h-5 text-secondary fill-secondary mx-auto mb-1" />
-            <span className="font-heading font-bold text-lg text-secondary block">{totalStars}</span>
+          <div className="flex-1 sm:flex-initial bg-surface-container-lowest p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-outline-variant/30 shadow-2xs text-center min-w-[90px]">
+            <Star className="w-4 sm:w-5 h-4 sm:h-5 text-secondary fill-secondary mx-auto mb-1" />
+            <span className="font-heading font-bold text-base sm:text-lg text-secondary block">{totalStars}</span>
             <span className="text-[10px] text-on-surface-variant font-medium">Sao bé ngoan</span>
           </div>
 
-          <div className="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant/30 shadow-2xs text-center min-w-[100px]">
-            <Flame className="w-5 h-5 text-amber-500 fill-amber-500 mx-auto mb-1 animate-bounce" />
-            <span className="font-heading font-bold text-lg text-amber-600 block">3 ngày</span>
+          <div className="flex-1 sm:flex-initial bg-surface-container-lowest p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-outline-variant/30 shadow-2xs text-center min-w-[90px]">
+            <Flame className="w-4 sm:w-5 h-4 sm:h-5 text-amber-500 fill-amber-500 mx-auto mb-1 animate-bounce" />
+            <span className="font-heading font-bold text-base sm:text-lg text-amber-600 block">3 ngày</span>
             <span className="text-[10px] text-on-surface-variant font-medium">Chuỗi liên tục</span>
           </div>
         </div>
       </div>
 
       {/* Mascot Avatar Picker */}
-      <div className="bg-surface-container-lowest rounded-3xl p-6 md:p-8 shadow-soft border border-outline-variant/30 space-y-4">
-        <h3 className="font-heading font-bold text-lg text-on-surface flex items-center gap-2">
+      <div className="bg-surface-container-lowest rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-soft border border-outline-variant/30 space-y-4">
+        <h3 className="font-heading font-bold text-base sm:text-lg text-on-surface flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-secondary" />
           <span>Chọn Linh Vật Đại Diện Của Bé</span>
         </h3>
@@ -182,23 +182,24 @@ export function StudentProfileView({
           Chạm vào một người bạn linh vật để đổi hình đại diện hiển thị trên lớp học nhé!
         </p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5 pt-2">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3.5 pt-2">
           {MASCOT_AVATARS.map((mascot) => {
             const isSelected = currentAvatar === mascot.emoji;
             return (
               <button
                 key={mascot.emoji}
+                type="button"
                 onClick={() => handleSelectAvatar(mascot.emoji)}
-                className={`p-3.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
+                className={`p-3 sm:p-3.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
                   isSelected
                     ? 'bg-primary-container/40 border-primary ring-4 ring-primary/20 scale-105 shadow-sm'
                     : 'bg-surface-bright border-outline-variant/30 hover:bg-surface-container-low hover:scale-102'
                 }`}
               >
-                <span className="text-4xl mb-1.5">{mascot.emoji}</span>
-                <span className="font-sans font-bold text-xs text-on-surface">{mascot.name}</span>
+                <span className="text-3xl sm:text-4xl mb-1">{mascot.emoji}</span>
+                <span className="font-sans font-bold text-[11px] sm:text-xs text-on-surface">{mascot.name}</span>
                 {isSelected && (
-                  <span className="text-[10px] font-bold text-primary mt-0.5">Đang chọn</span>
+                  <span className="text-[9.5px] sm:text-[10px] font-bold text-primary mt-0.5">Đang chọn</span>
                 )}
               </button>
             );

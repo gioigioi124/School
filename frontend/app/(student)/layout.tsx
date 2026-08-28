@@ -28,7 +28,7 @@ export default async function StudentLayout({
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
-        <main className="flex-1 overflow-auto p-4 sm:p-6 pb-20 md:pb-6">
+        <main className="flex-1 overflow-y-auto p-3.5 sm:p-5 md:p-6 pb-24 md:pb-8">
           {children}
         </main>
         {/* Mobile Navigation */}

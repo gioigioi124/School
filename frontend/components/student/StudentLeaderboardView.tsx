@@ -144,31 +144,31 @@ export function StudentLeaderboardView({
       )}
 
       {/* Podium for Top 3 */}
-      <div className="bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-soft border border-outline-variant/30">
-        <h3 className="font-heading font-bold text-lg text-on-surface text-center mb-8 flex items-center justify-center gap-2">
+      <div className="bg-surface-container-lowest rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-soft border border-outline-variant/30">
+        <h3 className="font-heading font-bold text-base sm:text-lg text-on-surface text-center mb-6 sm:mb-8 flex items-center justify-center gap-2">
           <Crown className="w-5 h-5 text-amber-500" />
           <span>Top 3 Ngôi Sao Sáng Nhất Lớp</span>
         </h3>
 
-        <div className="grid grid-cols-3 gap-2 sm:gap-6 items-end justify-center max-w-lg mx-auto pt-6 pb-2">
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-6 items-end justify-center max-w-lg mx-auto pt-6 pb-2">
           {/* Rank 2 (Silver) */}
           {top2 && (
-            <div className="flex flex-col items-center text-center space-y-2">
+            <div className="flex flex-col items-center text-center space-y-1.5 sm:space-y-2">
               <div className="relative">
-                <span className="text-4xl sm:text-5xl block animate-bounce" style={{ animationDelay: '0.2s' }}>
+                <span className="text-3xl sm:text-5xl block animate-bounce" style={{ animationDelay: '0.2s' }}>
                   {top2.avatarUrl || '🐰'}
                 </span>
-                <div className="absolute -top-3 -right-2 bg-slate-300 text-slate-800 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold font-heading shadow-xs">
+                <div className="absolute -top-2.5 -right-1.5 sm:-top-3 sm:-right-2 bg-slate-300 text-slate-800 rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-[10px] sm:text-xs font-bold font-heading shadow-xs">
                   🥈
                 </div>
               </div>
-              <h4 className="font-heading font-bold text-xs sm:text-sm text-on-surface truncate max-w-[100px]">
+              <h4 className="font-heading font-bold text-[11px] sm:text-sm text-on-surface truncate max-w-[70px] sm:max-w-[100px]">
                 {top2.displayName}
               </h4>
-              <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full">
+              <span className="text-[9.5px] sm:text-[11px] font-bold text-slate-600 bg-slate-100 px-1.5 sm:px-2.5 py-0.5 rounded-full">
                 {top2.totalXp} XP
               </span>
-              <div className="w-full h-24 bg-gradient-to-t from-slate-300 to-slate-200 rounded-t-2xl flex items-center justify-center font-heading font-bold text-slate-700 text-xl shadow-inner">
+              <div className="w-full h-18 sm:h-24 bg-gradient-to-t from-slate-300 to-slate-200 rounded-t-xl sm:rounded-t-2xl flex items-center justify-center font-heading font-bold text-slate-700 text-base sm:text-xl shadow-inner">
                 #2
               </div>
             </div>
@@ -176,23 +176,23 @@ export function StudentLeaderboardView({
 
           {/* Rank 1 (Gold) */}
           {top1 && (
-            <div className="flex flex-col items-center text-center space-y-2 -mt-4">
+            <div className="flex flex-col items-center text-center space-y-1.5 sm:space-y-2 -mt-3 sm:-mt-4">
               <div className="relative">
-                <Crown className="w-7 h-7 text-amber-500 absolute -top-7 left-1/2 -translate-x-1/2 animate-bounce" />
-                <span className="text-5xl sm:text-6xl block hover:scale-110 transition-transform">
+                <Crown className="w-5 h-5 sm:w-7 sm:h-7 text-amber-500 absolute -top-5 sm:-top-7 left-1/2 -translate-x-1/2 animate-bounce" />
+                <span className="text-4xl sm:text-6xl block hover:scale-110 transition-transform">
                   {top1.avatarUrl || '🦁'}
                 </span>
-                <div className="absolute -top-2 -right-2 bg-amber-400 text-amber-900 rounded-full w-7 h-7 flex items-center justify-center text-sm font-bold font-heading shadow-sm ring-2 ring-white">
+                <div className="absolute -top-2 -right-1.5 sm:-top-2 sm:-right-2 bg-amber-400 text-amber-900 rounded-full w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-xs sm:text-sm font-bold font-heading shadow-sm ring-2 ring-white">
                   👑
                 </div>
               </div>
-              <h4 className="font-heading font-bold text-sm sm:text-base text-primary truncate max-w-[120px]">
+              <h4 className="font-heading font-bold text-xs sm:text-base text-primary truncate max-w-[85px] sm:max-w-[120px]">
                 {top1.displayName}
               </h4>
-              <span className="text-xs font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded-full shadow-2xs">
+              <span className="text-[10px] sm:text-xs font-bold text-amber-800 bg-amber-100 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full shadow-2xs">
                 {top1.totalXp} XP
               </span>
-              <div className="w-full h-36 bg-gradient-to-t from-amber-400 to-amber-300 rounded-t-2xl flex items-center justify-center font-heading font-bold text-amber-950 text-3xl shadow-inner">
+              <div className="w-full h-26 sm:h-36 bg-gradient-to-t from-amber-400 to-amber-300 rounded-t-xl sm:rounded-t-2xl flex items-center justify-center font-heading font-bold text-amber-950 text-2xl sm:text-3xl shadow-inner">
                 #1
               </div>
             </div>
@@ -200,22 +200,22 @@ export function StudentLeaderboardView({
 
           {/* Rank 3 (Bronze) */}
           {top3 && (
-            <div className="flex flex-col items-center text-center space-y-2">
+            <div className="flex flex-col items-center text-center space-y-1.5 sm:space-y-2">
               <div className="relative">
-                <span className="text-4xl sm:text-5xl block animate-bounce" style={{ animationDelay: '0.4s' }}>
+                <span className="text-3xl sm:text-5xl block animate-bounce" style={{ animationDelay: '0.4s' }}>
                   {top3.avatarUrl || '🦄'}
                 </span>
-                <div className="absolute -top-3 -right-2 bg-amber-700 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold font-heading shadow-xs">
+                <div className="absolute -top-2.5 -right-1.5 sm:-top-3 sm:-right-2 bg-amber-700 text-white rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-[10px] sm:text-xs font-bold font-heading shadow-xs">
                   🥉
                 </div>
               </div>
-              <h4 className="font-heading font-bold text-xs sm:text-sm text-on-surface truncate max-w-[100px]">
+              <h4 className="font-heading font-bold text-[11px] sm:text-sm text-on-surface truncate max-w-[70px] sm:max-w-[100px]">
                 {top3.displayName}
               </h4>
-              <span className="text-[11px] font-bold text-amber-900 bg-amber-100/80 px-2.5 py-0.5 rounded-full">
+              <span className="text-[9.5px] sm:text-[11px] font-bold text-amber-900 bg-amber-100/80 px-1.5 sm:px-2.5 py-0.5 rounded-full">
                 {top3.totalXp} XP
               </span>
-              <div className="w-full h-18 bg-gradient-to-t from-amber-600/50 to-amber-500/40 rounded-t-2xl flex items-center justify-center font-heading font-bold text-amber-900 text-lg shadow-inner">
+              <div className="w-full h-14 sm:h-18 bg-gradient-to-t from-amber-600/50 to-amber-500/40 rounded-t-xl sm:rounded-t-2xl flex items-center justify-center font-heading font-bold text-amber-900 text-sm sm:text-lg shadow-inner">
                 #3
               </div>
             </div>

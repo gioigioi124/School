@@ -1,8 +1,9 @@
 'use client';
 
-import { Bell, Search, HelpCircle, User, Check, AlertCircle, MessageSquare, X } from 'lucide-react';
+import { Bell, Search, HelpCircle, User, Check, AlertCircle, MessageSquare, X, Menu } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { useUiStore } from '@/store/ui.store';
 import toast from 'react-hot-toast';
 
 interface NotificationItem {
@@ -21,6 +22,7 @@ export default function Header() {
   const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
+  const { toggleTeacherMobile } = useUiStore();
 
   useEffect(() => {
     let channel: any;
@@ -148,8 +150,21 @@ export default function Header() {
   };
 
   return (
-    <header className="w-full h-20 bg-surface/90 backdrop-blur-md flex justify-between items-center px-8 z-20 sticky top-0 border-b border-outline-variant/30">
-      {/* Search Bar */}
+    <header className="w-full h-16 sm:h-20 bg-surface/90 backdrop-blur-md flex justify-between items-center px-3.5 sm:px-6 md:px-8 z-20 sticky top-0 border-b border-outline-variant/30">
+      {/* Mobile Hamburger Button */}
+      <div className="flex items-center gap-2 md:hidden">
+        <button
+          type="button"
+          onClick={toggleTeacherMobile}
+          aria-label="Mở menu"
+          className="p-2 rounded-xl text-on-surface-variant hover:bg-surface-container transition-colors cursor-pointer"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        <span className="font-heading font-bold text-lg text-primary">Kinderly</span>
+      </div>
+
+      {/* Search Bar (Desktop) */}
       <div className="relative w-full max-w-md hidden md:block">
         <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant" />
         <input
@@ -160,7 +175,7 @@ export default function Header() {
       </div>
 
       {/* Actions & Profile */}
-      <div className="flex items-center gap-4 ml-auto relative" ref={dropdownRef}>
+      <div className="flex items-center gap-2 sm:gap-4 ml-auto relative" ref={dropdownRef}>
         {/* Bell Button */}
         <button
           type="button"
@@ -178,7 +193,7 @@ export default function Header() {
 
         {/* Notifications Popover */}
         {showNotifications && (
-          <div className="absolute right-0 top-12 w-80 sm:w-96 bg-surface-container-lowest rounded-xl shadow-xl border border-outline-variant/30 p-3.5 z-50 animate-scale-in">
+          <div className="absolute right-0 top-12 w-[calc(100vw-2rem)] max-w-sm sm:w-96 bg-surface-container-lowest rounded-xl shadow-xl border border-outline-variant/30 p-3.5 z-50 animate-scale-in">
             <div className="flex items-center justify-between pb-2.5 border-b border-outline-variant/20 mb-2">
               <div className="flex items-center gap-2">
                 <span className="font-heading font-bold text-xs text-on-surface">Thông báo</span>
@@ -190,6 +205,7 @@ export default function Header() {
               </div>
               {unreadCount > 0 && (
                 <button
+                  type="button"
                   onClick={markAllAsRead}
                   className="text-xs font-bold text-primary hover:underline cursor-pointer"
                 >
@@ -198,7 +214,7 @@ export default function Header() {
               )}
             </div>
 
-            <div className="max-h-72 overflow-y-auto space-y-1.5 pr-1">
+            <div className="max-h-72 overflow-y-auto space-y-1.5 pr-1 no-scrollbar">
               {notifications.length === 0 ? (
                 <div className="py-8 text-center text-on-surface-variant text-xs font-sans">
                   Không có thông báo mới nào
@@ -238,15 +254,15 @@ export default function Header() {
           <HelpCircle className="w-5 h-5 hover:text-primary transition-colors" />
         </button>
 
-        <div className="flex items-center gap-3 pl-4 border-l border-outline-variant/30 cursor-pointer">
-          <div className="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-heading font-bold text-base shadow-xs border-2 border-primary/20">
+        <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-4 border-l border-outline-variant/30 cursor-pointer">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-heading font-bold text-sm sm:text-base shadow-xs border-2 border-primary/20 shrink-0">
             {displayName.charAt(0).toUpperCase()}
           </div>
           <div className="hidden md:block text-left">
-            <p className="font-heading font-bold text-sm text-on-surface leading-tight">
+            <p className="font-heading font-bold text-sm text-on-surface leading-tight truncate max-w-[140px]">
               {displayName}
             </p>
-            <p className="font-sans text-[11px] text-on-surface-variant font-medium">
+            <p className="font-sans text-[11px] text-on-surface-variant font-medium truncate max-w-[140px]">
               {school ? `Trường ${school}` : 'Giáo viên chủ nhiệm'}
             </p>
           </div>

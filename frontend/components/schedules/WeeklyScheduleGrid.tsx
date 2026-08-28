@@ -45,6 +45,11 @@ export function WeeklyScheduleGrid({
   onAddSlotForDay,
 }: WeeklyScheduleGridProps) {
   const [showWeekend, setShowWeekend] = useState(false);
+  const [selectedMobileDay, setSelectedMobileDay] = useState<number>(() => {
+    const today = new Date().getDay();
+    const vnDay = today === 0 ? 8 : today + 1;
+    return vnDay <= 6 ? vnDay : 2;
+  });
 
   const displayDays = showWeekend
     ? DAYS_MAP
@@ -65,11 +70,130 @@ export function WeeklyScheduleGrid({
 
   const totalSlots = schedules.length;
 
+  const renderDayColumn = (day: typeof DAYS_MAP[0]) => {
+    const { morning, afternoon } = schedulesByDay[day.dayOfWeek] || { morning: [], afternoon: [] };
+    const dayTotalCount = morning.length + afternoon.length;
+
+    return (
+      <div
+        key={day.dayOfWeek}
+        className="flex flex-col bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-2xs overflow-hidden transition-all duration-150"
+      >
+        {/* Column Header */}
+        <div className="px-3 py-2.5 bg-surface-container-low/90 border-b border-outline-variant/30 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span
+              className={`px-2 py-0.5 rounded text-[11px] font-heading font-bold ${day.tagColor}`}
+            >
+              {day.shortLabel}
+            </span>
+            <span className="font-heading font-bold text-xs sm:text-sm text-on-surface">
+              {day.label}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-surface text-on-surface-variant font-bold border border-outline-variant/30">
+              {dayTotalCount} tiết
+            </span>
+            <button
+              type="button"
+              onClick={() => onAddSlotForDay(day.dayOfWeek)}
+              title={`Thêm tiết cho ${day.label}`}
+              className="w-6 h-6 rounded-lg bg-surface hover:bg-primary hover:text-white text-on-surface-variant flex items-center justify-center transition-all cursor-pointer shadow-2xs"
+            >
+              <Plus className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Column Content: Morning and Afternoon */}
+        <div className="p-2.5 flex-1 flex flex-col gap-2.5 bg-surface/20 min-h-[300px] lg:min-h-[340px]">
+          {/* ☀️ BUỔI SÁNG */}
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between px-2.5 py-1 rounded-md bg-amber-500/10 border border-amber-300/40 text-[10px] font-bold text-amber-900">
+              <span className="inline-flex items-center gap-1">
+                <Sun className="w-3 h-3 text-amber-600" />
+                <span>SÁNG (Tiết 1 - 4)</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => onAddSlotForDay(day.dayOfWeek, { start: '08:00', end: '08:45' })}
+                title="Thêm tiết sáng"
+                className="hover:text-primary cursor-pointer p-0.5"
+              >
+                <Plus className="w-3 h-3" />
+              </button>
+            </div>
+
+            {morning.length === 0 ? (
+              <div
+                onClick={() => onAddSlotForDay(day.dayOfWeek, { start: '08:00', end: '08:45' })}
+                className="h-[68px] rounded-lg border border-dashed border-outline-variant/40 bg-surface/30 hover:border-amber-400 hover:bg-amber-50/30 transition-all flex flex-col items-center justify-center text-center cursor-pointer group"
+              >
+                <span className="text-[11px] text-on-surface-variant/60 group-hover:text-amber-700 font-medium">
+                  + Thêm tiết sáng
+                </span>
+              </div>
+            ) : (
+              morning.map((slot) => (
+                <SlotCard
+                  key={slot.id}
+                  slot={slot}
+                  onEdit={onEditSlot}
+                  onDelete={onDeleteSlot}
+                />
+              ))
+            )}
+          </div>
+
+          {/* 🌤️ BUỔI CHIỀU */}
+          <div className="flex flex-col gap-1.5 mt-1">
+            <div className="flex items-center justify-between px-2.5 py-1 rounded-md bg-indigo-500/10 border border-indigo-300/40 text-[10px] font-bold text-indigo-900">
+              <span className="inline-flex items-center gap-1">
+                <Sunset className="w-3 h-3 text-indigo-600" />
+                <span>CHIỀU (Tiết 1 - 3)</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => onAddSlotForDay(day.dayOfWeek, { start: '14:00', end: '14:45' })}
+                title="Thêm tiết chiều"
+                className="hover:text-primary cursor-pointer p-0.5"
+              >
+                <Plus className="w-3 h-3" />
+              </button>
+            </div>
+
+            {afternoon.length === 0 ? (
+              <div
+                onClick={() => onAddSlotForDay(day.dayOfWeek, { start: '14:00', end: '14:45' })}
+                className="h-[68px] rounded-lg border border-dashed border-outline-variant/40 bg-surface/30 hover:border-indigo-400 hover:bg-indigo-50/30 transition-all flex flex-col items-center justify-center text-center cursor-pointer group"
+              >
+                <span className="text-[11px] text-on-surface-variant/60 group-hover:text-indigo-700 font-medium">
+                  + Thêm tiết chiều
+                </span>
+              </div>
+            ) : (
+              afternoon.map((slot) => (
+                <SlotCard
+                  key={slot.id}
+                  slot={slot}
+                  onEdit={onEditSlot}
+                  onDelete={onDeleteSlot}
+                />
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-3">
       {/* Header controls inside Grid */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5 bg-surface-container-low/80 px-3.5 py-2 rounded-lg border border-outline-variant/30 shadow-2xs">
-        <div className="flex items-center gap-3 text-xs text-on-surface-variant font-medium">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-surface-container-low/80 p-3 sm:px-4 sm:py-2 rounded-xl border border-outline-variant/30 shadow-2xs">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-on-surface-variant font-medium">
           <div className="flex items-center gap-1.5">
             <Calendar className="w-3.5 h-3.5 text-primary" />
             <span>Tổng: </span>
@@ -78,14 +202,14 @@ export function WeeklyScheduleGrid({
             </span>
           </div>
 
-          <span className="text-outline-variant">•</span>
+          <span className="text-outline-variant hidden sm:inline">•</span>
 
-          <div className="flex items-center gap-2.5 text-[11px]">
+          <div className="flex flex-wrap items-center gap-2 text-[11px]">
             <span className="inline-flex items-center gap-1 text-amber-900 font-bold bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-300/40">
-              <Sun className="w-3 h-3 text-amber-600" /> Sáng (Tiết 1-4)
+              <Sun className="w-3 h-3 text-amber-600" /> Sáng (1-4)
             </span>
             <span className="inline-flex items-center gap-1 text-indigo-900 font-bold bg-indigo-500/10 px-2 py-0.5 rounded-md border border-indigo-300/40">
-              <Sunset className="w-3 h-3 text-indigo-600" /> Chiều (Tiết 1-3)
+              <Sunset className="w-3 h-3 text-indigo-600" /> Chiều (1-3)
             </span>
           </div>
         </div>
@@ -103,129 +227,50 @@ export function WeeklyScheduleGrid({
         </div>
       </div>
 
-      {/* Grid Columns */}
+      {/* Mobile Day-Tabs Bar (Visible on < lg screens) */}
+      <div className="lg:hidden">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar bg-surface-container-lowest p-2 rounded-xl border border-outline-variant/30">
+          {displayDays.map((day) => {
+            const isSelected = day.dayOfWeek === selectedMobileDay;
+            const { morning, afternoon } = schedulesByDay[day.dayOfWeek] || { morning: [], afternoon: [] };
+            const count = morning.length + afternoon.length;
+
+            return (
+              <button
+                key={day.dayOfWeek}
+                type="button"
+                onClick={() => setSelectedMobileDay(day.dayOfWeek)}
+                className={`flex-1 min-w-[58px] py-2 px-1 rounded-lg text-xs font-heading font-bold flex flex-col items-center justify-center transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-primary text-on-primary shadow-xs scale-102'
+                    : 'bg-surface-container hover:bg-surface-container-high text-on-surface-variant'
+                }`}
+              >
+                <span>{day.shortLabel}</span>
+                <span className={`text-[10px] font-sans font-semibold mt-0.5 ${isSelected ? 'text-white/80' : 'text-on-surface-variant/70'}`}>
+                  {count} tiết
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Selected Day View on Mobile */}
+        <div className="mt-3">
+          {(() => {
+            const activeDay = displayDays.find((d) => d.dayOfWeek === selectedMobileDay) || displayDays[0];
+            return renderDayColumn(activeDay);
+          })()}
+        </div>
+      </div>
+
+      {/* Desktop Multi-Column Grid (Visible on >= lg screens) */}
       <div
-        className={`grid gap-3 ${
-          showWeekend
-            ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7'
-            : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5'
+        className={`hidden lg:grid gap-3 ${
+          showWeekend ? 'grid-cols-7' : 'grid-cols-5'
         }`}
       >
-        {displayDays.map((day) => {
-          const { morning, afternoon } = schedulesByDay[day.dayOfWeek] || { morning: [], afternoon: [] };
-          const dayTotalCount = morning.length + afternoon.length;
-
-          return (
-            <div
-              key={day.dayOfWeek}
-              className="flex flex-col bg-surface-container-lowest rounded-lg border border-outline-variant/30 shadow-2xs overflow-hidden transition-all duration-150"
-            >
-              {/* Column Header */}
-              <div className="px-2.5 py-2 bg-surface-container-low/90 border-b border-outline-variant/30 flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <span
-                    className={`px-1.5 py-0.5 rounded text-[11px] font-heading font-bold ${day.tagColor}`}
-                  >
-                    {day.shortLabel}
-                  </span>
-                  <span className="font-heading font-bold text-xs text-on-surface">
-                    {day.label}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-1">
-                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-surface text-on-surface-variant font-bold border border-outline-variant/30">
-                    {dayTotalCount}
-                  </span>
-                  <button
-                    onClick={() => onAddSlotForDay(day.dayOfWeek)}
-                    title={`Thêm tiết cho ${day.label}`}
-                    className="w-5 h-5 rounded bg-surface hover:bg-primary hover:text-white text-on-surface-variant flex items-center justify-center transition-all cursor-pointer shadow-2xs"
-                  >
-                    <Plus className="w-3 h-3" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Column Content: Divided strictly into Morning and Afternoon */}
-              <div className="p-2 flex-1 flex flex-col gap-2 bg-surface/20 min-h-[340px]">
-                {/* ☀️ BUỔI SÁNG */}
-                <div className="flex flex-col gap-1.5">
-                  <div className="flex items-center justify-between px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-300/40 text-[10px] font-bold text-amber-900">
-                    <span className="inline-flex items-center gap-1">
-                      <Sun className="w-2.5 h-2.5 text-amber-600" />
-                      <span>SÁNG</span>
-                    </span>
-                    <button
-                      onClick={() => onAddSlotForDay(day.dayOfWeek, { start: '08:00', end: '08:45' })}
-                      title="Thêm tiết sáng"
-                      className="hover:text-primary cursor-pointer p-0.5"
-                    >
-                      <Plus className="w-2.5 h-2.5" />
-                    </button>
-                  </div>
-
-                  {morning.length === 0 ? (
-                    <div
-                      onClick={() => onAddSlotForDay(day.dayOfWeek, { start: '08:00', end: '08:45' })}
-                      className="h-[68px] rounded-md border border-dashed border-outline-variant/40 bg-surface/30 hover:border-amber-400 hover:bg-amber-50/30 transition-all flex flex-col items-center justify-center text-center cursor-pointer group"
-                    >
-                      <span className="text-[10px] text-on-surface-variant/60 group-hover:text-amber-700 font-medium">
-                        + Thêm tiết sáng
-                      </span>
-                    </div>
-                  ) : (
-                    morning.map((slot) => (
-                      <SlotCard
-                        key={slot.id}
-                        slot={slot}
-                        onEdit={onEditSlot}
-                        onDelete={onDeleteSlot}
-                      />
-                    ))
-                  )}
-                </div>
-
-                {/* 🌤️ BUỔI CHIỀU */}
-                <div className="flex flex-col gap-1.5 mt-0.5">
-                  <div className="flex items-center justify-between px-2 py-0.5 rounded-md bg-indigo-500/10 border border-indigo-300/40 text-[10px] font-bold text-indigo-900">
-                    <span className="inline-flex items-center gap-1">
-                      <Sunset className="w-2.5 h-2.5 text-indigo-600" />
-                      <span>CHIỀU</span>
-                    </span>
-                    <button
-                      onClick={() => onAddSlotForDay(day.dayOfWeek, { start: '14:00', end: '14:45' })}
-                      title="Thêm tiết chiều"
-                      className="hover:text-primary cursor-pointer p-0.5"
-                    >
-                      <Plus className="w-2.5 h-2.5" />
-                    </button>
-                  </div>
-
-                  {afternoon.length === 0 ? (
-                    <div
-                      onClick={() => onAddSlotForDay(day.dayOfWeek, { start: '14:00', end: '14:45' })}
-                      className="h-[68px] rounded-md border border-dashed border-outline-variant/40 bg-surface/30 hover:border-indigo-400 hover:bg-indigo-50/30 transition-all flex flex-col items-center justify-center text-center cursor-pointer group"
-                    >
-                      <span className="text-[10px] text-on-surface-variant/60 group-hover:text-indigo-700 font-medium">
-                        + Thêm tiết chiều
-                      </span>
-                    </div>
-                  ) : (
-                    afternoon.map((slot) => (
-                      <SlotCard
-                        key={slot.id}
-                        slot={slot}
-                        onEdit={onEditSlot}
-                        onDelete={onDeleteSlot}
-                      />
-                    ))
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        {displayDays.map((day) => renderDayColumn(day))}
       </div>
     </div>
   );

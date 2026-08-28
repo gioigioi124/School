@@ -129,15 +129,16 @@ export default function VideosPage() {
       </div>
 
       {/* Category Pills */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
         {categories.map((cat) => (
           <button
             key={cat}
+            type="button"
             onClick={() => {
               sounds.playPop();
               setSelectedCategory(cat);
             }}
-            className={`px-4 py-2 rounded-2xl font-heading font-bold text-xs shrink-0 transition-all cursor-pointer ${
+            className={`px-3.5 sm:px-4 py-2 rounded-2xl font-heading font-bold text-xs shrink-0 transition-all cursor-pointer ${
               selectedCategory === cat
                 ? 'bg-primary text-on-primary shadow-sm scale-102 ring-2 ring-primary/20'
                 : 'bg-surface-container-lowest hover:bg-surface-container-low text-on-surface border border-outline-variant/30'

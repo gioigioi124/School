@@ -32,27 +32,29 @@ export function StudentMobileNav() {
   };
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-xl border-t border-outline-variant/30 px-1 py-1.5 shadow-2xl flex items-center justify-around">
-      {mobileNavItems.map((item) => {
-        const isActive = pathname === item.href || (item.href !== '/portal' && pathname.startsWith(item.href));
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={handleNavClick}
-            className={`flex flex-col items-center justify-center p-1.5 rounded-xl transition-all duration-200 cursor-pointer min-w-[48px] ${
-              isActive
-                ? 'text-primary font-bold scale-105 bg-primary/10'
-                : 'text-on-surface-variant hover:text-on-surface active:scale-95'
-            }`}
-          >
-            <span className="text-xl mb-0.5 leading-none">{item.emoji}</span>
-            <span className={`text-[10px] font-sans font-bold leading-tight ${isActive ? 'text-primary' : 'text-on-surface-variant'}`}>
-              {item.label}
-            </span>
-          </Link>
-        );
-      })}
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-xl border-t border-outline-variant/30 px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-2xl">
+      <div className="flex items-center justify-between overflow-x-auto no-scrollbar gap-1 max-w-lg mx-auto">
+        {mobileNavItems.map((item) => {
+          const isActive = pathname === item.href || (item.href !== '/portal' && pathname.startsWith(item.href));
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={handleNavClick}
+              className={`flex flex-col items-center justify-center py-1 px-1.5 sm:px-2 rounded-xl transition-all duration-200 cursor-pointer shrink-0 min-w-[46px] ${
+                isActive
+                  ? 'text-primary font-bold scale-105 bg-primary/10'
+                  : 'text-on-surface-variant hover:text-on-surface active:scale-95'
+              }`}
+            >
+              <span className="text-lg sm:text-xl mb-0.5 leading-none">{item.emoji}</span>
+              <span className={`text-[9.5px] sm:text-[10px] font-sans font-bold leading-tight whitespace-nowrap ${isActive ? 'text-primary' : 'text-on-surface-variant'}`}>
+                {item.label}
+              </span>
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 }

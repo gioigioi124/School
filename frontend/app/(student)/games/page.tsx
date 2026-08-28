@@ -47,10 +47,11 @@ export default function GamesPage() {
       </div>
 
       {/* Game Tabs */}
-      <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
+      <div className="flex items-center gap-2.5 overflow-x-auto pb-2 no-scrollbar">
         <button
+          type="button"
           onClick={() => handleTabChange('matching')}
-          className={`px-5 py-3 rounded-2xl font-heading font-bold text-xs sm:text-sm transition-all shrink-0 cursor-pointer flex items-center gap-2 ${
+          className={`px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl font-heading font-bold text-xs sm:text-sm transition-all shrink-0 cursor-pointer flex items-center gap-2 ${
             activeTab === 'matching'
               ? 'bg-primary text-on-primary shadow-md scale-102 ring-2 ring-primary/20'
               : 'bg-surface-container-lowest hover:bg-surface-container text-on-surface border border-outline-variant/30'
@@ -60,8 +61,9 @@ export default function GamesPage() {
         </button>
 
         <button
+          type="button"
           onClick={() => handleTabChange('math')}
-          className={`px-5 py-3 rounded-2xl font-heading font-bold text-xs sm:text-sm transition-all shrink-0 cursor-pointer flex items-center gap-2 ${
+          className={`px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl font-heading font-bold text-xs sm:text-sm transition-all shrink-0 cursor-pointer flex items-center gap-2 ${
             activeTab === 'math'
               ? 'bg-emerald-600 text-white shadow-md scale-102 ring-2 ring-emerald-400/30'
               : 'bg-surface-container-lowest hover:bg-surface-container text-on-surface border border-outline-variant/30'
@@ -71,8 +73,9 @@ export default function GamesPage() {
         </button>
 
         <button
+          type="button"
           onClick={() => handleTabChange('quiz')}
-          className={`px-5 py-3 rounded-2xl font-heading font-bold text-xs sm:text-sm transition-all shrink-0 cursor-pointer flex items-center gap-2 ${
+          className={`px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl font-heading font-bold text-xs sm:text-sm transition-all shrink-0 cursor-pointer flex items-center gap-2 ${
             activeTab === 'quiz'
               ? 'bg-secondary text-on-secondary shadow-md scale-102 ring-2 ring-secondary/20'
               : 'bg-surface-container-lowest hover:bg-surface-container text-on-surface border border-outline-variant/30'
@@ -82,8 +85,9 @@ export default function GamesPage() {
         </button>
 
         <button
+          type="button"
           onClick={() => handleTabChange('puzzle')}
-          className={`px-5 py-3 rounded-2xl font-heading font-bold text-xs sm:text-sm transition-all shrink-0 cursor-pointer flex items-center gap-2 ${
+          className={`px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl font-heading font-bold text-xs sm:text-sm transition-all shrink-0 cursor-pointer flex items-center gap-2 ${
             activeTab === 'puzzle'
               ? 'bg-purple-600 text-white shadow-md scale-102 ring-2 ring-purple-400/30'
               : 'bg-surface-container-lowest hover:bg-surface-container text-on-surface border border-outline-variant/30'

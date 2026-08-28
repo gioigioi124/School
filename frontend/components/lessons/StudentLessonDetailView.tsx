@@ -178,10 +178,10 @@ export function StudentLessonDetailView({
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-4 md:p-8 space-y-8 animate-fade-in pb-12">
+    <div className="max-w-4xl mx-auto p-3.5 sm:p-6 md:p-8 space-y-6 animate-fade-in font-sans pb-16">
       <CelebrationConfetti trigger={showConfetti} onComplete={() => setShowConfetti(false)} />
 
-      {/* Top Breadcrumb & Status */}
+      {/* Breadcrumb & Navigation */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <Link
@@ -190,17 +190,18 @@ export function StudentLessonDetailView({
             className="inline-flex items-center text-xs font-bold text-on-surface-variant hover:text-primary transition-colors gap-2 group mb-2"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span>Quay lại Danh sách bài học</span>
+            <span>Quay lại Danh sách bài giảng</span>
           </Link>
-          <h1 className="font-heading text-2xl sm:text-3xl font-bold text-on-surface flex items-center gap-2">
-            <span>{currentLesson.title}</span>
+          <h1 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-on-surface leading-tight">
+            {currentLesson.title}
           </h1>
         </div>
 
-        <div className="flex items-center gap-3">
-          <span className="px-3.5 py-1.5 rounded-full bg-amber-100 text-amber-800 text-xs font-heading font-bold flex items-center gap-1.5 shadow-2xs">
+        {/* Action Button & XP Badge */}
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+          <span className="px-3 py-1.5 rounded-full bg-amber-100 text-amber-800 text-xs font-heading font-bold flex items-center gap-1.5 shadow-2xs">
             <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
-            <span>+20 XP Thưởng</span>
+            <span>+20 XP</span>
           </span>
 
           {isCompleted ? (
@@ -210,6 +211,7 @@ export function StudentLessonDetailView({
             </span>
           ) : (
             <button
+              type="button"
               onClick={handleCompleteLesson}
               className="px-4 py-2 rounded-full bg-primary text-on-primary font-heading font-bold text-xs btn-3d hover:bg-primary-dark transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
