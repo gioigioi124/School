@@ -130,7 +130,7 @@ Mở terminal tại máy local hoặc chạy SQL trong **Supabase SQL Editor**:
    - **Branch**: `main`
    - **Root Directory**: `backend` *(QUAN TRỌNG: Phải điền `backend`)*
    - **Runtime**: `Node`
-   - **Build Command**: `npm install && npx prisma generate && npm run build`
+   - **Build Command**: `npm install --include=dev && npx prisma generate && npm run build`
    - **Start Command**: `npm run start:prod`
    - **Instance Type**: `Free` (hoặc Starter nếu muốn không bị sleep)
 4. Mở rộng phần **Advanced** -> **Health Check Path**:
