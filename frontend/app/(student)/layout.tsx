@@ -1,6 +1,7 @@
 import React from 'react';
 import { StudentSidebar } from '@/components/student/StudentSidebar';
 import { StudentMobileNav } from '@/components/student/StudentMobileNav';
+import { StudentHeader } from '@/components/student/StudentHeader';
 import { getServerUser } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { determineUserRole } from '@/lib/auth-helpers';
@@ -28,9 +29,13 @@ export default async function StudentLayout({
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
-        <main className="flex-1 overflow-y-auto p-3.5 sm:p-5 md:p-6 pb-24 md:pb-8">
+        {/* Student Header (Top Bar on Mobile & Desktop) */}
+        <StudentHeader />
+
+        <main id="student-main-content" className="flex-1 overflow-y-auto p-3.5 sm:p-5 md:p-6 pb-24 md:pb-8">
           {children}
         </main>
+
         {/* Mobile Navigation */}
         <StudentMobileNav />
       </div>

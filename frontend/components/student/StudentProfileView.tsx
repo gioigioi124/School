@@ -14,7 +14,8 @@ import {
   Flame,
   School,
   Phone,
-  Edit3
+  Edit3,
+  LogOut
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { createClient } from '@/lib/supabase/client';
@@ -66,6 +67,12 @@ export function StudentProfileView({
   const currentLevelBaseXp = (level - 1) * 1000;
   const levelProgressXp = initialXp - currentLevelBaseXp;
   const progressPercent = Math.min(100, Math.round((levelProgressXp / 1000) * 100));
+
+  const handleLogout = async () => {
+    sounds.playPop();
+    await supabase.auth.signOut();
+    window.location.href = '/login';
+  };
 
   const handleSelectAvatar = async (avatarEmoji: string) => {
     if (avatarEmoji === currentAvatar) return;
@@ -309,6 +316,25 @@ export function StudentProfileView({
             </div>
           )}
         </div>
+      </div>
+
+      {/* Account Actions & Logout */}
+      <div className="bg-surface-container-lowest rounded-3xl p-5 md:p-6 shadow-soft border border-outline-variant/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <h4 className="font-heading font-bold text-base text-on-surface">Đăng xuất tài khoản</h4>
+          <p className="font-sans text-xs text-on-surface-variant mt-0.5">
+            Đăng xuất khỏi tài khoản học sinh trên thiết bị này.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="w-full sm:w-auto px-5 py-2.5 bg-error-container/60 text-destructive hover:bg-destructive hover:text-white rounded-2xl font-sans font-bold text-xs transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-2xs active:scale-95 shrink-0"
+        >
+          <LogOut className="w-4 h-4" />
+          <span>Đăng xuất</span>
+        </button>
       </div>
     </div>
   );

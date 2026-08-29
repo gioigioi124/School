@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   ArrowLeft, 
+  ArrowRight,
   Users, 
   Cake, 
   DoorClosed, 
@@ -21,15 +22,36 @@ import {
   HelpCircle,
   Award,
   Save,
-  Loader2
+  Loader2,
+  MapPin,
+  User
 } from 'lucide-react';
 import { AddStudentDialog } from '@/components/classes/AddStudentDialog';
 import { AwardStudentDialog } from '@/components/classes/AwardStudentDialog';
+import { RemoveStudentFromClassDialog } from '@/components/classes/RemoveStudentFromClassDialog';
 import { EditClassDialog } from '@/components/classes/EditClassDialog';
 import { DeleteClassDialog } from '@/components/classes/DeleteClassDialog';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import { createClient } from '@/lib/supabase/client';
+
+export interface ScheduleItem {
+  id: string;
+  classId: string;
+  teacherId?: string | null;
+  dayOfWeek: number;
+  startTime: string;
+  endTime: string;
+  subject: string;
+  room?: string | null;
+  color?: string | null;
+  description?: string | null;
+  teacher?: {
+    id: string;
+    displayName: string | null;
+    avatarUrl?: string | null;
+  } | null;
+}
 
 interface Student {
   id: string;
@@ -53,13 +75,52 @@ interface ClassDetailViewProps {
   classData: ClassData;
   students: Student[];
   teacherName?: string;
+  schedules?: ScheduleItem[];
 }
 
-export function ClassDetailView({ classData, students, teacherName }: ClassDetailViewProps) {
+const DAYS_INFO = [
+  { dayOfWeek: 2, label: 'Thứ Hai', shortLabel: 'T2' },
+  { dayOfWeek: 3, label: 'Thứ Ba', shortLabel: 'T3' },
+  { dayOfWeek: 4, label: 'Thứ Tư', shortLabel: 'T4' },
+  { dayOfWeek: 5, label: 'Thứ Năm', shortLabel: 'T5' },
+  { dayOfWeek: 6, label: 'Thứ Sáu', shortLabel: 'T6' },
+  { dayOfWeek: 7, label: 'Thứ Bảy', shortLabel: 'T7' },
+  { dayOfWeek: 8, label: 'Chủ Nhật', shortLabel: 'CN' },
+];
+
+const getTodayDayOfWeek = () => {
+  if (typeof window === 'undefined') return 2;
+  const day = new Date().getDay();
+  return day === 0 ? 8 : day + 1;
+};
+
+export function ClassDetailView({ 
+  classData, 
+  students, 
+  teacherName,
+  schedules = [] 
+}: ClassDetailViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [attendance, setAttendance] = useState<Record<string, 'present' | 'absent' | 'leave'>>({});
   const [isSavingAttendance, setIsSavingAttendance] = useState(false);
   const supabase = createClient();
+
+  const todayDayOfWeek = getTodayDayOfWeek();
+  const [selectedDay, setSelectedDay] = useState(todayDayOfWeek);
+  const [currentTime, setCurrentTime] = useState('');
+
+  // Update current time to track ongoing slot
+  useEffect(() => {
+    const updateTime = () => {
+      const d = new Date();
+      const hh = String(d.getHours()).padStart(2, '0');
+      const mm = String(d.getMinutes()).padStart(2, '0');
+      setCurrentTime(`${hh}:${mm}`);
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const todayStr = new Date().toISOString().split('T')[0];
 
@@ -294,7 +355,7 @@ export function ClassDetailView({ classData, students, teacherName }: ClassDetai
               </div>
 
               {/* Students Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3.5">
                 {filteredStudents.map((student) => {
                   const status = attendance[student.id] || 'present';
                   const statusColor = status === 'present' 
@@ -303,41 +364,72 @@ export function ClassDetailView({ classData, students, teacherName }: ClassDetai
                     ? 'bg-[#f87171]' 
                     : 'bg-outline-variant';
                   const statusText = status === 'present' ? 'Có mặt' : status === 'absent' ? 'Vắng phép' : 'Vắng KP';
-                  const statusTextColor = status === 'present' ? 'text-on-surface-variant' : 'text-destructive font-bold';
+                  const statusTextColor = status === 'present' ? 'text-emerald-700 bg-emerald-50' : 'text-rose-700 bg-rose-50 font-bold';
 
                   return (
                     <div
                       key={student.id}
                       onClick={(e) => toggleAttendance(student.id, e)}
-                      className="p-3.5 rounded-2xl border border-surface-container-high bg-surface-bright flex items-center justify-between gap-3 hover:border-primary-container transition-all cursor-pointer group shadow-2xs hover-scale"
+                      className="p-3 sm:p-3.5 rounded-2xl border border-surface-container-high bg-surface-bright flex items-center justify-between gap-2.5 hover:border-primary-container transition-all cursor-pointer group shadow-2xs hover-scale"
                     >
-                      <div className="flex items-center gap-3 min-w-0">
+                      {/* Left: Avatar & Info */}
+                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
                         {/* Avatar & Status Dot */}
                         <div className="relative shrink-0">
-                          <div className="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-2xl shadow-xs border-2 border-white group-hover:border-primary-container transition-colors">
+                          <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-lg shadow-xs border-2 border-white group-hover:border-primary-container transition-colors">
                             <span>{student.avatarUrl || '🐻'}</span>
                           </div>
-                          <div className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 ${statusColor} border-2 border-white rounded-full`}></div>
+                          <div className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 ${statusColor} border-2 border-white rounded-full`}></div>
                         </div>
 
                         {/* Student Name & Status */}
-                        <div className="min-w-0">
-                          <h3 className="font-sans font-bold text-sm text-on-surface truncate">
+                        <div className="min-w-0 flex-1">
+                          <h3 
+                            className="font-sans font-bold text-xs sm:text-[13px] text-on-surface truncate leading-snug tracking-tight"
+                            title={student.displayName || 'Bé chưa đặt tên'}
+                          >
                             {student.displayName || 'Bé chưa đặt tên'}
                           </h3>
-                          <p className={`text-xs ${statusTextColor} mt-0.5`}>
-                            {statusText}
-                          </p>
+                          <div className="mt-0.5">
+                            <span className={`text-[10px] font-sans font-medium px-1.5 py-0.2 rounded-md ${statusTextColor}`}>
+                              {statusText}
+                            </span>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Quick Award Button */}
-                      <div onClick={(e) => e.stopPropagation()}>
+                      {/* Right: Quick Actions (Award & Remove) */}
+                      <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
                         <AwardStudentDialog
                           studentId={student.id}
                           studentName={student.displayName || 'Học sinh'}
                           avatar={student.avatarUrl || '🐻'}
                           classId={classData.id}
+                          customTrigger={
+                            <button
+                              type="button"
+                              className="p-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 transition-all cursor-pointer shadow-2xs hover:scale-105"
+                              title="Tặng sao / Khen thưởng"
+                            >
+                              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
+                            </button>
+                          }
+                        />
+                        <RemoveStudentFromClassDialog
+                          classId={classData.id}
+                          className={classData.name}
+                          studentId={student.id}
+                          studentName={student.displayName || 'Học sinh'}
+                          studentAvatar={student.avatarUrl || '🐻'}
+                          customTrigger={
+                            <button
+                              type="button"
+                              className="p-1.5 rounded-xl text-outline-variant hover:text-destructive hover:bg-error-container/30 transition-all cursor-pointer hover:scale-105"
+                              title="Xóa bé khỏi lớp"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          }
                         />
                       </div>
                     </div>
@@ -351,7 +443,7 @@ export function ClassDetailView({ classData, students, teacherName }: ClassDetai
                   customTrigger={
                     <button
                       type="button"
-                      className="p-3.5 rounded-2xl border-2 border-dashed border-outline-variant/60 bg-transparent flex items-center justify-center gap-2 hover:border-primary hover:bg-primary-container/10 transition-all cursor-pointer group min-h-[72px] w-full"
+                      className="p-3 sm:p-3.5 rounded-2xl border-2 border-dashed border-outline-variant/60 bg-transparent flex items-center justify-center gap-2 hover:border-primary hover:bg-primary-container/10 transition-all cursor-pointer group min-h-[64px] w-full"
                     >
                       <UserPlus className="w-4 h-4 text-outline group-hover:text-primary transition-colors" />
                       <span className="font-sans font-bold text-xs text-outline group-hover:text-primary transition-colors">
@@ -385,87 +477,161 @@ export function ClassDetailView({ classData, students, teacherName }: ClassDetai
 
         {/* Right Column: Daily Schedule Timeline (4 Cols) */}
         <aside className="lg:col-span-4 space-y-6">
-          <div className="bg-surface-container-lowest rounded-2xl p-6 shadow-soft border border-outline-variant/30 bento-hover transition-all duration-300 h-full flex flex-col">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="font-heading text-2xl font-bold text-on-surface flex items-center gap-2">
-                <Clock className="w-5 h-5 text-secondary" />
-                <span>Lịch trình hôm nay</span>
-              </h2>
-            </div>
-
-            <div className="relative pl-6 border-l-2 border-surface-container-high space-y-7 pb-4 flex-1">
-              {/* Item 1 (Past) */}
-              <div className="relative">
-                <div className="absolute -left-[31px] bg-primary-container w-4 h-4 rounded-full border-2 border-white flex items-center justify-center shadow-2xs">
-                  <Check className="w-2.5 h-2.5 text-on-primary-container font-bold" />
-                </div>
-                <div className="opacity-60">
-                  <p className="text-xs font-sans font-bold text-on-surface-variant mb-1">
-                    07:30 - 08:30
-                  </p>
-                  <h4 className="font-sans font-bold text-xs text-on-surface bg-surface-container-low inline-block px-3 py-1 rounded-lg">
-                    Đón trẻ & Ăn sáng
-                  </h4>
-                </div>
-              </div>
-
-              {/* Item 2 (Current Active) */}
-              <div className="relative">
-                <div className="absolute -left-[31px] bg-primary w-4 h-4 rounded-full border-2 border-white shadow-[0_0_0_3px_rgba(118,215,196,0.4)] animate-pulse"></div>
-                <div>
-                  <p className="text-xs font-sans text-primary font-bold mb-1">
-                    08:30 - 09:30
-                  </p>
-                  <h4 className="font-sans font-bold text-sm text-on-surface bg-primary-container/20 border border-primary-container/50 inline-block px-3.5 py-1.5 rounded-xl shadow-xs">
-                    Hoạt động thể chất & Khám phá
-                  </h4>
-                  <div className="mt-1.5 flex gap-1.5">
-                    <span className="px-2 py-0.5 bg-surface-container-high rounded-md text-[10px] font-sans font-bold text-on-surface-variant">
-                      Sân chơi ngoài trời
+          <div className="bg-surface-container-lowest rounded-2xl p-5 sm:p-6 shadow-soft border border-outline-variant/30 bento-hover transition-all duration-300 h-full flex flex-col justify-between">
+            <div>
+              {/* Header & Quick Link */}
+              <div className="flex flex-col gap-3 mb-5">
+                <div className="flex justify-between items-center">
+                  <h2 className="font-heading text-xl sm:text-2xl font-bold text-on-surface flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-secondary shrink-0" />
+                    <span className="truncate">
+                      {selectedDay === todayDayOfWeek ? 'Lịch trình hôm nay' : `Lịch ${DAYS_INFO.find(d => d.dayOfWeek === selectedDay)?.label}`}
                     </span>
+                  </h2>
+
+                  <Link
+                    href="/schedules"
+                    className="text-xs font-sans font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-1 shrink-0"
+                    title="Mở toàn bộ Thời khóa biểu"
+                  >
+                    <span>Quản lý TKB</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+
+                {/* Day selector pills */}
+                <div className="flex items-center gap-1 p-1 bg-surface-container-low rounded-xl border border-outline-variant/30 overflow-x-auto">
+                  {DAYS_INFO.map((d) => {
+                    const isToday = d.dayOfWeek === todayDayOfWeek;
+                    const isSelected = d.dayOfWeek === selectedDay;
+                    const count = (schedules || []).filter((s) => s.dayOfWeek === d.dayOfWeek).length;
+
+                    return (
+                      <button
+                        key={d.dayOfWeek}
+                        type="button"
+                        onClick={() => setSelectedDay(d.dayOfWeek)}
+                        className={`flex-1 min-w-[32px] py-1 px-1 rounded-lg text-xs font-bold transition-all text-center cursor-pointer relative ${
+                          isSelected
+                            ? 'bg-primary text-on-primary shadow-2xs'
+                            : isToday
+                            ? 'text-primary bg-primary/10 hover:bg-primary/20'
+                            : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
+                        }`}
+                        title={`${d.label}${isToday ? ' (Hôm nay)' : ''} - ${count} tiết`}
+                      >
+                        <span>{d.shortLabel}</span>
+                        {isToday && !isSelected && (
+                          <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-primary rounded-full"></span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Dynamic Timeline Items */}
+              {(() => {
+                const daySlots = (schedules || [])
+                  .filter((s) => s.dayOfWeek === selectedDay)
+                  .sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+                const isViewingToday = selectedDay === todayDayOfWeek;
+                const currentDayData = DAYS_INFO.find((d) => d.dayOfWeek === selectedDay) || DAYS_INFO[0];
+
+                if (daySlots.length === 0) {
+                  return (
+                    <div className="py-10 px-4 text-center rounded-2xl bg-surface-container-low/40 border border-dashed border-outline-variant/40 flex flex-col items-center justify-center">
+                      <div className="w-12 h-12 rounded-2xl bg-surface-container flex items-center justify-center text-on-surface-variant mb-2.5">
+                        <Calendar className="w-5 h-5 opacity-60 text-secondary" />
+                      </div>
+                      <h4 className="font-heading font-bold text-sm text-on-surface mb-1">
+                        Chưa có lịch cho {currentDayData.label}
+                      </h4>
+                      <p className="font-sans text-xs text-on-surface-variant max-w-xs mb-3.5">
+                        {isViewingToday
+                          ? 'Hôm nay lớp học không có tiết học nào trong thời khóa biểu.'
+                          : `Ngày ${currentDayData.label} chưa được thiết lập tiết học.`}
+                      </p>
+                      <Link
+                        href="/schedules"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary text-on-primary font-sans font-bold text-xs shadow-xs hover:bg-primary-dark transition-all"
+                      >
+                        <Clock className="w-3.5 h-3.5" />
+                        <span>Thêm tiết học vào TKB</span>
+                      </Link>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div className="relative pl-6 border-l-2 border-surface-container-high space-y-5 pb-2">
+                    {daySlots.map((slot) => {
+                      const isPast = isViewingToday && Boolean(currentTime && currentTime > slot.endTime);
+                      const isActive = isViewingToday && Boolean(currentTime && currentTime >= slot.startTime && currentTime <= slot.endTime);
+
+                      return (
+                        <div key={slot.id} className="relative group">
+                          {/* Timeline Dot Indicator */}
+                          {isPast ? (
+                            <div className="absolute -left-[31px] bg-emerald-100 text-emerald-700 w-4 h-4 rounded-full border-2 border-white flex items-center justify-center shadow-2xs">
+                              <Check className="w-2.5 h-2.5 font-bold" />
+                            </div>
+                          ) : isActive ? (
+                            <div className="absolute -left-[31px] bg-primary w-4 h-4 rounded-full border-2 border-white shadow-[0_0_0_3px_rgba(118,215,196,0.4)] animate-pulse"></div>
+                          ) : (
+                            <div className="absolute -left-[31px] bg-surface-container-high w-4 h-4 rounded-full border-2 border-white"></div>
+                          )}
+
+                          {/* Slot Item */}
+                          <div className={`transition-all ${isPast ? 'opacity-75 hover:opacity-100' : ''}`}>
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <span className={`text-xs font-sans font-bold ${isActive ? 'text-primary' : 'text-on-surface-variant'}`}>
+                                {slot.startTime} - {slot.endTime}
+                              </span>
+                              {isActive && (
+                                <span className="px-2 py-0.2 rounded-full text-[10px] font-sans font-bold bg-primary text-on-primary animate-pulse shadow-2xs">
+                                  Đang học
+                                </span>
+                              )}
+                            </div>
+
+                            <div className={`p-3 rounded-xl border transition-all ${
+                              isActive
+                                ? 'bg-primary-container/25 border-primary/40 shadow-xs'
+                                : 'bg-surface-container-low border-outline-variant/30 hover:border-outline-variant/60'
+                            }`}>
+                              <h4 className="font-sans font-bold text-xs sm:text-sm text-on-surface">
+                                {slot.subject}
+                              </h4>
+
+                              {(slot.room || slot.teacher?.displayName || slot.description) && (
+                                <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px] text-on-surface-variant font-sans">
+                                  {slot.room && (
+                                    <span className="flex items-center gap-1 bg-surface-container px-1.5 py-0.5 rounded-md font-medium">
+                                      <MapPin className="w-3 h-3 text-primary" />
+                                      <span>Phòng {slot.room}</span>
+                                    </span>
+                                  )}
+                                  {slot.teacher?.displayName && (
+                                    <span className="flex items-center gap-1">
+                                      <User className="w-3 h-3 text-secondary" />
+                                      <span>{slot.teacher.displayName}</span>
+                                    </span>
+                                  )}
+                                  {slot.description && !slot.room && !slot.teacher?.displayName && (
+                                    <span className="line-clamp-1 italic text-[11px] opacity-80">{slot.description}</span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                </div>
-              </div>
-
-              {/* Item 3 (Future) */}
-              <div className="relative">
-                <div className="absolute -left-[31px] bg-surface-container-high w-4 h-4 rounded-full border-2 border-white"></div>
-                <div>
-                  <p className="text-xs font-sans font-bold text-on-surface-variant mb-1">
-                    09:30 - 10:30
-                  </p>
-                  <h4 className="font-sans font-bold text-xs text-on-surface">
-                    Giờ kể chuyện & Nhận biết chữ cái
-                  </h4>
-                </div>
-              </div>
-
-              {/* Item 4 (Future) */}
-              <div className="relative">
-                <div className="absolute -left-[31px] bg-surface-container-high w-4 h-4 rounded-full border-2 border-white"></div>
-                <div>
-                  <p className="text-xs font-sans font-bold text-on-surface-variant mb-1">
-                    11:00 - 12:00
-                  </p>
-                  <h4 className="font-sans font-bold text-xs text-on-surface flex items-center gap-1.5">
-                    <span>Ăn trưa dinh dưỡng</span>
-                    <Utensils className="w-3.5 h-3.5 text-tertiary" />
-                  </h4>
-                </div>
-              </div>
-
-              {/* Item 5 (Future) */}
-              <div className="relative">
-                <div className="absolute -left-[31px] bg-surface-container-high w-4 h-4 rounded-full border-2 border-white"></div>
-                <div>
-                  <p className="text-xs font-sans font-bold text-on-surface-variant mb-1">
-                    12:00 - 14:00
-                  </p>
-                  <h4 className="font-sans font-bold text-xs text-on-surface">
-                    Giờ ngủ trưa bé ngoan
-                  </h4>
-                </div>
-              </div>
+                );
+              })()}
             </div>
           </div>
         </aside>

@@ -29,12 +29,14 @@ export function AwardStudentDialog({
   avatar,
   classId,
   onAwardSuccess,
+  customTrigger,
 }: {
   studentId?: string;
   studentName: string;
   avatar?: string;
   classId?: string;
   onAwardSuccess?: () => void;
+  customTrigger?: React.ReactElement;
 }) {
   const [open, setOpen] = useState(false);
   const [selectedReward, setSelectedReward] = useState(REWARD_TYPES[0]);
@@ -104,19 +106,19 @@ export function AwardStudentDialog({
     }
   };
 
+  const defaultTrigger = (
+    <button
+      type="button"
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80 transition-all shadow-2xs cursor-pointer"
+    >
+      <Star className="w-3.5 h-3.5 fill-current" />
+      <span>Tặng sao</span>
+    </button>
+  );
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger
-        render={
-          <button
-            type="button"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80 transition-all shadow-2xs cursor-pointer"
-          >
-            <Star className="w-3.5 h-3.5 fill-current" />
-            Tặng sao
-          </button>
-        }
-      />
+      <DialogTrigger render={customTrigger || defaultTrigger} />
       <DialogContent className="sm:max-w-[420px] bg-surface-container-lowest border-outline-variant/30 rounded-xl">
         <DialogHeader>
           <DialogTitle className="font-heading text-xl text-on-surface flex items-center gap-2">

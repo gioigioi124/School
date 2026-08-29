@@ -2,9 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
-import { Trash2, AlertTriangle, Loader2, Info } from 'lucide-react';
+import { UserMinus, AlertTriangle, Loader2, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,24 +17,29 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-interface DeleteClassDialogProps {
+interface RemoveStudentFromClassDialogProps {
   classId: string;
   className: string;
-  redirectToClasses?: boolean;
+  studentId: string;
+  studentName: string;
+  studentAvatar?: string;
   customTrigger?: React.ReactElement;
+  onRemoved?: () => void;
 }
 
-export function DeleteClassDialog({
+export function RemoveStudentFromClassDialog({
   classId,
   className,
-  redirectToClasses = false,
+  studentId,
+  studentName,
+  studentAvatar = '🐻',
   customTrigger,
-}: DeleteClassDialogProps) {
+  onRemoved,
+}: RemoveStudentFromClassDialogProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [confirmInput, setConfirmInput] = useState('');
   const router = useRouter();
-  const supabase = createClient();
 
   const isConfirmed = confirmInput.trim().toLowerCase() === 'xác nhận xóa';
 
@@ -46,31 +50,31 @@ export function DeleteClassDialog({
     }
   };
 
-  const handleDelete = async () => {
+  const handleRemove = async () => {
     if (!isConfirmed) return;
 
     setIsLoading(true);
-
     try {
-      // Delete class (Cascade in Postgres will clean up enrollments automatically)
-      const { error } = await supabase
-        .from('classes')
-        .delete()
-        .eq('id', classId);
+      const res = await fetch(
+        `/api/students/enroll?classId=${encodeURIComponent(classId)}&studentId=${encodeURIComponent(studentId)}`,
+        {
+          method: 'DELETE',
+        }
+      );
 
-      if (error) throw error;
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Có lỗi xảy ra khi xóa học sinh khỏi lớp.');
+      }
 
-      toast.success(`Đã xóa lớp học "${className}" thành công!`);
+      toast.success(`Đã xóa bé "${studentName}" khỏi lớp "${className}"!`);
       setOpen(false);
       setConfirmInput('');
-
-      if (redirectToClasses) {
-        router.push('/classes');
-      }
+      if (onRemoved) onRemoved();
       router.refresh();
     } catch (error: any) {
       console.error(error);
-      toast.error('Có lỗi xảy ra khi xóa lớp học.');
+      toast.error(error.message || 'Lỗi khi xóa học sinh khỏi lớp.');
     } finally {
       setIsLoading(false);
     }
@@ -79,10 +83,10 @@ export function DeleteClassDialog({
   const defaultTrigger = (
     <button
       type="button"
-      className="p-2 rounded-xl text-on-surface-variant hover:text-destructive hover:bg-error-container/40 transition-all cursor-pointer"
-      title="Xóa lớp học"
+      className="p-1.5 rounded-lg text-on-surface-variant hover:text-destructive hover:bg-error-container/30 transition-all cursor-pointer"
+      title={`Xóa bé ${studentName} khỏi lớp`}
     >
-      <Trash2 className="w-4 h-4" />
+      <UserMinus className="w-4 h-4" />
     </button>
   );
 
@@ -95,28 +99,43 @@ export function DeleteClassDialog({
             <AlertTriangle className="w-6 h-6" />
           </div>
           <DialogTitle className="font-heading text-xl text-on-surface">
-            Xác nhận xóa lớp học
+            Xác nhận xóa học sinh khỏi lớp
           </DialogTitle>
           <DialogDescription className="font-sans text-on-surface-variant text-xs pt-1 leading-relaxed">
-            Bạn có chắc chắn muốn xóa lớp <strong>"{className}"</strong>? Hành động này sẽ hủy phân công toàn bộ học sinh và không thể hoàn tác.
+            Bạn đang yêu cầu rút bé <strong>"{studentName}"</strong> ra khỏi lớp <strong>"{className}"</strong>.
           </DialogDescription>
         </DialogHeader>
 
-        {/* Warning Note */}
-        <div className="p-3 bg-error-container/30 border border-error-container rounded-xl flex items-start gap-2 text-xs text-destructive font-sans my-1">
-          <Info className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+        {/* Student Mini Preview */}
+        <div className="p-3 bg-surface-container-low rounded-xl border border-outline-variant/30 flex items-center gap-3 my-1">
+          <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-xl shadow-2xs shrink-0">
+            <span>{studentAvatar}</span>
+          </div>
+          <div className="min-w-0">
+            <h4 className="font-sans font-bold text-xs text-on-surface truncate">
+              {studentName}
+            </h4>
+            <p className="text-[11px] text-on-surface-variant font-sans">
+              Lớp hiện tại: <span className="text-primary font-bold">{className}</span>
+            </p>
+          </div>
+        </div>
+
+        {/* Note */}
+        <div className="p-3 bg-secondary-container/30 border border-secondary-container/50 rounded-xl flex items-start gap-2 text-xs text-on-surface-variant font-sans">
+          <Info className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
           <p>
-            Tất cả dữ liệu lịch học, điểm danh của lớp này sẽ bị xóa. Các tài khoản học sinh sẽ được đưa về danh sách chờ chưa phân lớp.
+            Tài khoản và điểm số của bé <strong>vẫn được bảo toàn</strong>. Bé sẽ được chuyển về <em>Danh sách chờ (Chưa phân lớp)</em> để cô có thể xếp vào lớp khác sau này.
           </p>
         </div>
 
         {/* Confirmation Input */}
         <div className="space-y-1.5 pt-2">
-          <Label htmlFor="confirmDeleteClass" className="text-xs font-bold text-on-surface">
+          <Label htmlFor="confirmDeleteStudent" className="text-xs font-bold text-on-surface">
             Để tránh xóa nhầm, hãy nhập chữ <span className="text-destructive font-mono font-bold">xác nhận xóa</span> vào bên dưới:
           </Label>
           <Input
-            id="confirmDeleteClass"
+            id="confirmDeleteStudent"
             placeholder="Nhập: xác nhận xóa"
             value={confirmInput}
             onChange={(e) => setConfirmInput(e.target.value)}
@@ -137,12 +156,12 @@ export function DeleteClassDialog({
           </Button>
           <Button
             type="button"
-            onClick={handleDelete}
+            onClick={handleRemove}
             disabled={isLoading || !isConfirmed}
             className="rounded-xl bg-destructive text-white hover:bg-destructive/90 font-bold text-xs shadow-xs disabled:opacity-40"
           >
             {isLoading ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : null}
-            Xóa lớp ngay
+            Xóa khỏi lớp
           </Button>
         </DialogFooter>
       </DialogContent>

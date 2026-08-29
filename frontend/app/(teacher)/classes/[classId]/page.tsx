@@ -53,6 +53,46 @@ export default async function ClassDetailPage({ params }: PageProps) {
   const t = Array.isArray(teacherProfile) ? teacherProfile[0] : teacherProfile;
   const teacherName = (t as any)?.display_name || (t as any)?.displayName || 'Cô giáo';
 
+  // 3. Fetch class schedules / timetable
+  const { data: schedulesData } = await supabase
+    .from('schedules')
+    .select(`
+      id,
+      class_id,
+      teacher_id,
+      day_of_week,
+      start_time,
+      end_time,
+      subject,
+      room,
+      color,
+      description,
+      profiles:teacher_id(id, display_name, email, avatar_url)
+    `)
+    .eq('class_id', classId)
+    .order('day_of_week', { ascending: true })
+    .order('start_time', { ascending: true });
+
+  const schedules = (schedulesData || []).map((s: any) => ({
+    id: s.id,
+    classId: s.class_id,
+    teacherId: s.teacher_id,
+    dayOfWeek: s.day_of_week,
+    startTime: s.start_time,
+    endTime: s.end_time,
+    subject: s.subject,
+    room: s.room,
+    color: s.color,
+    description: s.description,
+    teacher: s.profiles
+      ? {
+          id: s.profiles.id,
+          displayName: s.profiles.display_name,
+          avatarUrl: s.profiles.avatar_url,
+        }
+      : null,
+  }));
+
   return (
     <ClassDetailView 
       classData={{
@@ -66,6 +106,7 @@ export default async function ClassDetailPage({ params }: PageProps) {
       }} 
       students={students} 
       teacherName={teacherName} 
+      schedules={schedules}
     />
   );
 }
