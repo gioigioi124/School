@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   Home, 
+  CalendarDays,
   BookOpen, 
   Gamepad2, 
   Film, 
@@ -28,11 +29,19 @@ const studentNavItems = [
     emoji: '🏠',
   },
   {
+    title: 'Thời khóa biểu',
+    href: '/schedule',
+    icon: CalendarDays,
+    emoji: '📅',
+  },
+  {
     title: 'Bài học',
     href: '/learn',
     icon: BookOpen,
     emoji: '📚',
   },
+  // Tạm thời ẩn các mục: Góc trò chơi, Rạp phim, Bảng vàng
+  /*
   {
     title: 'Góc trò chơi',
     href: '/games',
@@ -51,6 +60,7 @@ const studentNavItems = [
     icon: Trophy,
     emoji: '🏆',
   },
+  */
   {
     title: 'Sổ liên lạc',
     href: '/diary',

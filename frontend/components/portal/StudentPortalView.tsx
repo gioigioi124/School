@@ -367,7 +367,7 @@ export function StudentPortalView({
             </div>
 
             <Link
-              href="/schedules"
+              href="/schedule"
               onClick={() => sounds.playPop()}
               className="text-xs font-bold text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1 cursor-pointer transition-colors"
             >

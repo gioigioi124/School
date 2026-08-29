@@ -15,9 +15,10 @@ import {
 interface WeeklyScheduleGridProps {
   schedules: ScheduleItem[];
   classId: string;
-  onEditSlot: (slot: ScheduleItem) => void;
-  onDeleteSlot: (slot: ScheduleItem) => void;
-  onAddSlotForDay: (dayOfWeek: number, defaultTime?: { start: string; end: string }) => void;
+  onEditSlot?: (slot: ScheduleItem) => void;
+  onDeleteSlot?: (slot: ScheduleItem) => void;
+  onAddSlotForDay?: (dayOfWeek: number, defaultTime?: { start: string; end: string }) => void;
+  readOnly?: boolean;
 }
 
 const DAYS_MAP = [
@@ -43,6 +44,7 @@ export function WeeklyScheduleGrid({
   onEditSlot,
   onDeleteSlot,
   onAddSlotForDay,
+  readOnly = false,
 }: WeeklyScheduleGridProps) {
   const [showWeekend, setShowWeekend] = useState(false);
   const [selectedMobileDay, setSelectedMobileDay] = useState<number>(() => {
@@ -96,14 +98,16 @@ export function WeeklyScheduleGrid({
             <span className="text-[10px] px-2 py-0.5 rounded-full bg-surface text-on-surface-variant font-bold border border-outline-variant/30">
               {dayTotalCount} tiết
             </span>
-            <button
-              type="button"
-              onClick={() => onAddSlotForDay(day.dayOfWeek)}
-              title={`Thêm tiết cho ${day.label}`}
-              className="w-6 h-6 rounded-lg bg-surface hover:bg-primary hover:text-white text-on-surface-variant flex items-center justify-center transition-all cursor-pointer shadow-2xs"
-            >
-              <Plus className="w-3.5 h-3.5" />
-            </button>
+            {!readOnly && onAddSlotForDay && (
+              <button
+                type="button"
+                onClick={() => onAddSlotForDay(day.dayOfWeek)}
+                title={`Thêm tiết cho ${day.label}`}
+                className="w-6 h-6 rounded-lg bg-surface hover:bg-primary hover:text-white text-on-surface-variant flex items-center justify-center transition-all cursor-pointer shadow-2xs"
+              >
+                <Plus className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
 
@@ -116,25 +120,35 @@ export function WeeklyScheduleGrid({
                 <Sun className="w-3 h-3 text-amber-600" />
                 <span>SÁNG (Tiết 1 - 4)</span>
               </span>
-              <button
-                type="button"
-                onClick={() => onAddSlotForDay(day.dayOfWeek, { start: '08:00', end: '08:45' })}
-                title="Thêm tiết sáng"
-                className="hover:text-primary cursor-pointer p-0.5"
-              >
-                <Plus className="w-3 h-3" />
-              </button>
+              {!readOnly && onAddSlotForDay && (
+                <button
+                  type="button"
+                  onClick={() => onAddSlotForDay(day.dayOfWeek, { start: '08:00', end: '08:45' })}
+                  title="Thêm tiết sáng"
+                  className="hover:text-primary cursor-pointer p-0.5"
+                >
+                  <Plus className="w-3 h-3" />
+                </button>
+              )}
             </div>
 
             {morning.length === 0 ? (
-              <div
-                onClick={() => onAddSlotForDay(day.dayOfWeek, { start: '08:00', end: '08:45' })}
-                className="h-[68px] rounded-lg border border-dashed border-outline-variant/40 bg-surface/30 hover:border-amber-400 hover:bg-amber-50/30 transition-all flex flex-col items-center justify-center text-center cursor-pointer group"
-              >
-                <span className="text-[11px] text-on-surface-variant/60 group-hover:text-amber-700 font-medium">
-                  + Thêm tiết sáng
-                </span>
-              </div>
+              readOnly ? (
+                <div className="h-[68px] rounded-lg border border-dashed border-outline-variant/30 bg-surface/10 flex flex-col items-center justify-center text-center">
+                  <span className="text-[11px] text-on-surface-variant/50 font-medium">
+                    Không có tiết sáng
+                  </span>
+                </div>
+              ) : (
+                <div
+                  onClick={() => onAddSlotForDay?.(day.dayOfWeek, { start: '08:00', end: '08:45' })}
+                  className="h-[68px] rounded-lg border border-dashed border-outline-variant/40 bg-surface/30 hover:border-amber-400 hover:bg-amber-50/30 transition-all flex flex-col items-center justify-center text-center cursor-pointer group"
+                >
+                  <span className="text-[11px] text-on-surface-variant/60 group-hover:text-amber-700 font-medium">
+                    + Thêm tiết sáng
+                  </span>
+                </div>
+              )
             ) : (
               morning.map((slot) => (
                 <SlotCard
@@ -142,6 +156,7 @@ export function WeeklyScheduleGrid({
                   slot={slot}
                   onEdit={onEditSlot}
                   onDelete={onDeleteSlot}
+                  readOnly={readOnly}
                 />
               ))
             )}
@@ -154,25 +169,35 @@ export function WeeklyScheduleGrid({
                 <Sunset className="w-3 h-3 text-indigo-600" />
                 <span>CHIỀU (Tiết 1 - 3)</span>
               </span>
-              <button
-                type="button"
-                onClick={() => onAddSlotForDay(day.dayOfWeek, { start: '14:00', end: '14:45' })}
-                title="Thêm tiết chiều"
-                className="hover:text-primary cursor-pointer p-0.5"
-              >
-                <Plus className="w-3 h-3" />
-              </button>
+              {!readOnly && onAddSlotForDay && (
+                <button
+                  type="button"
+                  onClick={() => onAddSlotForDay(day.dayOfWeek, { start: '14:00', end: '14:45' })}
+                  title="Thêm tiết chiều"
+                  className="hover:text-primary cursor-pointer p-0.5"
+                >
+                  <Plus className="w-3 h-3" />
+                </button>
+              )}
             </div>
 
             {afternoon.length === 0 ? (
-              <div
-                onClick={() => onAddSlotForDay(day.dayOfWeek, { start: '14:00', end: '14:45' })}
-                className="h-[68px] rounded-lg border border-dashed border-outline-variant/40 bg-surface/30 hover:border-indigo-400 hover:bg-indigo-50/30 transition-all flex flex-col items-center justify-center text-center cursor-pointer group"
-              >
-                <span className="text-[11px] text-on-surface-variant/60 group-hover:text-indigo-700 font-medium">
-                  + Thêm tiết chiều
-                </span>
-              </div>
+              readOnly ? (
+                <div className="h-[68px] rounded-lg border border-dashed border-outline-variant/30 bg-surface/10 flex flex-col items-center justify-center text-center">
+                  <span className="text-[11px] text-on-surface-variant/50 font-medium">
+                    Không có tiết chiều
+                  </span>
+                </div>
+              ) : (
+                <div
+                  onClick={() => onAddSlotForDay?.(day.dayOfWeek, { start: '14:00', end: '14:45' })}
+                  className="h-[68px] rounded-lg border border-dashed border-outline-variant/40 bg-surface/30 hover:border-indigo-400 hover:bg-indigo-50/30 transition-all flex flex-col items-center justify-center text-center cursor-pointer group"
+                >
+                  <span className="text-[11px] text-on-surface-variant/60 group-hover:text-indigo-700 font-medium">
+                    + Thêm tiết chiều
+                  </span>
+                </div>
+              )
             ) : (
               afternoon.map((slot) => (
                 <SlotCard
@@ -180,6 +205,7 @@ export function WeeklyScheduleGrid({
                   slot={slot}
                   onEdit={onEditSlot}
                   onDelete={onDeleteSlot}
+                  readOnly={readOnly}
                 />
               ))
             )}
@@ -286,18 +312,26 @@ function SlotCard({
   slot,
   onEdit,
   onDelete,
+  readOnly = false,
 }: {
   slot: ScheduleItem;
-  onEdit: (slot: ScheduleItem) => void;
-  onDelete: (slot: ScheduleItem) => void;
+  onEdit?: (slot: ScheduleItem) => void;
+  onDelete?: (slot: ScheduleItem) => void;
+  readOnly?: boolean;
 }) {
   const cardColor = slot.color || '#3B82F6';
   const noteText = slot.description || slot.room || 'Không có ghi chú';
 
   return (
     <div
-      onClick={() => onEdit(slot)}
-      className="group relative h-[68px] rounded-md pl-2.5 pr-2 py-1.5 text-left transition-all duration-150 border border-outline-variant/30 bg-surface hover:border-primary/50 hover:shadow-xs flex flex-col justify-between overflow-hidden cursor-pointer"
+      onClick={() => {
+        if (!readOnly && onEdit) {
+          onEdit(slot);
+        }
+      }}
+      className={`group relative h-[68px] rounded-md pl-2.5 pr-2 py-1.5 text-left transition-all duration-150 border border-outline-variant/30 bg-surface hover:border-primary/50 hover:shadow-xs flex flex-col justify-between overflow-hidden ${
+        readOnly ? 'cursor-default' : 'cursor-pointer'
+      }`}
       style={{
         borderLeftWidth: '3.5px',
         borderLeftColor: cardColor,
@@ -312,26 +346,32 @@ function SlotCard({
           </span>
         </div>
 
-        {/* Action Buttons */}
-        <div
-          onClick={(e) => e.stopPropagation()}
-          className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1"
-        >
-          <button
-            onClick={() => onEdit(slot)}
-            title="Sửa tiết học"
-            className="w-4 h-4 rounded bg-surface-container hover:bg-primary hover:text-white text-on-surface-variant flex items-center justify-center transition-colors cursor-pointer"
+        {/* Action Buttons (Teacher only) */}
+        {!readOnly && (
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1"
           >
-            <Pencil className="w-2 h-2" />
-          </button>
-          <button
-            onClick={() => onDelete(slot)}
-            title="Xóa tiết học"
-            className="w-4 h-4 rounded bg-surface-container hover:bg-red-600 hover:text-white text-on-surface-variant flex items-center justify-center transition-colors cursor-pointer"
-          >
-            <Trash2 className="w-2 h-2" />
-          </button>
-        </div>
+            {onEdit && (
+              <button
+                onClick={() => onEdit(slot)}
+                title="Sửa tiết học"
+                className="w-4 h-4 rounded bg-surface-container hover:bg-primary hover:text-white text-on-surface-variant flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <Pencil className="w-2 h-2" />
+              </button>
+            )}
+            {onDelete && (
+              <button
+                onClick={() => onDelete(slot)}
+                title="Xóa tiết học"
+                className="w-4 h-4 rounded bg-surface-container hover:bg-red-600 hover:text-white text-on-surface-variant flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <Trash2 className="w-2 h-2" />
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* 2. TIẾT HỌC / MÔN HỌC */}

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
   Home, 
+  CalendarDays,
   BookOpen, 
   Gamepad2, 
   Film, 
@@ -16,10 +17,14 @@ import { sounds } from '@/lib/sounds';
 
 const mobileNavItems = [
   { href: '/portal', label: 'Trang chủ', emoji: '🏠', icon: Home },
+  { href: '/schedule', label: 'TKB', emoji: '📅', icon: CalendarDays },
   { href: '/learn', label: 'Bài học', emoji: '📚', icon: BookOpen },
+  // Tạm thời ẩn các mục: Góc chơi, Rạp phim, Bảng vàng
+  /*
   { href: '/games', label: 'Góc chơi', emoji: '🎮', icon: Gamepad2 },
   { href: '/videos', label: 'Rạp phim', emoji: '🎬', icon: Film },
   { href: '/leaderboard', label: 'Bảng vàng', emoji: '🏆', icon: Trophy },
+  */
   { href: '/diary', label: 'Sổ liên lạc', emoji: '📖', icon: BookMarked },
   { href: '/profile', label: 'Hồ sơ', emoji: '🌟', icon: UserCircle },
 ];

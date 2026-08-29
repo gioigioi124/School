@@ -12,6 +12,7 @@ export const TEACHER_ROUTES = [
 
 export const STUDENT_ROUTES = [
   '/portal',
+  '/schedule',
   '/learn',
   '/games',
   '/videos',

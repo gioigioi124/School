@@ -15,9 +15,10 @@ import {
 interface DailyScheduleTimelineProps {
   schedules: ScheduleItem[];
   classId: string;
-  onEditSlot: (slot: ScheduleItem) => void;
-  onDeleteSlot: (slot: ScheduleItem) => void;
-  onAddSlotForDay: (dayOfWeek: number, defaultTime?: { start: string; end: string }) => void;
+  onEditSlot?: (slot: ScheduleItem) => void;
+  onDeleteSlot?: (slot: ScheduleItem) => void;
+  onAddSlotForDay?: (dayOfWeek: number, defaultTime?: { start: string; end: string }) => void;
+  readOnly?: boolean;
 }
 
 const DAYS_LIST = [
@@ -42,6 +43,7 @@ export function DailyScheduleTimeline({
   onEditSlot,
   onDeleteSlot,
   onAddSlotForDay,
+  readOnly = false,
 }: DailyScheduleTimelineProps) {
   const [selectedDay, setSelectedDay] = useState(2);
 
@@ -102,13 +104,15 @@ export function DailyScheduleTimeline({
           </p>
         </div>
 
-        <button
-          onClick={() => onAddSlotForDay(selectedDay)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary text-on-primary font-heading font-bold text-xs shadow-2xs hover:bg-primary/90 transition-all cursor-pointer"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          <span>Thêm tiết học</span>
-        </button>
+        {!readOnly && onAddSlotForDay && (
+          <button
+            onClick={() => onAddSlotForDay(selectedDay)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary text-on-primary font-heading font-bold text-xs shadow-2xs hover:bg-primary/90 transition-all cursor-pointer"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>Thêm tiết học</span>
+          </button>
+        )}
       </div>
 
       {/* Morning & Afternoon Sections */}
@@ -121,15 +125,19 @@ export function DailyScheduleTimeline({
             Chưa có lịch học cho {currentDayInfo.label}
           </h4>
           <p className="font-sans text-xs text-on-surface-variant max-w-sm mb-3">
-            Bấm nút bên dưới để thêm tiết học mới hoặc sử dụng tính năng nạp mẫu tự động.
+            {readOnly
+              ? 'Lớp học chưa có lịch học cho ngày này hoặc giáo viên chưa cập nhật.'
+              : 'Bấm nút bên dưới để thêm tiết học mới hoặc sử dụng tính năng nạp mẫu tự động.'}
           </p>
-          <button
-            onClick={() => onAddSlotForDay(selectedDay)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-on-primary font-heading font-bold text-xs shadow-xs hover:bg-primary/90 transition-all cursor-pointer"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Thêm tiết cho {currentDayInfo.label}</span>
-          </button>
+          {!readOnly && onAddSlotForDay && (
+            <button
+              onClick={() => onAddSlotForDay(selectedDay)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-on-primary font-heading font-bold text-xs shadow-xs hover:bg-primary/90 transition-all cursor-pointer"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Thêm tiết cho {currentDayInfo.label}</span>
+            </button>
+          )}
         </div>
       ) : (
         <div className="space-y-4">
@@ -144,13 +152,15 @@ export function DailyScheduleTimeline({
                   ☀️ Buổi Sáng ({morningSlots.length} tiết)
                 </h4>
               </div>
-              <button
-                onClick={() => onAddSlotForDay(selectedDay, { start: '08:00', end: '08:45' })}
-                className="text-[11px] font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer"
-              >
-                <Plus className="w-3 h-3" />
-                <span>Thêm tiết sáng</span>
-              </button>
+              {!readOnly && onAddSlotForDay && (
+                <button
+                  onClick={() => onAddSlotForDay(selectedDay, { start: '08:00', end: '08:45' })}
+                  className="text-[11px] font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>Thêm tiết sáng</span>
+                </button>
+              )}
             </div>
 
             {morningSlots.length === 0 ? (
@@ -165,6 +175,7 @@ export function DailyScheduleTimeline({
                     slot={slot}
                     onEdit={onEditSlot}
                     onDelete={onDeleteSlot}
+                    readOnly={readOnly}
                   />
                 ))}
               </div>
@@ -182,13 +193,15 @@ export function DailyScheduleTimeline({
                   🌤️ Buổi Chiều ({afternoonSlots.length} tiết)
                 </h4>
               </div>
-              <button
-                onClick={() => onAddSlotForDay(selectedDay, { start: '14:00', end: '14:45' })}
-                className="text-[11px] font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer"
-              >
-                <Plus className="w-3 h-3" />
-                <span>Thêm tiết chiều</span>
-              </button>
+              {!readOnly && onAddSlotForDay && (
+                <button
+                  onClick={() => onAddSlotForDay(selectedDay, { start: '14:00', end: '14:45' })}
+                  className="text-[11px] font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>Thêm tiết chiều</span>
+                </button>
+              )}
             </div>
 
             {afternoonSlots.length === 0 ? (
@@ -203,6 +216,7 @@ export function DailyScheduleTimeline({
                     slot={slot}
                     onEdit={onEditSlot}
                     onDelete={onDeleteSlot}
+                    readOnly={readOnly}
                   />
                 ))}
               </div>
@@ -224,18 +238,26 @@ function DailyTimelineCard({
   slot,
   onEdit,
   onDelete,
+  readOnly = false,
 }: {
   slot: ScheduleItem;
-  onEdit: (slot: ScheduleItem) => void;
-  onDelete: (slot: ScheduleItem) => void;
+  onEdit?: (slot: ScheduleItem) => void;
+  onDelete?: (slot: ScheduleItem) => void;
+  readOnly?: boolean;
 }) {
   const cardColor = slot.color || '#3B82F6';
   const noteText = slot.description || slot.room || 'Không có ghi chú';
 
   return (
     <div
-      onClick={() => onEdit(slot)}
-      className="group relative h-[68px] rounded-md pl-3 pr-2.5 py-1.5 border border-outline-variant/30 bg-surface hover:border-primary/50 hover:shadow-xs transition-all duration-150 flex items-center justify-between gap-3 cursor-pointer"
+      onClick={() => {
+        if (!readOnly && onEdit) {
+          onEdit(slot);
+        }
+      }}
+      className={`group relative h-[68px] rounded-md pl-3 pr-2.5 py-1.5 border border-outline-variant/30 bg-surface hover:border-primary/50 hover:shadow-xs transition-all duration-150 flex items-center justify-between gap-3 ${
+        readOnly ? 'cursor-default' : 'cursor-pointer'
+      }`}
       style={{
         borderLeftWidth: '3.5px',
         borderLeftColor: cardColor,
@@ -261,28 +283,34 @@ function DailyTimelineCard({
         </p>
       </div>
 
-      {/* ACTIONS */}
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="flex items-center gap-1.5 shrink-0"
-      >
-        <button
-          onClick={() => onEdit(slot)}
-          title="Sửa tiết học"
-          className="px-2.5 py-1 rounded-md bg-surface-container hover:bg-primary hover:text-white text-on-surface-variant text-xs font-bold transition-colors cursor-pointer flex items-center gap-1"
+      {/* ACTIONS (Teacher only) */}
+      {!readOnly && (
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="flex items-center gap-1.5 shrink-0"
         >
-          <Pencil className="w-2.5 h-2.5" />
-          <span className="hidden sm:inline">Sửa</span>
-        </button>
-        <button
-          onClick={() => onDelete(slot)}
-          title="Xóa tiết học"
-          className="px-2.5 py-1 rounded-md bg-surface-container hover:bg-red-600 hover:text-white text-on-surface-variant text-xs font-bold transition-colors cursor-pointer flex items-center gap-1"
-        >
-          <Trash2 className="w-2.5 h-2.5" />
-          <span className="hidden sm:inline">Xóa</span>
-        </button>
-      </div>
+          {onEdit && (
+            <button
+              onClick={() => onEdit(slot)}
+              title="Sửa tiết học"
+              className="px-2.5 py-1 rounded-md bg-surface-container hover:bg-primary hover:text-white text-on-surface-variant text-xs font-bold transition-colors cursor-pointer flex items-center gap-1"
+            >
+              <Pencil className="w-2.5 h-2.5" />
+              <span className="hidden sm:inline">Sửa</span>
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={() => onDelete(slot)}
+              title="Xóa tiết học"
+              className="px-2.5 py-1 rounded-md bg-surface-container hover:bg-red-600 hover:text-white text-on-surface-variant text-xs font-bold transition-colors cursor-pointer flex items-center gap-1"
+            >
+              <Trash2 className="w-2.5 h-2.5" />
+              <span className="hidden sm:inline">Xóa</span>
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
